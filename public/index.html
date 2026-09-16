@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lavaarte OS - Sistema Integral</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --bg-main: #0b0f19;
+    --bg-card: #111827;
+    --bg-input: #1e293b;
+    --border: #334155;
+    --primary: #0284c7;
+    --primary-hover: #0369a1;
+    --accent: #38bdf8;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --text: #f8fafc;
+    --text-muted: #94a3b8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background: var(--bg-main); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* Navbar */
+  .topbar { background: var(--bg-card); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+  .brand { font-size: 18px; font-weight: 800; color: var(--accent); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .nav-btn { background: var(--bg-input); border: 1px solid var(--border); color: var(--text); padding: 7px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
+  .nav-btn:hover { border-color: var(--accent); }
+
+  /* Contenedor */
+  .container { max-width: 1250px; width: 100%; margin: 0 auto; padding: 16px; flex: 1; display: flex; flex-direction: column; }
+
+  /* Vistas */
+  .view-section { display: none; flex-direction: column; gap: 16px; flex: 1; }
+  .view-active { display: flex; }
+
+  /* Menú Dashboard */
+  .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 15px; }
+  .dash-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; text-align: center; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; }
+  .dash-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.15); }
+  .dash-card h3 { font-size: 16px; font-weight: 700; color: var(--text); }
+  .dash-card p { font-size: 12px; color: var(--text-muted); }
+
+  /* Formularios e Inputs */
+  .input-group { display: flex; flex-direction: column; gap: 4px; position: relative; }
+  .label-sm { font-size: 12px; font-weight: bold; color: var(--text-muted); }
+  .input-text { width: 100%; background: var(--bg-input); border: 1px solid var(--border); color: white; padding: 10px 12px; border-radius: 8px; font-size: 14px; outline: none; }
+  .input-text:focus { border-color: var(--accent); }
+
+  /* Desplegable Autocomplete */
+  .autocomplete-box { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--accent); border-radius: 8px; max-height: 180px; overflow-y: auto; z-index: 50; display: none; }
+  .autocomplete-item { padding: 10px 12px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; }
+  .autocomplete-item:hover { background: var(--bg-input); color: var(--accent); }
+
+  /* Layout Mostrador */
+  .pos-layout { display: flex; gap: 16px; height: calc(100vh - 120px); }
+  .pos-sidebar { width: 400px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; }
+  .pos-catalog { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; }
+
+  /* Grilla de Prendas */
+  .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; overflow-y: auto; flex: 1; align-content: start; }
+  .prenda-btn { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.15s; }
+  .prenda-btn:hover { border-color: var(--accent); background: #334155; }
+  .prenda-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .prenda-price { font-size: 13px; font-weight: bold; color: var(--accent); }
+
+  /* Ticket List */
+  .ticket-list { flex: 1; overflow-y: auto; margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
+  .ticket-item { background: var(--bg-input); padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .btn-qty { background: #334155; border: none; color: white; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+  .btn-del { background: none; border: none; color: var(--danger); font-size: 16px; cursor: pointer; margin-left: 8px; }
+
+  /* Botones de Acción */
+  .btn-primary { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-success { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
+  .btn-danger { background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
+
+  /* Tablas */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+  .data-table th { background: var(--bg-input); padding: 10px; color: var(--accent); border-bottom: 1px solid var(--border); }
+  .data-table td { padding: 10px; border-bottom: 1px solid var(--border); }
+
+  /* Modales */
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 100; }
+  .modal-content { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; width: 520px; max-width: 90vw; padding: 20px; display: flex; flex-direction: column; gap: 14px; max-height: 85vh; overflow-y: auto; }
+
+  /* Alertas Centinela */
+  .centinela-box { background: rgba(239, 68, 68, 0.12); border: 1px solid var(--danger); border-radius: 8px; padding: 12px; }
+
+  @media (max-width: 850px) {
+    .pos-layout { flex-direction: column; height: auto; }
+    .pos-sidebar { width: 100%; height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand" onclick="solicitarAccesoEmpleados()">
+    🧺 Lavaarte OS <span>| Control Maestro</span>
+  </div>
+  <div style="display: flex; gap: 8px; align-items: center;">
+    <button class="nav-btn" onclick="mostrarVista('vista-portal-hoteles')">🏨 Portal Hoteles</button>
+    <button class="nav-btn" onclick="mostrarVista('vista-portal-cliente')">🌐 Portal Clientes</button>
+    <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Acceso Empleados</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ==================== VISTA 1: DASHBOARD EMPLEADOS ==================== -->
+  <div class="view-section view-active" id="vista-dashboard">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h2>Panel Operativo Lavaarte SAS</h2>
+      <span id="hora-actual" style="font-size: 13px; color: var(--accent); font-weight: bold;"></span>
+    </div>
+
+    <!-- Alerta Centinela 60 Horas -->
+    <div id="box-centinela-alerta" class="centinela-box" style="display: none;">
+      <h4 style="color: var(--danger);">🚨 CENTINELA OPERATIVO: Órdenes con más de 60 Horas sin Entregar</h4>
+      <div id="centinela-resumen" style="font-size: 12px; margin-top: 6px; line-height: 1.5;"></div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card" onclick="mostrarVista('vista-pos')">
+        <span style="font-size: 32px;">📥</span>
+        <h3>1. Ingreso de Prendas</h3>
+        <p>Recepción en mostrador, abonos, estado de prendas y tickets</p>
+      </div>
+
+      <div class="dash-card" onclick="mostrarVista('vista-alistar')">
+        <span style="font-size: 32px;">🧺</span>
+        <h3>2. Alistar Ropa (Planta / Acople)</h3>
+        <p>Consultar orden y marcar de EN PROCESO a LISTO PARA ENTREGAR</p>
+      </div>
+
+      <div class="dash-card" onclick="mostrarVista('vista-entrega')">
+        <span style="font-size: 32px;">🤝</span>
+        <h3>3. Entregar Prendas</h3>
+        <p>Liquidación de saldo, medios de pago y entrega conforme</p>
+      </div>
+
+      <div class="dash-card" onclick="mostrarVista('vista-egresos')">
+        <span style="font-size: 32px;">💸</span>
+        <h3>4. Salidas de Efectivo</h3>
+        <p>Gastos de caja menor (jabón, ganchos, insumos diarios)</p>
+      </div>
+
+      <div class="dash-card" onclick="abrirArqueoCaja()">
+        <span style="font-size: 32px;">📊</span>
+        <h3>5. Arqueo Diario de Caja</h3>
+        <p>Cierre diario, entradas, salidas, balance y reporte 60h a Excel</p>
+      </div>
+
+      <div class="dash-card" onclick="pedirClaveAdmin()">
+        <span style="font-size: 32px;">🔒</span>
+        <h3>6. Anulación y Edición</h3>
+        <p>Control administrativo protegido para anular o corregir facturas</p>
+      </div>
+
+      <div class="dash-card" onclick="mostrarVista('vista-domicilios-admin')">
+        <span style="font-size: 32px;">🛵</span>
+        <h3>7. Solicitudes de Domicilio y Rutas</h3>
+        <p>Pedidos de recogida/entrega de clientes y hoteles</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VISTA 2: INGRESO DE PRENDAS (POS) ==================== -->
+  <div class="view-section" id="vista-pos">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>📥 Ingreso de Prendas al Sistema</h3>
+      <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
+    </div>
+
+    <div class="pos-layout">
+      <!-- Sidebar Cliente, Ticket y Observaciones -->
+      <div class="pos-sidebar">
+        <div class="input-group">
+          <label class="label-sm">Buscar Cliente por Nombre o Teléfono</label>
+          <input type="text" id="busc-cliente" class="input-text" placeholder="Escribe nombre o celular..." oninput="filtrarCliente(this.value)">
+          <div id="drop-clientes" class="autocomplete-box"></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+          <div class="input-group">
+            <label class="label-sm">Teléfono Celular</label>
+            <input type="text" id="pos-cli-tel" class="input-text" placeholder="315...">
+          </div>
+          <div class="input-group">
+            <label class="label-sm">Nombre Cliente</label>
+            <input type="text" id="pos-cli-nom" class="input-text" placeholder="Nombre...">
+          </div>
+        </div>
+
+        <div class="ticket-list" id="ticket-items">
+          <div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 30px;">
+            Selecciona prendas del catálogo para liquidar.
+          </div>
+        </div>
+
+        <!-- Observaciones del Estado de la Ropa -->
+        <div class="input-group" style="margin-bottom: 8px;">
+          <label class="label-sm">Detalles / Estado de las Prendas (Manchas, Rotos, Desgaste)</label>
+          <textarea id="pos-obs-prendas" class="input-text" style="height: 55px; resize: none; font-size: 12px;" placeholder="Ej: Camisa blanca con mancha de café en cuello; pantalón sin botón"></textarea>
+        </div>
+
+        <div style="background: var(--bg-input); padding: 10px; border-radius: 8px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; font-size: 13px;">
+            <span>Subtotal Prendas:</span>
+            <strong id="pos-subtotal">$0</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+            <span>Abono Inicial (Opcional):</span>
+            <input type="number" id="pos-abono" class="input-text" style="width: 110px; padding: 4px 8px; text-align: right;" value="0" oninput="recalcularSaldo()">
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 15px; border-top: 1px dashed var(--border); padding-top: 6px; color: var(--accent);">
+            <span>Saldo a Cobrar:</span>
+            <strong id="pos-saldo">$0</strong>
+          </div>
+        </div>
+
+        <button class="btn-success" style="margin-top: 10px;" onclick="confirmarGenerarOrden()">💾 GUARDAR Y EMITIR COMPROBANTE WHATSAPP</button>
+      </div>
+
+      <!-- Catálogo de Prendas -->
+      <div class="pos-catalog">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; gap: 8px;">
+          <input type="text" id="filtro-prenda" class="input-text" style="max-width: 280px;" placeholder="🔍 Buscar prenda o código..." oninput="renderCatalogo(this.value)">
+          <button class="nav-btn" onclick="abrirModalOtroItem()">➕ Ítem "Otros"</button>
+        </div>
+        <div class="catalog-grid" id="grid-catalogo"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VISTA 3: ALISTAR ROPA (PLANTA / ACOPLE) ==================== -->
+  <div class="view-section" id="vista-alistar">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>🧺 Alistar Ropa (Planta / Control de Calidad)</h3>
+      <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
+    </div>
+
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%;">
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Ingresa el número de ticket para cambiar su estado a <strong>LISTO PARA ENTREGAR</strong>:</p>
+      
+      <div style="display: flex; gap: 8px;">
+        <input type="number" id="alistar-ticket-input" class="input-text" style="font-size: 20px; text-align: center;" placeholder="Ticket #" oninput="buscarTicketAlistar(this.value)">
+      </div>
+
+      <div id="alistar-ticket-resumen" style="margin-top: 16px; font-size: 13px; display: none;">
+        <div style="background: var(--bg-input); padding: 14px; border-radius: 8px; line-height: 1.6;">
+          <div style="display: flex; justify-content: space-between;">
+            <strong id="alistar-txt-ticket" style="color: var(--accent); font-size: 16px;"></strong>
+            <span id="alistar-txt-estado" style="font-weight: bold;"></span>
+          </div>
+          <div id="alistar-txt-cliente" style="margin-top: 4px;"></div>
+          <div id="alistar-txt-prendas" style="color: var(--text-muted); margin-top: 4px;"></div>
+          <div id="alistar-txt-obs" style="color: var(--warning); margin-top: 4px; font-size: 12px;"></div>
+        </div>
+
+        <button class="btn-success" style="width: 100%; margin-top: 14px; padding: 14px; font-size: 16px;" onclick="marcarTicketComoListo()">
+          ✅ MARCAR COMO LISTO PARA ENTREGAR
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VISTA 4: ENTREGAR PRENDAS ==================== -->
+  <div class="view-section" id="vista-entrega">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>🤝 Entregar Prendas y Liquidar Saldo</h3>
+      <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
+    </div>
+
+    <div style="display: flex; gap: 10px; max-width: 600px;">
+      <input type="text" id="busc-entrega" class="input-text" placeholder="Buscar por # Recibo (ej: 45), Nombre o Celular..." oninput="buscarOrdenesEntrega(this.value)">
+    </div>
+
+    <div style="overflow-x: auto; margin-top: 12px;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Ticket #</th>
+            <th>Cliente</th>
+            <th>Teléfono</th>
+            <th>Prendas</th>
+            <th>Estado</th>
+            <th>Total</th>
+            <th>Saldo</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-entrega-body">
+          <tr><td colspan="8" style="text-align: center; color: var(--text-muted);">Escribe en el buscador para consultar órdenes.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ==================== VISTA 5: SALIDAS DE EFECTIVO ==================== -->
+  <div class="view-section" id="vista-egresos">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>💸 Salidas de Efectivo (Caja Menor)</h3>
+      <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
+    </div>
+
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; max-width: 500px; display: flex; flex-direction: column; gap: 12px;">
+      <div class="input-group">
+        <label class="label-sm">Valor Retirado ($COP)</label>
+        <input type="number" id="egreso-monto" class="input-text" placeholder="Ej: 25000">
+      </div>
+      <div class="input-group">
+        <label class="label-sm">Concepto / Motivo de Salida</label>
+        <input type="text" id="egreso-concepto" class="input-text" placeholder="Ej: Jabón líquido, bolsas, ganchos...">
+      </div>
+      <div class="input-group">
+        <label class="label-sm">Responsable del Gasto</label>
+        <input type="text" id="egreso-resp" class="input-text" value="Cajero de Turno">
+      </div>
+      <button class="btn-danger" onclick="guardarEgresoCaja()">🔴 REGISTRAR SALIDA DE CAJA</button>
+    </div>
+  </div>
+
+  <!-- ==================== VISTA 6: GESTIÓN DE DOMICILIOS Y RUTAS ==================== -->
+  <div class="view-section" id="vista-domicilios-admin">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>🛵 Solicitudes de Domicilio y Rutas de Hoteles</h3>
+      <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
+    </div>
+    <p style="font-size: 12px; color: var(--text-muted);">Haz clic en el estado para actualizarlo (En camino, Recogido, Entregado):</p>
+    <div style="overflow-x: auto; margin-top: 10px;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Fecha Solicitud</th>
+            <th>Origen</th>
+            <th>Tipo Servicio</th>
+            <th>Nombre / Hotel</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th>Ticket Ref</th>
+            <th>Detalle</th>
+            <th>Estado (Clic para cambiar)</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-domicilios-body">
+          <tr><td colspan="9" style="text-align: center; color: var(--text-muted);">Sin solicitudes registradas.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ==================== VISTA 7: PORTAL CLIENTES ==================== -->
+  <div class="view-section" id="vista-portal-cliente">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>🌐 Portal de Autoservicio para Clientes</h3>
+      <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Acceso Empleados</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-top: 10px;">
+      <!-- Consulta Ticket -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+        <h4 style="color: var(--accent); margin-bottom: 8px;">🔍 Rastrear Estado de mi Ropa</h4>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Ingresa el número de ticket entregado en el mostrador:</p>
+        <div style="display: flex; gap: 8px;">
+          <input type="number" id="cliente-ticket-query" class="input-text" placeholder="Ej: 45">
+          <button class="btn-primary" onclick="clienteConsultarTicket()">Consultar</button>
+        </div>
+        <div id="cliente-ticket-result" style="margin-top: 14px; font-size: 13px;"></div>
+      </div>
+
+      <!-- Pedir Recogida de Ropa -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+        <h4 style="color: var(--success); margin-bottom: 8px;">📦 Pedir Recogida a Domicilio</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <input type="text" id="dom-rec-nom" class="input-text" placeholder="Nombre Completo">
+          <input type="text" id="dom-rec-tel" class="input-text" placeholder="Celular / WhatsApp">
+          <input type="text" id="dom-rec-dir" class="input-text" placeholder="Dirección exacta">
+          <div style="display: flex; gap: 8px;">
+            <input type="date" id="dom-rec-fec" class="input-text">
+            <select id="dom-rec-franja" class="input-text">
+              <option value="Mañana (8am - 12pm)">Mañana (8am - 12pm)</option>
+              <option value="Tarde (2pm - 6pm)">Tarde (2pm - 6pm)</option>
+            </select>
+          </div>
+          <input type="text" id="dom-rec-notas" class="input-text" placeholder="Prendas aproximadas o notas">
+          <button class="btn-success" onclick="clienteCrearSolicitud('RECOGIDA_DOMICILIO')">Solicitar Recogida</button>
+        </div>
+      </div>
+
+      <!-- Pedir Entrega de Ropa Lista -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+        <h4 style="color: var(--warning); margin-bottom: 8px;">🚚 Solicitar Entrega de mi Ropa</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <input type="number" id="dom-ent-ticket" class="input-text" placeholder="Número de Ticket / Recibo Obligatorio">
+          <input type="text" id="dom-ent-nom" class="input-text" placeholder="Nombre de Quien Recibe">
+          <input type="text" id="dom-ent-tel" class="input-text" placeholder="Celular de Contacto">
+          <input type="text" id="dom-ent-dir" class="input-text" placeholder="Dirección de Entrega">
+          <div style="display: flex; gap: 8px;">
+            <input type="date" id="dom-ent-fec" class="input-text">
+            <select id="dom-ent-franja" class="input-text">
+              <option value="Mañana (8am - 12pm)">Mañana (8am - 12pm)</option>
+              <option value="Tarde (2pm - 6pm)">Tarde (2pm - 6pm)</option>
+            </select>
+          </div>
+          <button class="btn-primary" onclick="clienteCrearSolicitud('ENTREGA_DOMICILIO')">Solicitar Entrega</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VISTA 8: PORTAL HOTELES ==================== -->
+  <div class="view-section" id="vista-portal-hoteles">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>🏨 Portal Logístico para Hoteles</h3>
+      <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Acceso Empleados</button>
+    </div>
+
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; max-width: 580px; margin: 20px auto; width: 100%;">
+      <h4 style="color: var(--accent); margin-bottom: 12px;">Solicitud Inmediata de Ruta y Recogida</h4>
+      
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="input-group">
+          <label class="label-sm">Selecciona tu Hotel</label>
+          <select id="hotel-sel-nom" class="input-text">
+            <option value="Hotel Wyndham">Hotel Wyndham</option>
+            <option value="Hotel Hilton">Hotel Hilton</option>
+            <option value="Hotel Hampton">Hotel Hampton</option>
+            <option value="Hotel Oceania">Hotel Oceania</option>
+            <option value="Hotel Fontana">Hotel Fontana</option>
+            <option value="Hotel Dann">Hotel Dann</option>
+            <option value="Hotel Suite">Hotel Suite</option>
+            <option value="Hotel Virrey">Hotel Virrey</option>
+            <option value="Hotel Andes Plaza">Hotel Andes Plaza</option>
+            <option value="Bogotá Plaza">Bogotá Plaza</option>
+            <option value="Eficacia">Eficacia Dotaciones</option>
+            <option value="Otro Hotel">Otro Hotel</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label class="label-sm">Servicio Requerido</label>
+          <select id="hotel-sel-servicio" class="input-text">
+            <option value="Ropa de Huéspedes">Ropa de Huéspedes</option>
+            <option value="Lencería de Habitaciones">Lencería de Habitaciones</option>
+            <option value="Mantelería / Alimentos y Bebidas">Mantelería / Alimentos y Bebidas</option>
+            <option value="Uniformes / Dotaciones">Uniformes / Dotaciones</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label class="label-sm">Bultos / Piezas Aprox.</label>
+            <input type="text" id="hotel-cant-bultos" class="input-text" placeholder="Ej: 4 bolsas grandes">
+          </div>
+          <div class="input-group">
+            <label class="label-sm">Persona de Contacto</label>
+            <input type="text" id="hotel-contacto" class="input-text" placeholder="Ama de llaves / Turno">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="label-sm">Observaciones / Horario Límite</label>
+          <input type="text" id="hotel-notas" class="input-text" placeholder="Ej: Pasar antes de las 11:00 AM">
+        </div>
+
+        <button class="btn-success" style="padding: 14px; font-size: 15px;" onclick="hotelEnviarSolicitud()">
+          🚚 SOLICITAR RECOGIDA DE RUTA AHORA
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== MODALES ==================== -->
+
+<!-- Modal: Cobro Entrega -->
+<div class="modal" id="modal-cobro-entrega">
+  <div class="modal-content">
+    <h3 style="color: var(--success);">Finalizar Entrega y Cobro</h3>
+    <div id="info-orden-cobro" style="font-size: 13px; line-height: 1.6;"></div>
+    
+    <div class="input-group">
+      <label class="label-sm">Método de Pago del Saldo</label>
+      <select id="entrega-metodo" class="input-text" onchange="toggleComprobanteTransferencia(this.value)">
+        <option value="EFECTIVO">Efectivo (Caja Mostrador)</option>
+        <option value="TRANSFERENCIA_NEQUI">Transferencia Nequi</option>
+        <option value="TRANSFERENCIA_BANCOLOMBIA">Transferencia Bancolombia / Daviplata</option>
+        <option value="DATAFONO">Datáfono / Tarjeta</option>
+      </select>
+    </div>
+
+    <div class="input-group" id="group-comprobante" style="display: none;">
+      <label class="label-sm">Adjuntar Comprobante de Transferencia (Foto)</label>
+      <input type="file" id="entrega-file-comprobante" class="input-text" accept="image/*">
+    </div>
+
+    <button class="btn-success" onclick="ejecutarEntregaFinal()">✅ CONFIRMAR ENTREGA Y REGISTRAR INGRESO</button>
+    <button class="nav-btn" onclick="cerrarModal('modal-cobro-entrega')">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal: Arqueo Diario con Centinela 60h -->
+<div class="modal" id="modal-arqueo">
+  <div class="modal-content" style="width: 700px;">
+    <h3 style="color: var(--accent);">📊 Arqueo y Cierre Diario de Caja</h3>
+    <div id="caja-resumen" style="font-size: 13px; line-height: 1.8; background: var(--bg-input); padding: 14px; border-radius: 8px;"></div>
+
+    <div id="arqueo-centinela-bloque" style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); border-radius: 8px; padding: 12px; font-size: 12px; max-height: 150px; overflow-y: auto;">
+      <strong style="color: var(--danger);">🚨 Auditoría Centinela 60 Horas (Órdenes pendientes por seguimiento):</strong>
+      <div id="arqueo-centinela-list" style="margin-top: 6px;"></div>
+    </div>
+    
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-primary" style="flex: 1;" onclick="exportarExcelArqueo()">📥 EXPORTAR INFORME Y AUDITORÍA A EXCEL (.XLSX)</button>
+      <button class="nav-btn" onclick="cerrarModal('modal-arqueo')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Ítem Otros -->
+<div class="modal" id="modal-otros">
+  <div class="modal-content">
+    <h3>➕ Agregar Ítem Personalizado</h3>
+    <div class="input-group">
+      <label class="label-sm">Descripción de la prenda / servicio</label>
+      <input type="text" id="otro-desc" class="input-text" placeholder="Ej: Teñido de pantalón especial">
+    </div>
+    <div class="input-group">
+      <label class="label-sm">Precio acordado ($COP)</label>
+      <input type="number" id="otro-precio" class="input-text" placeholder="Ej: 28000">
+    </div>
+    <button class="btn-primary" onclick="agregarOtroItemAlTicket()">Agregar al Ticket</button>
+    <button class="nav-btn" onclick="cerrarModal('modal-otros')">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal: Clave Admin (PIN Seguro) -->
+<div class="modal" id="modal-admin-auth">
+  <div class="modal-content" style="width: 380px; text-align: center;">
+    <h3 style="color: var(--warning);">🔒 Acceso Administrativo</h3>
+    <p style="font-size: 13px; color: var(--text-muted);">Ingresa el PIN de seguridad para continuar:</p>
+    <input type="password" id="admin-pin" class="input-text" style="font-size: 24px; text-align: center; letter-spacing: 6px;" maxlength="4" placeholder="••••">
+    <button class="btn-primary" onclick="validarPinAdmin()">Entrar</button>
+    <button class="nav-btn" onclick="cerrarModal('modal-admin-auth')">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal: Panel Modificar / Anular Facturas -->
+<div class="modal" id="modal-admin-panel">
+  <div class="modal-content" style="width: 700px;">
+    <h3 style="color: var(--danger);">⚙️ Control de Facturas (Anular / Corregir)</h3>
+    <div style="display: flex; gap: 8px;">
+      <input type="number" id="admin-ticket-input" class="input-text" placeholder="Número de ticket a modificar...">
+      <button class="btn-primary" onclick="adminCargarTicket()">Buscar</button>
+    </div>
+    <div id="admin-ticket-detalle" style="font-size: 13px;"></div>
+    <button class="nav-btn" onclick="cerrarModal('modal-admin-panel')">Cerrar</button>
+  </div>
+</div>
+
+<script>
+  // Conexión Supabase Lavaarte SAS
+  const SUPABASE_URL = "https://biumkyjjavpfgfishvzp.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_vUntLk7lDbQ3DXROxTDCLg_NjgC6IIT";
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Catálogo completo Digitalizado de Foto 1 y Foto 2
+  const CATALOGO_LOCAL = [
+    {cod: 1, nom: "Camisa", pre: 5500}, {cod: 2, nom: "Camiseta", pre: 6800}, {cod: 3, nom: "Pantalón", pre: 7500},
+    {cod: 4, nom: "Jeans", pre: 7500}, {cod: 5, nom: "Vestido Hombre 2 Pzs.", pre: 14000}, {cod: 6, nom: "Corbata", pre: 7000},
+    {cod: 7, nom: "Chaqueta Sencilla", pre: 8000}, {cod: 8, nom: "Chaqueta Acolchada", pre: 11000}, {cod: 9, nom: "Chaqueta Moto", pre: 25000},
+    {cod: 10, nom: "Chaqueta De Plumas", pre: 18000}, {cod: 11, nom: "Chaqueta Cuero (Solo Lavado)", pre: 120000}, {cod: 12, nom: "Chaqueta Cuero (Lavado Y Renovado)", pre: 120000},
+    {cod: 13, nom: "Chaqueta De Gamuza", pre: 150000}, {cod: 14, nom: "Chaqueta De Cuerina", pre: 25000}, {cod: 15, nom: "Gabán", pre: 14000},
+    {cod: 16, nom: "Abrigo", pre: 14000}, {cod: 17, nom: "Saco", pre: 8000}, {cod: 18, nom: "Suéter", pre: 7000},
+    {cod: 19, nom: "Buso", pre: 7000}, {cod: 20, nom: "Chaleco Sencillo", pre: 8000}, {cod: 21, nom: "Chaleco Plumas", pre: 18000},
+    {cod: 22, nom: "Blusa", pre: 7000}, {cod: 23, nom: "Falda", pre: 7000}, {cod: 24, nom: "Jardinera", pre: 14000},
+    {cod: 25, nom: "Bata Dama", pre: 14000}, {cod: 26, nom: "Vestido Dama 2 Pzs.", pre: 14000}, {cod: 27, nom: "Enterizo", pre: 14000},
+    {cod: 28, nom: "Sudadera", pre: 14000}, {cod: 29, nom: "Faja", pre: 9000}, {cod: 30, nom: "Pijama", pre: 9000},
+    {cod: 31, nom: "Chal", pre: 12000}, {cod: 32, nom: "Bufanda", pre: 7000}, {cod: 33, nom: "Ruana", pre: 18000},
+    {cod: 34, nom: "Bermuda", pre: 5000}, {cod: 35, nom: "Botas", pre: 25000}, {cod: 36, nom: "Tenis", pre: 15000},
+    {cod: 37, nom: "Gorra", pre: 7000}, {cod: 38, nom: "Bolso Dama", pre: 15000}, {cod: 39, nom: "Morral", pre: 15000},
+    {cod: 40, nom: "Maleta Viaje", pre: 35000}, {cod: 41, nom: "Overol", pre: 14000}, {cod: 42, nom: "Almohada Sencilla", pre: 15000},
+    {cod: 43, nom: "Almohada De Plumas", pre: 25000}, {cod: 44, nom: "Cubrelecho Sencillo", pre: 20000}, {cod: 45, nom: "Cubrelecho Doble", pre: 25000},
+    {cod: 46, nom: "Cubrelecho Queen", pre: 30000}, {cod: 47, nom: "Cubrelecho Plumas Sencillo", pre: 35000}, {cod: 48, nom: "Cubrelecho Plumas Doble", pre: 45000},
+    {cod: 49, nom: "Cubrelecho Plumas Queen", pre: 70000}, {cod: 50, nom: "Duvet", pre: 18000}, {cod: 51, nom: "Juego Sábanas", pre: 15000},
+    {cod: 52, nom: "Cobija Sencilla", pre: 20000}, {cod: 53, nom: "Cobija Doble", pre: 25000}, {cod: 54, nom: "Hamaca", pre: 35000},
+    {cod: 55, nom: "Cojín Relleno", pre: 10000}, {cod: 56, nom: "Mantel", pre: 12000}, {cod: 57, nom: "Toalla", pre: 12000},
+    {cod: 58, nom: "Cortina Velo Prense", pre: 2000}, {cod: 59, nom: "Cortina Pesada Prense", pre: 2500}, {cod: 60, nom: "Tapete Mt Cuadrado", pre: 35000},
+    {cod: 61, nom: "Muñeco", pre: 15000}, {cod: 62, nom: "Vestido Novia", pre: 200000}, {cod: 63, nom: "Vestido Quinceañera", pre: 50000},
+    {cod: 64, nom: "Vestido Fiesta Corto", pre: 35000}, {cod: 65, nom: "Vestido Fiesta Largo", pre: 50000}, {cod: 66, nom: "Vestido Primera Comunión", pre: 35000},
+    {cod: 67, nom: "Tintura Prenda", pre: 20000}, {cod: 68, nom: "Tintura Chaqueta", pre: 25000}, {cod: 69, nom: "Solo Plancha", pre: 5500},
+    {cod: 70, nom: "Forros De Carro", pre: 50000}, {cod: 71, nom: "Kilo De Ropa", pre: 16000}, {cod: 72, nom: "Bóxer", pre: 1800},
+    {cod: 73, nom: "Par Medias", pre: 1800}, {cod: 74, nom: "Brassiere", pre: 3900}, {cod: 75, nom: "Cama Mascota", pre: 25000},
+    {cod: 76, nom: "Camisa Galvis", pre: 4200}, {cod: 77, nom: "Muñeco Mediano", pre: 20000}
+  ];
+
+  let ticket = [];
+  let listaClientes = [];
+  let ordenCobroActiva = null;
+  let ordenAlistarActiva = null;
+  let destinoPinAdmin = "";
+
+  window.onload = () => {
+    actualizarReloj();
+    setInterval(actualizarReloj, 1000);
+    renderCatalogo("");
+    precargarClientes();
+    chequearCentinela60h();
+  };
+
+  function actualizarReloj() {
+    const ahora = new Date();
+    document.getElementById("hora-actual").textContent = ahora.toLocaleDateString("es-CO") + " " + ahora.toLocaleTimeString("en-US");
+  }
+
+  function mostrarVista(vistaId) {
+    document.querySelectorAll(".view-section").forEach(el => el.classList.remove("view-active"));
+    document.getElementById(vistaId).classList.add("view-active");
+    if (vistaId === "vista-entrega") buscarOrdenesEntrega("");
+    if (vistaId === "vista-domicilios-admin") cargarDomiciliosAdmin();
+  }
+
+  function cerrarModal(id) { document.getElementById(id).style.display = "none"; }
+  function abrirModal(id) { document.getElementById(id).style.display = "flex"; }
+
+  // Control de Acceso por PIN
+  function solicitarAccesoEmpleados() {
+    destinoPinAdmin = "vista-dashboard";
+    document.getElementById("admin-pin").value = "";
+    abrirModal("modal-admin-auth");
+  }
+
+  function pedirClaveAdmin() {
+    destinoPinAdmin = "modal-admin-panel";
+    document.getElementById("admin-pin").value = "";
+    abrirModal("modal-admin-auth");
+  }
+
+  function validarPinAdmin() {
+    const pin = document.getElementById("admin-pin").value;
+    if (pin === "1510") {
+      cerrarModal("modal-admin-auth");
+      if (destinoPinAdmin === "modal-admin-panel") {
+        abrirModal("modal-admin-panel");
+      } else {
+        mostrarVista("vista-dashboard");
+      }
+    } else {
+      alert("PIN de seguridad incorrecto.");
+    }
+  }
+
+  // Catálogo
+  function renderCatalogo(filtro) {
+    const grid = document.getElementById("grid-catalogo");
+    grid.innerHTML = "";
+    const f = filtro.toLowerCase();
+    CATALOGO_LOCAL.filter(p => p.nom.toLowerCase().includes(f) || String(p.cod).includes(f)).forEach(p => {
+      const btn = document.createElement("div");
+      btn.className = "prenda-btn";
+      btn.onclick = () => agregarAlTicket(p);
+      btn.innerHTML = `
+        <div class="prenda-name">[${p.cod}] ${p.nom}</div>
+        <div class="prenda-price">$${p.pre.toLocaleString("es-CO")}</div>
+      `;
+      grid.appendChild(btn);
+    });
+  }
+
+  function agregarAlTicket(item) {
+    const ex = ticket.find(t => t.cod === item.cod && t.nom === item.nom);
+    if (ex) ex.cant++;
+    else ticket.push({ cod: item.cod, nom: item.nom, pre: item.pre, cant: 1 });
+    renderTicket();
+  }
+
+  function cambiarCantidad(idx, delta) {
+    ticket[idx].cant += delta;
+    if (ticket[idx].cant <= 0) ticket.splice(idx, 1);
+    renderTicket();
+  }
+
+  function editarPrecioTicket(idx) {
+    const nuevo = prompt("Modificar precio unitario ($COP) para " + ticket[idx].nom + ":", ticket[idx].pre);
+    if (nuevo !== null && !isNaN(nuevo) && Number(nuevo) >= 0) {
+      ticket[idx].pre = Number(nuevo);
+      renderTicket();
+    }
+  }
+
+  function renderTicket() {
+    const cont = document.getElementById("ticket-items");
+    if (ticket.length === 0) {
+      cont.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 30px;">Selecciona prendas del catálogo para liquidar.</div>';
+      document.getElementById("pos-subtotal").textContent = "$0";
+      document.getElementById("pos-saldo").textContent = "$0";
+      return;
+    }
+    cont.innerHTML = "";
+    let sub = 0;
+    ticket.forEach((it, idx) => {
+      const tPre = it.pre * it.cant;
+      sub += tPre;
+      const row = document.createElement("div");
+      row.className = "ticket-item";
+      row.innerHTML = `
+        <div>
+          <strong>${it.nom}</strong>
+          <div style="font-size: 11px; color: var(--text-muted); cursor: pointer;" onclick="editarPrecioTicket(${idx})">
+            ${it.cant} x $${it.pre.toLocaleString("es-CO")} (✏️ cambiar precio)
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <button class="btn-qty" onclick="cambiarCantidad(${idx}, -1)">-</button>
+          <span>${it.cant}</span>
+          <button class="btn-qty" onclick="cambiarCantidad(${idx}, 1)">+</button>
+          <strong style="color: var(--accent); margin-left: 6px;">$${tPre.toLocaleString("es-CO")}</strong>
+          <button class="btn-del" onclick="ticket.splice(${idx}, 1); renderTicket();">×</button>
+        </div>
+      `;
+      cont.appendChild(row);
+    });
+    document.getElementById("pos-subtotal").textContent = "$" + sub.toLocaleString("es-CO");
+    recalcularSaldo();
+  }
+
+  function recalcularSaldo() {
+    const sub = ticket.reduce((a, b) => a + (b.pre * b.cant), 0);
+    const abono = Number(document.getElementById("pos-abono").value) || 0;
+    const saldo = Math.max(0, sub - abono);
+    document.getElementById("pos-saldo").textContent = "$" + saldo.toLocaleString("es-CO");
+  }
+
+  function abrirModalOtroItem() {
+    document.getElementById("otro-desc").value = "";
+    document.getElementById("otro-precio").value = "";
+    abrirModal("modal-otros");
+  }
+
+  function agregarOtroItemAlTicket() {
+    const desc = document.getElementById("otro-desc").value.trim();
+    const pre = Number(document.getElementById("otro-precio").value);
+    if (!desc || isNaN(pre) || pre <= 0) return alert("Ingresa descripción y precio válidos.");
+    ticket.push({ cod: 99, nom: desc, pre: pre, cant: 1 });
+    cerrarModal("modal-otros");
+    renderTicket();
+  }
+
+  // Clientes Autocomplete
+  async function precargarClientes() {
+    try {
+      const { data } = await db.from("clientes").select("id, nombre_o_razon, telefono, direccion").limit(250);
+      listaClientes = data || [];
+    } catch (e) { console.error(e); }
+  }
+
+  function filtrarCliente(val) {
+    const box = document.getElementById("drop-clientes");
+    const q = val.toLowerCase().trim();
+    if (!q) { box.style.display = "none"; return; }
+
+    const matches = listaClientes.filter(c => 
+      c.nombre_o_razon.toLowerCase().includes(q) || c.telefono.includes(q)
+    );
+
+    if (matches.length === 0) {
+      box.innerHTML = `<div class="autocomplete-item" onclick="seleccionarNuevoCliente('${val}')">➕ Crear cliente nuevo: "<strong>${val}</strong>"</div>`;
+    } else {
+      box.innerHTML = matches.map(c => `
+        <div class="autocomplete-item" onclick="cargarCliente('${c.nombre_o_razon}', '${c.telefono}')">
+          👤 ${c.nombre_o_razon} | 📞 ${c.telefono}
+        </div>
+      `).join("");
+    }
+    box.style.display = "block";
+  }
+
+  function cargarCliente(nom, tel) {
+    document.getElementById("pos-cli-nom").value = nom;
+    document.getElementById("pos-cli-tel").value = tel;
+    document.getElementById("busc-cliente").value = nom + " (" + tel + ")";
+    document.getElementById("drop-clientes").style.display = "none";
+  }
+
+  function seleccionarNuevoCliente(val) {
+    if (/^\d+$/.test(val)) {
+      document.getElementById("pos-cli-tel").value = val;
+      document.getElementById("pos-cli-nom").focus();
+    } else {
+      document.getElementById("pos-cli-nom").value = val;
+      document.getElementById("pos-cli-tel").focus();
+    }
+    document.getElementById("drop-clientes").style.display = "none";
+  }
+
+  // Guardar Orden e Integración WhatsApp
+  async function confirmarGenerarOrden() {
+    if (ticket.length === 0) return alert("El ticket está vacío.");
+    const nom = document.getElementById("pos-cli-nom").value.trim();
+    const tel = document.getElementById("pos-cli-tel").value.trim();
+    const obs = document.getElementById("pos-obs-prendas").value.trim();
+
+    if (!nom || !tel) return alert("Por favor asigna nombre y teléfono del cliente.");
+
+    const total = ticket.reduce((a, b) => a + (b.pre * b.cant), 0);
+    const abono = Number(document.getElementById("pos-abono").value) || 0;
+    const saldo = Math.max(0, total - abono);
+
+    try {
+      let cliId;
+      const { data: exCli } = await db.from("clientes").select("id").eq("telefono", tel).maybeSingle();
+      if (exCli) cliId = exCli.id;
+      else {
+        const { data: nCli, error: nErr } = await db.from("clientes").insert({ nombre_o_razon: nom, telefono: tel }).select("id").single();
+        if (nErr) throw nErr;
+        cliId = nCli.id;
+      }
+
+      const codigoRastreo = "LAV-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+      const objetoOrden = {
+        cliente_id: cliId,
+        codigo_rastreo: codigoRastreo,
+        total_bruto: total,
+        total_neto: total,
+        saldo_pendiente: saldo,
+        estado: 'INGRESADO'
+      };
+
+      if (abono > 0) objetoOrden.abono_inicial = abono;
+      if (obs) objetoOrden.observaciones_estado_prendas = obs;
+
+      let ordRes = await db.from("ordenes").insert(objetoOrden).select("id, consecutivo_ticket").single();
+      
+      if (ordRes.error && ordRes.error.message.includes("column")) {
+        delete objetoOrden.abono_inicial;
+        delete objetoOrden.observaciones_estado_prendas;
+        ordRes = await db.from("ordenes").insert(objetoOrden).select("id, consecutivo_ticket").single();
+      }
+
+      if (ordRes.error) throw ordRes.error;
+      const ord = ordRes.data;
+
+      const items = ticket.map(t => ({
+        orden_id: ord.id,
+        prenda_codigo: t.cod,
+        descripcion_prenda: t.nom,
+        cantidad: t.cant,
+        precio_unitario: t.pre,
+        subtotal: t.pre * t.cant
+      }));
+      await db.from("orden_items").insert(items);
+
+      // Desglose para WhatsApp
+      const detallePrendasWA = items.map(i => `• ${i.cantidad}x ${i.descripcion_prenda} ($${(i.precio_unitario * i.cantidad).toLocaleString("es-CO")})`).join("\n");
+      const notaObsWA = obs ? `\n⚠️ *Detalle / Estado de recepción:* _${obs}_\n` : "";
+
+      const mensajeWA = encodeURIComponent(
+        `*LAVAARTE LAVANDERÍA SAS*\n` +
+        `NIT: 901.654.321-0\n` +
+        `Sede: Calle 45 # 12-34 Bogotá | Tel: 314-263-6787\n\n` +
+        `Hola *${nom}*, hemos recibido tus prendas conforme:\n` +
+        `📋 *Ticket / Orden #:* ${ord.consecutivo_ticket}\n` +
+        `🏷️ *Código Rastreo:* ${codigoRastreo}\n\n` +
+        `*PRENDAS REGISTRADAS:*\n${detallePrendasWA}\n` +
+        notaObsWA +
+        `\n💰 *Total:* $${total.toLocaleString("es-CO")}\n` +
+        `💵 *Abono inicial:* $${abono.toLocaleString("es-CO")}\n` +
+        `📌 *Saldo por pagar:* $${saldo.toLocaleString("es-CO")}\n\n` +
+        `Te avisaremos automáticamente cuando tu ropa esté lista. ¡Gracias por elegirnos!`
+      );
+
+      const urlWhatsApp = `https://api.whatsapp.com/send?phone=57${tel.replace(/\D/g,'')}&text=${mensajeWA}`;
+
+      alert(`✅ ¡Orden #${ord.consecutivo_ticket} guardada con éxito!\nSe abrirá el comprobante de WhatsApp.`);
+      window.open(urlWhatsApp, "_blank");
+
+      // Limpiar formulario
+      ticket = [];
+      document.getElementById("pos-cli-nom").value = "";
+      document.getElementById("pos-cli-tel").value = "";
+      document.getElementById("busc-cliente").value = "";
+      document.getElementById("pos-abono").value = 0;
+      document.getElementById("pos-obs-prendas").value = "";
+      renderTicket();
+      precargarClientes();
+      chequearCentinela60h();
+
+    } catch (e) {
+      alert("Error guardando orden: " + e.message);
+    }
+  }
+
+  // Alistar Ropa (Planta / Acople)
+  async function buscarTicketAlistar(num) {
+    const resBox = document.getElementById("alistar-ticket-resumen");
+    if (!num) { resBox.style.display = "none"; return; }
+
+    try {
+      const { data: o } = await db
+        .from("ordenes")
+        .select(`
+          id, consecutivo_ticket, estado, total_neto, saldo_pendiente, observaciones_estado_prendas,
+          clientes (nombre_o_razon, telefono),
+          orden_items (descripcion_prenda, cantidad)
+        `)
+        .eq("consecutivo_ticket", parseInt(num, 10))
+        .maybeSingle();
+
+      if (!o) { resBox.style.display = "none"; ordenAlistarActiva = null; return; }
+
+      ordenAlistarActiva = o;
+      document.getElementById("alistar-txt-ticket").textContent = `Ticket #${o.consecutivo_ticket}`;
+      document.getElementById("alistar-txt-estado").textContent = `[${o.estado}]`;
+      document.getElementById("alistar-txt-cliente").innerHTML = `Cliente: <strong>${o.clientes?.nombre_o_razon || 'Particular'}</strong> (${o.clientes?.telefono || '-'})`;
+      
+      const pStr = o.orden_items?.map(i => `${i.cantidad}x ${i.descripcion_prenda}`).join(", ") || "Sin prendas";
+      document.getElementById("alistar-txt-prendas").textContent = `Prendas: ${pStr}`;
+
+      if (o.observaciones_estado_prendas) {
+        document.getElementById("alistar-txt-obs").textContent = `⚠️ Observación previa: ${o.observaciones_estado_prendas}`;
+      } else {
+        document.getElementById("alistar-txt-obs").textContent = "";
+      }
+
+      resBox.style.display = "block";
+    } catch (e) { console.error(e); }
+  }
+
+  async function marcarTicketComoListo() {
+    if (!ordenAlistarActiva) return;
+    const ord = ordenAlistarActiva;
+
+    try {
+      await db.from("ordenes").update({ estado: 'LISTO_ENTREGA' }).eq("id", ord.id);
+      
+      // WhatsApp aviso de ropa lista
+      if (ord.clientes?.telefono) {
+        const msgListo = encodeURIComponent(
+          `*LAVAARTE LAVANDERÍA SAS*\n` +
+          `Hola *${ord.clientes.nombre_o_razon}*, te informamos que tu orden *#${ord.consecutivo_ticket}* está *100% LISTA PARA ENTREGAR*.\n` +
+          `📌 Saldo por cancelar al retirar: $${Number(ord.saldo_pendiente).toLocaleString("es-CO")}.\n` +
+          `Puedes pasar por ella en nuestro horario habitual. ¡Te esperamos!`
+        );
+        const urlWA = `https://api.whatsapp.com/send?phone=57${ord.clientes.telefono.replace(/\D/g,'')}&text=${msgListo}`;
+        window.open(urlWA, "_blank");
+      }
+
+      alert(`✅ ¡Ticket #${ord.consecutivo_ticket} marcado como LISTO PARA ENTREGAR!`);
+      document.getElementById("alistar-ticket-input").value = "";
+      document.getElementById("alistar-ticket-resumen").style.display = "none";
+      ordenAlistarActiva = null;
+      chequearCentinela60h();
+    } catch (e) { alert("Error: " + e.message); }
+  }
+
+  // Centinela 60 Horas (Alerta Operativa Permanente)
+  let ordenesRetrasadas60h = [];
+
+  async function chequearCentinela60h() {
+    try {
+      const limite = new Date(Date.now() - 60 * 60 * 1000 * 60).toISOString();
+      const { data } = await db
+        .from("ordenes")
+        .select("consecutivo_ticket, created_at, estado, clientes(nombre_o_razon, telefono)")
+        .neq("estado", "ENTREGADO")
+        .neq("estado", "ANULADO")
+        .lte("created_at", limite);
+
+      ordenesRetrasadas60h = data || [];
+      const box = document.getElementById("box-centinela-alerta");
+      const resumen = document.getElementById("centinela-resumen");
+
+      if (ordenesRetrasadas60h.length > 0) {
+        box.style.display = "block";
+        resumen.innerHTML = ordenesRetrasadas60h.map(o => {
+          const h = Math.round((Date.now() - new Date(o.created_at).getTime()) / 3600000);
+          return `• <strong>Ticket #${o.consecutivo_ticket}</strong> (${o.clientes?.nombre_o_razon || 'Particular'}) - Estado: <strong>${o.estado}</strong> - ⏳ Lleva ${h} horas en proceso.`;
+        }).join("<br>");
+      } else {
+        box.style.display = "none";
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  // Entrega y Cobro
+  async function buscarOrdenesEntrega(q) {
+    const tbody = document.getElementById("tabla-entrega-body");
+    try {
+      let qBuilder = db
+        .from("ordenes")
+        .select(`
+          id, consecutivo_ticket, codigo_rastreo, estado, total_neto, saldo_pendiente, abono_inicial,
+          clientes (nombre_o_razon, telefono),
+          orden_items (descripcion_prenda, cantidad)
+        `)
+        .neq("estado", "ANULADO")
+        .order("consecutivo_ticket", { ascending: false })
+        .limit(15);
+
+      if (q && /^\d+$/.test(q)) {
+        qBuilder = qBuilder.eq("consecutivo_ticket", parseInt(q, 10));
+      }
+
+      const { data } = await qBuilder;
+      let res = data || [];
+
+      if (q && !/^\d+$/.test(q)) {
+        const qLow = q.toLowerCase();
+        res = res.filter(o => 
+          o.clientes?.nombre_o_razon?.toLowerCase().includes(qLow) ||
+          o.clientes?.telefono?.includes(q)
+        );
+      }
+
+      if (res.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted);">No se encontraron órdenes coincidentes.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.map(o => {
+        const prendasStr = o.orden_items?.map(i => `${i.cantidad} ${i.descripcion_prenda}`).join(", ") || "Sin detalle";
+        const btnAccion = o.estado === "ENTREGADO" 
+          ? '<span style="color: var(--text-muted); font-weight: bold;">✓ Ya entregado</span>'
+          : `<button class="btn-success" style="padding: 6px 12px; font-size: 12px;" onclick='prepararCobroEntrega(${JSON.stringify(o)})'>🤝 Entregar / Cobrar</button>`;
+        
+        return `
+          <tr>
+            <td><strong>#${o.consecutivo_ticket}</strong></td>
+            <td>${o.clientes?.nombre_o_razon || 'Particular'}</td>
+            <td>${o.clientes?.telefono || '-'}</td>
+            <td style="max-width: 250px; font-size: 12px; color: var(--text-muted);">${prendasStr}</td>
+            <td><strong>${o.estado}</strong></td>
+            <td>$${Number(o.total_neto).toLocaleString("es-CO")}</td>
+            <td style="color: var(--danger); font-weight: bold;">$${Number(o.saldo_pendiente).toLocaleString("es-CO")}</td>
+            <td>${btnAccion}</td>
+          </tr>
+        `;
+      }).join("");
+    } catch (e) { console.error(e); }
+  }
+
+  function prepararCobroEntrega(orden) {
+    ordenCobroActiva = orden;
+    const det = document.getElementById("info-orden-cobro");
+    det.innerHTML = `
+      <strong>Ticket #${orden.consecutivo_ticket}</strong> | Cliente: ${orden.clientes?.nombre_o_razon}<br>
+      Total Factura: <strong>$${Number(orden.total_neto).toLocaleString("es-CO")}</strong><br>
+      Abono previo: $${Number(orden.abono_inicial || 0).toLocaleString("es-CO")}<br>
+      <span style="font-size: 16px; color: var(--accent); font-weight: bold;">Saldo a Cobrar Hoy: $${Number(orden.saldo_pendiente).toLocaleString("es-CO")}</span>
+    `;
+    abrirModal("modal-cobro-entrega");
+  }
+
+  function toggleComprobanteTransferencia(metodo) {
+    document.getElementById("group-comprobante").style.display = metodo.includes("TRANSFERENCIA") ? "flex" : "none";
+  }
+
+  async function ejecutarEntregaFinal() {
+    if (!ordenCobroActiva) return;
+    const metodo = document.getElementById("entrega-metodo").value;
+    const ord = ordenCobroActiva;
+
+    try {
+      await db.from("ordenes").update({
+        estado: 'ENTREGADO',
+        saldo_pendiente: 0.00,
+        metodo_pago_saldo: metodo,
+        entregado_at: new Date().toISOString()
+      }).eq("id", ord.id);
+
+      const mensajeWA = encodeURIComponent(
+        `*LAVAARTE LAVANDERÍA SAS*\n` +
+        `Hola *${ord.clientes?.nombre_o_razon}*, tu orden *#${ord.consecutivo_ticket}* ha sido entregada a conformidad.\n` +
+        `Saldo cancelado mediante: *${metodo}*.\n` +
+        `¡Gracias por confiar en Lavaarte!`
+      );
+      const urlWA = `https://api.whatsapp.com/send?phone=57${ord.clientes?.telefono.replace(/\D/g,'')}&text=${mensajeWA}`;
+
+      alert("✅ Entrega registrada con éxito.");
+      window.open(urlWA, "_blank");
+      cerrarModal("modal-cobro-entrega");
+      buscarOrdenesEntrega("");
+      chequearCentinela60h();
+    } catch (e) {
+      alert("Error: " + e.message);
+    }
+  }
+
+  // Egresos de Caja Menor
+  async function guardarEgresoCaja() {
+    const monto = Number(document.getElementById("egreso-monto").value);
+    const conc = document.getElementById("egreso-concepto").value.trim();
+    const resp = document.getElementById("egreso-resp").value.trim();
+    if (!monto || monto <= 0 || !conc) return alert("Ingresa un monto y concepto válidos.");
+
+    try {
+      await db.from("egresos_caja").insert({ monto: monto, concepto: conc, responsable: resp });
+      alert(`🔴 Salida de $${monto.toLocaleString("es-CO")} registrada en caja menor.`);
+      document.getElementById("egreso-monto").value = "";
+      document.getElementById("egreso-concepto").value = "";
+      mostrarVista("vista-dashboard");
+    } catch (e) { alert(e.message); }
+  }
+
+  // Arqueo Diario y Exportación a Excel
+  let reporteArqueoActual = null;
+
+  async function abrirArqueoCaja() {
+    try {
+      const hoy = new Date();
+      hoy.setHours(0,0,0,0);
+
+      // Órdenes
+      const { data: ords } = await db
+        .from("ordenes")
+        .select("consecutivo_ticket, total_neto, abono_inicial, saldo_pendiente, metodo_pago_saldo, estado, created_at, entregado_at, clientes(nombre_o_razon)")
+        .or(`created_at.gte.${hoy.toISOString()},entregado_at.gte.${hoy.toISOString()}`);
+
+      // Egresos
+      const { data: egrs } = await db
+        .from("egresos_caja")
+        .select("*")
+        .gte("created_at", hoy.toISOString());
+
+      let efectivoTotal = 0;
+      let transferenciasTotal = 0;
+      let totalEgresos = (egrs || []).reduce((a, b) => a + Number(b.monto), 0);
+
+      (ords || []).forEach(o => {
+        if (new Date(o.created_at) >= hoy && Number(o.abono_inicial) > 0) {
+          efectivoTotal += Number(o.abono_inicial);
+        }
+        if (o.entregado_at && new Date(o.entregado_at) >= hoy && o.estado === "ENTREGADO") {
+          const saldo = Number(o.total_neto) - Number(o.abono_inicial || 0);
+          if (o.metodo_pago_saldo === "EFECTIVO") efectivoTotal += saldo;
+          else transferenciasTotal += saldo;
+        }
+      });
+
+      const dineroNetoEnCaja = efectivoTotal - totalEgresos;
+
+      reporteArqueoActual = {
+        fecha: new Date().toLocaleDateString("es-CO"),
+        efectivoTotal,
+        transferenciasTotal,
+        totalEgresos,
+        dineroNetoEnCaja,
+        ordenes: ords || [],
+        egresos: egrs || [],
+        centinela: ordenesRetrasadas60h
+      };
+
+      const c = document.getElementById("caja-resumen");
+      c.innerHTML = `
+        <div style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 6px;">
+          <span>💵 Entradas en Efectivo (Abonos + Saldos entregados):</span>
+          <strong style="color: var(--success);">$${efectivoTotal.toLocaleString("es-CO")}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 6px;">
+          <span>📱 Entradas por Transferencias / Datáfono:</span>
+          <strong style="color: var(--accent);">$${transferenciasTotal.toLocaleString("es-CO")}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 6px; border-bottom: 1px dashed var(--border); padding-bottom: 6px;">
+          <span>🔴 Egresos de Caja Menor (Gastos del Día):</span>
+          <strong style="color: var(--danger);">$${totalEgresos.toLocaleString("es-CO")}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 18px; margin-top: 6px;">
+          <span>TOTAL DINERO FÍSICO EN CAJÓN:</span>
+          <strong style="color: var(--accent);">$${dineroNetoEnCaja.toLocaleString("es-CO")}</strong>
+        </div>
+      `;
+
+      const centList = document.getElementById("arqueo-centinela-list");
+      if (ordenesRetrasadas60h.length > 0) {
+        centList.innerHTML = ordenesRetrasadas60h.map(o => {
+          const h = Math.round((Date.now() - new Date(o.created_at).getTime()) / 3600000);
+          return `• Ticket #${o.consecutivo_ticket} (${o.clientes?.nombre_o_razon || 'Particular'}) - Estado: ${o.estado} - Retraso: ${h}h`;
+        }).join("<br>");
+      } else {
+        centList.innerHTML = "✓ Cero órdenes retrasadas. Planta al día.";
+      }
+
+      abrirModal("modal-arqueo");
+    } catch (e) { alert(e.message); }
+  }
+
+  function exportarExcelArqueo() {
+    if (!reporteArqueoActual) return;
+    const wb = XLSX.utils.book_new();
+
+    // Hoja 1: Balance General
+    const ws1Data = [
+      ["LAVAARTE LAVANDERÍA SAS - INFORME DIARIO DE CAJA Y ARQUEO"],
+      ["Fecha de Cierre:", reporteArqueoActual.fecha],
+      [""],
+      ["Concepto", "Total ($COP)"],
+      ["Entradas en Efectivo (Abonos + Saldos)", reporteArqueoActual.efectivoTotal],
+      ["Entradas por Transferencias / Datáfono", reporteArqueoActual.transferenciasTotal],
+      ["Salidas de Caja Menor (Gastos)", reporteArqueoActual.totalEgresos],
+      ["TOTAL DINERO FÍSICO EN CAJA", reporteArqueoActual.dineroNetoEnCaja]
+    ];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws1Data), "Cierre_Caja");
+
+    // Hoja 2: Egresos Detallados
+    const ws2Data = [["Hora", "Monto ($COP)", "Concepto", "Responsable"]];
+    reporteArqueoActual.egresos.forEach(e => {
+      ws2Data.push([new Date(e.created_at).toLocaleTimeString("es-CO"), e.monto, e.concepto, e.responsable]);
+    });
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2Data), "Egresos_Caja");
+
+    // Hoja 3: Auditoría Centinela 60h
+    const ws3Data = [["Ticket #", "Cliente", "Teléfono", "Estado", "Horas en Planta"]];
+    reporteArqueoActual.centinela.forEach(c => {
+      const h = Math.round((Date.now() - new Date(c.created_at).getTime()) / 3600000);
+      ws3Data.push([c.consecutivo_ticket, c.clientes?.nombre_o_razon || 'Particular', c.clientes?.telefono || '-', c.estado, h]);
+    });
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3Data), "Auditoria_Centinela_60h");
+
+    XLSX.writeFile(wb, `Lavaarte_CierreCaja_${reporteArqueoActual.fecha.replace(/\//g,'-')}.xlsx`);
+  }
+
+  // Panel Admin Facturas
+  async function adminCargarTicket() {
+    const tNum = document.getElementById("admin-ticket-input").value.trim();
+    if (!tNum) return;
+    try {
+      const { data: o } = await db.from("ordenes").select("*, clientes(*)").eq("consecutivo_ticket", parseInt(tNum, 10)).maybeSingle();
+      const det = document.getElementById("admin-ticket-detalle");
+      if (!o) { det.innerHTML = "No existe la orden."; return; }
+
+      det.innerHTML = `
+        <div style="background: var(--bg-input); padding: 12px; border-radius: 8px; margin-top: 10px;">
+          <strong>Ticket #${o.consecutivo_ticket}</strong> | Estado: <strong>${o.estado}</strong><br>
+          Cliente: ${o.clientes?.nombre_o_razon} (${o.clientes?.telefono})<br>
+          Total: $${Number(o.total_neto).toLocaleString("es-CO")} | Saldo: $${Number(o.saldo_pendiente).toLocaleString("es-CO")}<br><br>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-danger" style="flex: 1;" onclick="adminAnularOrden('${o.id}')">🚫 Anular Factura</button>
+            <button class="btn-primary" style="flex: 1;" onclick="adminCambiarEstado('${o.id}', 'LISTO_ENTREGA')">Marcar LISTO</button>
+          </div>
+        </div>
+      `;
+    } catch (e) { alert(e.message); }
+  }
+
+  async function adminAnularOrden(id) {
+    const motivo = prompt("Motivo de anulación:");
+    if (!motivo) return;
+    await db.from("ordenes").update({ estado: 'ANULADO', motivo_anulacion: motivo, saldo_pendiente: 0 }).eq("id", id);
+    alert("Factura anulada.");
+    cerrarModal("modal-admin-panel");
+    buscarOrdenesEntrega("");
+  }
+
+  async function adminCambiarEstado(id, est) {
+    await db.from("ordenes").update({ estado: est }).eq("id", id);
+    alert("Estado actualizado.");
+    cerrarModal("modal-admin-panel");
+    buscarOrdenesEntrega("");
+  }
+
+  // Solicitudes de Domicilios (Clientes)
+  async function clienteCrearSolicitud(tipo) {
+    let nom, tel, dir, fec, fra, notas, ticketRef = "";
+
+    if (tipo === "RECOGIDA_DOMICILIO") {
+      nom = document.getElementById("dom-rec-nom").value.trim();
+      tel = document.getElementById("dom-rec-tel").value.trim();
+      dir = document.getElementById("dom-rec-dir").value.trim();
+      fec = document.getElementById("dom-rec-fec").value;
+      fra = document.getElementById("dom-rec-franja").value;
+      notas = document.getElementById("dom-rec-notas").value.trim();
+      if (!nom || !tel || !dir || !fec) return alert("Completa todos los campos obligatorios.");
+    } else {
+      ticketRef = document.getElementById("dom-ent-ticket").value.trim();
+      nom = document.getElementById("dom-ent-nom").value.trim();
+      tel = document.getElementById("dom-ent-tel").value.trim();
+      dir = document.getElementById("dom-ent-dir").value.trim();
+      fec = document.getElementById("dom-ent-fec").value;
+      fra = document.getElementById("dom-ent-franja").value;
+      if (!ticketRef || !nom || !tel || !dir || !fec) return alert("Por favor ingresa el número de ticket y datos obligatorios.");
+      notas = `Entrega solicitada para el Ticket #${ticketRef}`;
+    }
+
+    try {
+      await db.from("solicitudes_domicilio").insert({
+        origen_tipo: 'CLIENTE_PARTICULAR',
+        tipo_servicio: tipo,
+        nombre_entidad: nom,
+        telefono: tel,
+        direccion: dir,
+        ticket_referencia: ticketRef,
+        fecha_programada: fec,
+        franja_horaria: fra,
+        notas: notas
+      });
+
+      alert("✅ Solicitud registrada con éxito. La ruta se pondrá en contacto contigo.");
+      if (tipo === "RECOGIDA_DOMICILIO") {
+        document.getElementById("dom-rec-nom").value = "";
+        document.getElementById("dom-rec-tel").value = "";
+        document.getElementById("dom-rec-dir").value = "";
+      } else {
+        document.getElementById("dom-ent-ticket").value = "";
+        document.getElementById("dom-ent-nom").value = "";
+        document.getElementById("dom-ent-tel").value = "";
+        document.getElementById("dom-ent-dir").value = "";
+      }
+    } catch (e) { alert(e.message); }
+  }
+
+  // Solicitudes de Hoteles (Ruta Directa)
+  async function hotelEnviarSolicitud() {
+    const hNom = document.getElementById("hotel-sel-nom").value;
+    const hSrv = document.getElementById("hotel-sel-servicio").value;
+    const hBultos = document.getElementById("hotel-cant-bultos").value.trim();
+    const hCont = document.getElementById("hotel-contacto").value.trim();
+    const hNotas = document.getElementById("hotel-notas").value.trim();
+
+    try {
+      const hoyBog = new Date().toISOString().split("T")[0];
+      await db.from("solicitudes_domicilio").insert({
+        origen_tipo: 'HOTEL_RUTA',
+        tipo_servicio: 'RECOGIDA_HOTEL',
+        nombre_entidad: hNom,
+        telefono: "Contacto: " + (hCont || "Recepción"),
+        direccion: "Sede Hotel",
+        fecha_programada: hoyBog,
+        franja_horaria: "Ruta Activa Hoy",
+        notas: `Servicio: ${hSrv} | Bultos: ${hBultos || 'N/A'} | Nota: ${hNotas || '-'}`
+      });
+
+      alert(`✅ ¡Solicitud enviada para ${hNom}!\nEl despachador de ruta ya tiene la notificación.`);
+      document.getElementById("hotel-cant-bultos").value = "";
+      document.getElementById("hotel-contacto").value = "";
+      document.getElementById("hotel-notas").value = "";
+    } catch (e) { alert(e.message); }
+  }
+
+  // Gestión de Domicilios en Panel Admin
+  async function cargarDomiciliosAdmin() {
+    const tbody = document.getElementById("tabla-domicilios-body");
+    try {
+      const { data } = await db.from("solicitudes_domicilio").select("*").order("created_at", { ascending: false }).limit(25);
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-muted);">Sin solicitudes registradas.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.map(d => `
+        <tr>
+          <td>${new Date(d.created_at).toLocaleDateString("es-CO")}</td>
+          <td><strong style="color: ${d.origen_tipo === 'HOTEL_RUTA' ? 'var(--accent)' : 'var(--success)'};">${d.origen_tipo}</strong></td>
+          <td>${d.tipo_servicio}</td>
+          <td><strong>${d.nombre_entidad}</strong></td>
+          <td>${d.telefono}</td>
+          <td>${d.direccion}</td>
+          <td>${d.ticket_referencia ? '#' + d.ticket_referencia : '-'}</td>
+          <td style="font-size: 11px; color: var(--text-muted);">${d.notas || '-'}</td>
+          <td>
+            <button class="nav-btn" style="padding: 4px 8px; font-size: 11px;" onclick="cambiarEstadoDomicilio('${d.id}', '${d.estado}')">
+              ⚙️ ${d.estado}
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    } catch (e) { console.error(e); }
+  }
+
+  async function cambiarEstadoDomicilio(id, estActual) {
+    const opciones = ["PENDIENTE", "EN_CAMINO", "RECOGIDO", "ENTREGADO", "CANCELADO"];
+    const sig = prompt(`Cambiar estado actual (${estActual}).\nEscribe una opción: PENDIENTE, EN_CAMINO, RECOGIDO, ENTREGADO o CANCELADO:`, estActual);
+    if (!sig || !opciones.includes(sig.toUpperCase().trim())) return;
+
+    await db.from("solicitudes_domicilio").update({ estado: sig.toUpperCase().trim() }).eq("id", id);
+    cargarDomiciliosAdmin();
+  }
+
+  // Consulta Pública Ticket
+  async function clienteConsultarTicket() {
+    const t = document.getElementById("cliente-ticket-query").value.trim();
+    const resBox = document.getElementById("cliente-ticket-result");
+    if (!t) return;
+
+    try {
+      const { data: o } = await db
+        .from("ordenes")
+        .select("consecutivo_ticket, estado, total_neto, saldo_pendiente, orden_items(cantidad, descripcion_prenda)")
+        .eq("consecutivo_ticket", parseInt(t, 10))
+        .maybeSingle();
+
+      if (!o) {
+        resBox.innerHTML = '<span style="color: var(--danger);">No se encontró ninguna orden con ese número de ticket.</span>';
+        return;
+      }
+
+      let color = "var(--warning)";
+      if (o.estado === "LISTO_ENTREGA") color = "var(--success)";
+      if (o.estado === "ENTREGADO") color = "var(--text-muted)";
+
+      resBox.innerHTML = `
+        <div style="background: var(--bg-input); padding: 12px; border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between;">
+            <strong>Ticket #${o.consecutivo_ticket}</strong>
+            <span style="color: ${color}; font-weight: bold;">[${o.estado}]</span>
+          </div>
+          <div style="margin-top: 6px; color: var(--text-muted);">
+            Prendas: ${o.orden_items?.map(i => `${i.cantidad}x ${i.descripcion_prenda}`).join(", ")}
+          </div>
+          <div style="margin-top: 6px; font-weight: bold; color: var(--accent);">
+            Saldo por cancelar: $${Number(o.saldo_pendiente).toLocaleString("es-CO")}
+          </div>
+        </div>
+      `;
+    } catch (e) { alert(e.message); }
+  }
+</script>
+</body>
+</html>
