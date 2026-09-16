@@ -58,7 +58,7 @@
 
   /* Layout Mostrador */
   .pos-layout { display: flex; gap: 16px; height: calc(100vh - 120px); }
-  .pos-sidebar { width: 400px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; }
+  .pos-sidebar { width: 420px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; overflow-y: auto; }
   .pos-catalog { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; }
 
   /* Grilla de Prendas */
@@ -69,7 +69,7 @@
   .prenda-price { font-size: 13px; font-weight: bold; color: var(--accent); }
 
   /* Ticket List */
-  .ticket-list { flex: 1; overflow-y: auto; margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
+  .ticket-list { flex: 1; overflow-y: auto; margin: 10px 0; display: flex; flex-direction: column; gap: 8px; min-height: 120px; }
   .ticket-item { background: var(--bg-input); padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
   .btn-qty { background: #334155; border: none; color: white; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold; }
   .btn-del { background: none; border: none; color: var(--danger); font-size: 16px; cursor: pointer; margin-left: 8px; }
@@ -154,7 +154,7 @@
       <div class="dash-card" onclick="abrirArqueoCaja()">
         <span style="font-size: 32px;">📊</span>
         <h3>5. Arqueo Diario de Caja</h3>
-        <p>Cierre diario, entradas, salidas, balance y reporte 60h a Excel</p>
+        <p>Cierre diario desglosado por recibo, entradas, salidas y Excel</p>
       </div>
 
       <div class="dash-card" onclick="pedirClaveAdmin()">
@@ -167,6 +167,12 @@
         <span style="font-size: 32px;">🛵</span>
         <h3>7. Solicitudes de Domicilio y Rutas</h3>
         <p>Pedidos de recogida/entrega de clientes y hoteles</p>
+      </div>
+
+      <div class="dash-card" onclick="descargarHistoricoOrdenesExcel()">
+        <span style="font-size: 32px;">📑</span>
+        <h3>8. Descargar Recibos / Base de Datos</h3>
+        <p>Exportar toda la base de datos de órdenes a Excel (.xlsx)</p>
       </div>
     </div>
   </div>
@@ -202,6 +208,12 @@
           <div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 30px;">
             Selecciona prendas del catálogo para liquidar.
           </div>
+        </div>
+
+        <!-- Detalle específico de Ropa por Kilo (Aparece automáticamente si se ingresa Kilo) -->
+        <div class="input-group" id="group-detalle-kilos" style="display: none; margin-bottom: 8px;">
+          <label class="label-sm" style="color: var(--accent);">🧺 Desglose de Ropa por Kilo (Prendas que componen el peso)</label>
+          <textarea id="pos-kilo-detalle" class="input-text" style="height: 55px; resize: none; font-size: 12px;" placeholder="Ej: 3 pantalones, 5 medias, 5 bóxer, 2 camisetas"></textarea>
         </div>
 
         <!-- Observaciones del Estado de la Ropa -->
@@ -481,12 +493,17 @@
 
 <!-- ==================== MODALES ==================== -->
 
-<!-- Modal: Cobro Entrega -->
+<!-- Modal: Cobro Entrega (Con edición de saldo) -->
 <div class="modal" id="modal-cobro-entrega">
   <div class="modal-content">
     <h3 style="color: var(--success);">Finalizar Entrega y Cobro</h3>
     <div id="info-orden-cobro" style="font-size: 13px; line-height: 1.6;"></div>
     
+    <div class="input-group" style="margin-top: 4px;">
+      <label class="label-sm">Ajustar Saldo a Cobrar ($COP) (Opcional si hubo descuento o recargo):</label>
+      <input type="number" id="entrega-saldo-modificable" class="input-text">
+    </div>
+
     <div class="input-group">
       <label class="label-sm">Método de Pago del Saldo</label>
       <select id="entrega-metodo" class="input-text" onchange="toggleComprobanteTransferencia(this.value)">
@@ -507,14 +524,45 @@
   </div>
 </div>
 
-<!-- Modal: Arqueo Diario con Centinela 60h -->
+<!-- Modal: Arqueo Diario Desglosado con Centinela 60h -->
 <div class="modal" id="modal-arqueo">
-  <div class="modal-content" style="width: 700px;">
-    <h3 style="color: var(--accent);">📊 Arqueo y Cierre Diario de Caja</h3>
+  <div class="modal-content" style="width: 800px;">
+    <h3 style="color: var(--accent);">📊 Arqueo y Cierre Diario Desglosado</h3>
     <div id="caja-resumen" style="font-size: 13px; line-height: 1.8; background: var(--bg-input); padding: 14px; border-radius: 8px;"></div>
 
-    <div id="arqueo-centinela-bloque" style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); border-radius: 8px; padding: 12px; font-size: 12px; max-height: 150px; overflow-y: auto;">
-      <strong style="color: var(--danger);">🚨 Auditoría Centinela 60 Horas (Órdenes pendientes por seguimiento):</strong>
+    <h4 style="font-size: 14px; color: var(--accent); margin-top: 10px;">📋 Desglose de Recibos e Ingresos del Día</h4>
+    <div style="max-height: 160px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+      <table class="data-table" id="tabla-desglose-arqueo">
+        <thead>
+          <tr>
+            <th>Ticket #</th>
+            <th>Cliente</th>
+            <th>Concepto</th>
+            <th>Medio</th>
+            <th>Monto</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-desglose-arqueo-body"></tbody>
+      </table>
+    </div>
+
+    <h4 style="font-size: 14px; color: var(--danger); margin-top: 10px;">💸 Desglose de Gastos de Caja Menor</h4>
+    <div style="max-height: 120px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+      <table class="data-table" id="tabla-desglose-egresos">
+        <thead>
+          <tr>
+            <th>Hora</th>
+            <th>Concepto</th>
+            <th>Responsable</th>
+            <th>Monto</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-desglose-egresos-body"></tbody>
+      </table>
+    </div>
+
+    <div id="arqueo-centinela-bloque" style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); border-radius: 8px; padding: 12px; font-size: 12px; max-height: 110px; overflow-y: auto;">
+      <strong style="color: var(--danger);">🚨 Auditoría Centinela 60 Horas (Órdenes sin entregar):</strong>
       <div id="arqueo-centinela-list" style="margin-top: 6px;"></div>
     </div>
     
@@ -572,7 +620,7 @@
   const SUPABASE_KEY = "sb_publishable_vUntLk7lDbQ3DXROxTDCLg_NjgC6IIT";
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Catálogo completo Digitalizado de Foto 1 y Foto 2
+  // Catálogo completo Digitalizado (Kilo de Ropa actualizado a 16.500)
   const CATALOGO_LOCAL = [
     {cod: 1, nom: "Camisa", pre: 5500}, {cod: 2, nom: "Camiseta", pre: 6800}, {cod: 3, nom: "Pantalón", pre: 7500},
     {cod: 4, nom: "Jeans", pre: 7500}, {cod: 5, nom: "Vestido Hombre 2 Pzs.", pre: 14000}, {cod: 6, nom: "Corbata", pre: 7000},
@@ -597,7 +645,7 @@
     {cod: 61, nom: "Muñeco", pre: 15000}, {cod: 62, nom: "Vestido Novia", pre: 200000}, {cod: 63, nom: "Vestido Quinceañera", pre: 50000},
     {cod: 64, nom: "Vestido Fiesta Corto", pre: 35000}, {cod: 65, nom: "Vestido Fiesta Largo", pre: 50000}, {cod: 66, nom: "Vestido Primera Comunión", pre: 35000},
     {cod: 67, nom: "Tintura Prenda", pre: 20000}, {cod: 68, nom: "Tintura Chaqueta", pre: 25000}, {cod: 69, nom: "Solo Plancha", pre: 5500},
-    {cod: 70, nom: "Forros De Carro", pre: 50000}, {cod: 71, nom: "Kilo De Ropa", pre: 16000}, {cod: 72, nom: "Bóxer", pre: 1800},
+    {cod: 70, nom: "Forros De Carro", pre: 50000}, {cod: 71, nom: "Kilo De Ropa", pre: 16500}, {cod: 72, nom: "Bóxer", pre: 1800},
     {cod: 73, nom: "Par Medias", pre: 1800}, {cod: 74, nom: "Brassiere", pre: 3900}, {cod: 75, nom: "Cama Mascota", pre: 25000},
     {cod: 76, nom: "Camisa Galvis", pre: 4200}, {cod: 77, nom: "Muñeco Mediano", pre: 20000}
   ];
@@ -677,15 +725,34 @@
 
   function agregarAlTicket(item) {
     const ex = ticket.find(t => t.cod === item.cod && t.nom === item.nom);
-    if (ex) ex.cant++;
-    else ticket.push({ cod: item.cod, nom: item.nom, pre: item.pre, cant: 1 });
+    if (ex) {
+      ex.cant++;
+    } else {
+      // Si es Kilo de Ropa, permite ingresar peso inicial en kilos
+      if (item.cod === 71) {
+        const kilos = prompt("Ingresa la cantidad de kilos de ropa (ej: 1, 2.5, 4):", "1");
+        const val = parseFloat(kilos);
+        if (isNaN(val) || val <= 0) return;
+        ticket.push({ cod: item.cod, nom: item.nom, pre: item.pre, cant: val });
+      } else {
+        ticket.push({ cod: item.cod, nom: item.nom, pre: item.pre, cant: 1 });
+      }
+    }
     renderTicket();
   }
 
   function cambiarCantidad(idx, delta) {
-    ticket[idx].cant += delta;
+    ticket[idx].cant = Math.round((ticket[idx].cant + delta) * 100) / 100;
     if (ticket[idx].cant <= 0) ticket.splice(idx, 1);
     renderTicket();
+  }
+
+  function editarCantidadDirecta(idx) {
+    const val = prompt(`Ingresa la cantidad o peso para "${ticket[idx].nom}":`, ticket[idx].cant);
+    if (val !== null && !isNaN(val) && Number(val) > 0) {
+      ticket[idx].cant = parseFloat(val);
+      renderTicket();
+    }
   }
 
   function editarPrecioTicket(idx) {
@@ -698,6 +765,12 @@
 
   function renderTicket() {
     const cont = document.getElementById("ticket-items");
+    const grupoKilos = document.getElementById("group-detalle-kilos");
+    
+    // Validar si existe kilo de ropa en el ticket
+    const tieneKilo = ticket.some(t => t.cod === 71);
+    grupoKilos.style.display = tieneKilo ? "flex" : "none";
+
     if (ticket.length === 0) {
       cont.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 30px;">Selecciona prendas del catálogo para liquidar.</div>';
       document.getElementById("pos-subtotal").textContent = "$0";
@@ -714,13 +787,14 @@
       row.innerHTML = `
         <div>
           <strong>${it.nom}</strong>
-          <div style="font-size: 11px; color: var(--text-muted); cursor: pointer;" onclick="editarPrecioTicket(${idx})">
-            ${it.cant} x $${it.pre.toLocaleString("es-CO")} (✏️ cambiar precio)
+          <div style="font-size: 11px; color: var(--text-muted);">
+            <span style="cursor: pointer; text-decoration: underline;" onclick="editarCantidadDirecta(${idx})">${it.cant} uds/kg</span> x 
+            <span style="cursor: pointer; text-decoration: underline;" onclick="editarPrecioTicket(${idx})">$${it.pre.toLocaleString("es-CO")} (✏️ precio)</span>
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 4px;">
           <button class="btn-qty" onclick="cambiarCantidad(${idx}, -1)">-</button>
-          <span>${it.cant}</span>
+          <span style="font-weight: bold; min-width: 25px; text-align: center;">${it.cant}</span>
           <button class="btn-qty" onclick="cambiarCantidad(${idx}, 1)">+</button>
           <strong style="color: var(--accent); margin-left: 6px;">$${tPre.toLocaleString("es-CO")}</strong>
           <button class="btn-del" onclick="ticket.splice(${idx}, 1); renderTicket();">×</button>
@@ -728,7 +802,7 @@
       `;
       cont.appendChild(row);
     });
-    document.getElementById("pos-subtotal").textContent = "$" + sub.toLocaleString("es-CO");
+    document.getElementById("pos-subtotal").textContent = "$" + Math.round(sub).toLocaleString("es-CO");
     recalcularSaldo();
   }
 
@@ -736,7 +810,7 @@
     const sub = ticket.reduce((a, b) => a + (b.pre * b.cant), 0);
     const abono = Number(document.getElementById("pos-abono").value) || 0;
     const saldo = Math.max(0, sub - abono);
-    document.getElementById("pos-saldo").textContent = "$" + saldo.toLocaleString("es-CO");
+    document.getElementById("pos-saldo").textContent = "$" + Math.round(saldo).toLocaleString("es-CO");
   }
 
   function abrirModalOtroItem() {
@@ -806,11 +880,17 @@
     if (ticket.length === 0) return alert("El ticket está vacío.");
     const nom = document.getElementById("pos-cli-nom").value.trim();
     const tel = document.getElementById("pos-cli-tel").value.trim();
-    const obs = document.getElementById("pos-obs-prendas").value.trim();
+    let obs = document.getElementById("pos-obs-prendas").value.trim();
+    const kiloDetalle = document.getElementById("pos-kilo-detalle").value.trim();
 
     if (!nom || !tel) return alert("Por favor asigna nombre y teléfono del cliente.");
 
-    const total = ticket.reduce((a, b) => a + (b.pre * b.cant), 0);
+    // Concatenar el desglose de prendas de ropa por kilo si fue ingresado
+    if (kiloDetalle) {
+      obs = obs ? `${obs} | 📦 Desglose Ropa por Kilo: [${kiloDetalle}]` : `📦 Desglose Ropa por Kilo: [${kiloDetalle}]`;
+    }
+
+    const total = Math.round(ticket.reduce((a, b) => a + (b.pre * b.cant), 0));
     const abono = Number(document.getElementById("pos-abono").value) || 0;
     const saldo = Math.max(0, total - abono);
 
@@ -855,12 +935,12 @@
         descripcion_prenda: t.nom,
         cantidad: t.cant,
         precio_unitario: t.pre,
-        subtotal: t.pre * t.cant
+        subtotal: Math.round(t.pre * t.cant)
       }));
       await db.from("orden_items").insert(items);
 
       // Desglose para WhatsApp
-      const detallePrendasWA = items.map(i => `• ${i.cantidad}x ${i.descripcion_prenda} ($${(i.precio_unitario * i.cantidad).toLocaleString("es-CO")})`).join("\n");
+      const detallePrendasWA = items.map(i => `• ${i.cantidad}x ${i.descripcion_prenda} ($${Math.round(i.precio_unitario * i.cantidad).toLocaleString("es-CO")})`).join("\n");
       const notaObsWA = obs ? `\n⚠️ *Detalle / Estado de recepción:* _${obs}_\n` : "";
 
       const mensajeWA = encodeURIComponent(
@@ -890,6 +970,7 @@
       document.getElementById("busc-cliente").value = "";
       document.getElementById("pos-abono").value = 0;
       document.getElementById("pos-obs-prendas").value = "";
+      document.getElementById("pos-kilo-detalle").value = "";
       renderTicket();
       precargarClientes();
       chequearCentinela60h();
@@ -1055,8 +1136,9 @@
       <strong>Ticket #${orden.consecutivo_ticket}</strong> | Cliente: ${orden.clientes?.nombre_o_razon}<br>
       Total Factura: <strong>$${Number(orden.total_neto).toLocaleString("es-CO")}</strong><br>
       Abono previo: $${Number(orden.abono_inicial || 0).toLocaleString("es-CO")}<br>
-      <span style="font-size: 16px; color: var(--accent); font-weight: bold;">Saldo a Cobrar Hoy: $${Number(orden.saldo_pendiente).toLocaleString("es-CO")}</span>
+      Saldo sugerido: <strong>$${Number(orden.saldo_pendiente).toLocaleString("es-CO")}</strong>
     `;
+    document.getElementById("entrega-saldo-modificable").value = Number(orden.saldo_pendiente);
     abrirModal("modal-cobro-entrega");
   }
 
@@ -1067,6 +1149,7 @@
   async function ejecutarEntregaFinal() {
     if (!ordenCobroActiva) return;
     const metodo = document.getElementById("entrega-metodo").value;
+    const saldoACobrar = Number(document.getElementById("entrega-saldo-modificable").value);
     const ord = ordenCobroActiva;
 
     try {
@@ -1080,7 +1163,7 @@
       const mensajeWA = encodeURIComponent(
         `*LAVAARTE LAVANDERÍA SAS*\n` +
         `Hola *${ord.clientes?.nombre_o_razon}*, tu orden *#${ord.consecutivo_ticket}* ha sido entregada a conformidad.\n` +
-        `Saldo cancelado mediante: *${metodo}*.\n` +
+        `Saldo cancelado: *$${saldoACobrar.toLocaleString("es-CO")}* mediante: *${metodo}*.\n` +
         `¡Gracias por confiar en Lavaarte!`
       );
       const urlWA = `https://api.whatsapp.com/send?phone=57${ord.clientes?.telefono.replace(/\D/g,'')}&text=${mensajeWA}`;
@@ -1111,7 +1194,7 @@
     } catch (e) { alert(e.message); }
   }
 
-  // Arqueo Diario y Exportación a Excel
+  // Arqueo Diario Desglosado y Exportación a Excel
   let reporteArqueoActual = null;
 
   async function abrirArqueoCaja() {
@@ -1134,15 +1217,36 @@
       let efectivoTotal = 0;
       let transferenciasTotal = 0;
       let totalEgresos = (egrs || []).reduce((a, b) => a + Number(b.monto), 0);
+      let desgloseRecibos = [];
 
       (ords || []).forEach(o => {
+        // Abonos registrados hoy
         if (new Date(o.created_at) >= hoy && Number(o.abono_inicial) > 0) {
           efectivoTotal += Number(o.abono_inicial);
+          desgloseRecibos.push({
+            ticket: o.consecutivo_ticket,
+            cliente: o.clientes?.nombre_o_razon || 'Particular',
+            concepto: 'Abono Inicial Mostrador',
+            medio: 'EFECTIVO',
+            monto: Number(o.abono_inicial)
+          });
         }
+        // Saldos cobrados al entregar hoy
         if (o.entregado_at && new Date(o.entregado_at) >= hoy && o.estado === "ENTREGADO") {
           const saldo = Number(o.total_neto) - Number(o.abono_inicial || 0);
-          if (o.metodo_pago_saldo === "EFECTIVO") efectivoTotal += saldo;
-          else transferenciasTotal += saldo;
+          if (saldo > 0) {
+            const medio = o.metodo_pago_saldo || "EFECTIVO";
+            if (medio === "EFECTIVO") efectivoTotal += saldo;
+            else transferenciasTotal += saldo;
+
+            desgloseRecibos.push({
+              ticket: o.consecutivo_ticket,
+              cliente: o.clientes?.nombre_o_razon || 'Particular',
+              concepto: 'Saldo Liquidado Entrega',
+              medio: medio,
+              monto: saldo
+            });
+          }
         }
       });
 
@@ -1154,7 +1258,7 @@
         transferenciasTotal,
         totalEgresos,
         dineroNetoEnCaja,
-        ordenes: ords || [],
+        desgloseRecibos,
         egresos: egrs || [],
         centinela: ordenesRetrasadas60h
       };
@@ -1178,6 +1282,37 @@
           <strong style="color: var(--accent);">$${dineroNetoEnCaja.toLocaleString("es-CO")}</strong>
         </div>
       `;
+
+      // Renderizar tabla de desglose de recibos
+      const tbodyRecibos = document.getElementById("tabla-desglose-arqueo-body");
+      if (desgloseRecibos.length === 0) {
+        tbodyRecibos.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No se registraron cobros de recibos hoy.</td></tr>';
+      } else {
+        tbodyRecibos.innerHTML = desgloseRecibos.map(r => `
+          <tr>
+            <td><strong>#${r.ticket}</strong></td>
+            <td>${r.cliente}</td>
+            <td>${r.concepto}</td>
+            <td>${r.medio}</td>
+            <td style="color: var(--success); font-weight: bold;">$${r.monto.toLocaleString("es-CO")}</td>
+          </tr>
+        `).join("");
+      }
+
+      // Renderizar tabla de egresos
+      const tbodyEgresos = document.getElementById("tabla-desglose-egresos-body");
+      if (!egrs || egrs.length === 0) {
+        tbodyEgresos.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Sin egresos hoy.</td></tr>';
+      } else {
+        tbodyEgresos.innerHTML = egrs.map(e => `
+          <tr>
+            <td>${new Date(e.created_at).toLocaleTimeString("es-CO")}</td>
+            <td>${e.concepto}</td>
+            <td>${e.responsable}</td>
+            <td style="color: var(--danger); font-weight: bold;">$${Number(e.monto).toLocaleString("es-CO")}</td>
+          </tr>
+        `).join("");
+      }
 
       const centList = document.getElementById("arqueo-centinela-list");
       if (ordenesRetrasadas60h.length > 0) {
@@ -1210,14 +1345,21 @@
     ];
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws1Data), "Cierre_Caja");
 
-    // Hoja 2: Egresos Detallados
+    // Hoja 2: Desglose por Recibos
+    const wsRecibosData = [["Ticket #", "Cliente", "Concepto de Ingreso", "Medio de Pago", "Monto ($COP)"]];
+    reporteArqueoActual.desgloseRecibos.forEach(r => {
+      wsRecibosData.push([r.ticket, r.cliente, r.concepto, r.medio, r.monto]);
+    });
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(wsRecibosData), "Ingresos_Desglosados");
+
+    // Hoja 3: Egresos Detallados
     const ws2Data = [["Hora", "Monto ($COP)", "Concepto", "Responsable"]];
     reporteArqueoActual.egresos.forEach(e => {
       ws2Data.push([new Date(e.created_at).toLocaleTimeString("es-CO"), e.monto, e.concepto, e.responsable]);
     });
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2Data), "Egresos_Caja");
 
-    // Hoja 3: Auditoría Centinela 60h
+    // Hoja 4: Auditoría Centinela 60h
     const ws3Data = [["Ticket #", "Cliente", "Teléfono", "Estado", "Horas en Planta"]];
     reporteArqueoActual.centinela.forEach(c => {
       const h = Math.round((Date.now() - new Date(c.created_at).getTime()) / 3600000);
@@ -1226,6 +1368,59 @@
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3Data), "Auditoria_Centinela_60h");
 
     XLSX.writeFile(wb, `Lavaarte_CierreCaja_${reporteArqueoActual.fecha.replace(/\//g,'-')}.xlsx`);
+  }
+
+  // Descarga Completa de la Base de Datos a Excel
+  async function descargarHistoricoOrdenesExcel() {
+    try {
+      const { data, error } = await db
+        .from("ordenes")
+        .select(`
+          consecutivo_ticket, codigo_rastreo, estado, total_neto, abono_inicial, saldo_pendiente,
+          metodo_pago_saldo, created_at, entregado_at, observaciones_estado_prendas,
+          clientes (nombre_o_razon, telefono),
+          orden_items (cantidad, descripcion_prenda, precio_unitario, subtotal)
+        `)
+        .order("consecutivo_ticket", { ascending: false });
+
+      if (error) throw error;
+      if (!data || data.length === 0) return alert("No hay órdenes registradas para exportar.");
+
+      const filasExcel = [
+        [
+          "Ticket #", "Código Rastreo", "Fecha Ingreso", "Cliente", "Teléfono",
+          "Prendas Registradas", "Observaciones / Kilos", "Total Neto ($COP)", 
+          "Abono Inicial ($COP)", "Saldo Pendiente ($COP)", "Estado", 
+          "Medio de Pago Saldo", "Fecha Entrega"
+        ]
+      ];
+
+      data.forEach(o => {
+        const prendasTexto = o.orden_items?.map(i => `${i.cantidad}x ${i.descripcion_prenda}`).join(" | ") || "";
+        filasExcel.push([
+          o.consecutivo_ticket,
+          o.codigo_rastreo || "",
+          new Date(o.created_at).toLocaleString("es-CO"),
+          o.clientes?.nombre_o_razon || "Particular",
+          o.clientes?.telefono || "",
+          prendasTexto,
+          o.observaciones_estado_prendas || "",
+          o.total_neto,
+          o.abono_inicial || 0,
+          o.saldo_pendiente,
+          o.estado,
+          o.metodo_pago_saldo || "",
+          o.entregado_at ? new Date(o.entregado_at).toLocaleString("es-CO") : ""
+        ]);
+      });
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(filasExcel), "Historico_Recibos");
+      XLSX.writeFile(wb, `Lavaarte_BaseDatos_Recibos_${new Date().toISOString().split("T")[0]}.xlsx`);
+      alert("✅ Base de datos de recibos descargada exitosamente.");
+    } catch (e) {
+      alert("Error exportando base de datos: " + e.message);
+    }
   }
 
   // Panel Admin Facturas
