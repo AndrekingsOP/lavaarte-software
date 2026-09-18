@@ -1,18 +1,12 @@
 {
-  "name": "lavaarte-app",
+  "name": "software-lavaarte",
   "version": "1.0.0",
-  "type": "module",
-  "description": "Lavaarte OS - Sistema Integral + Bot Logística y Nómina",
+  "description": "Lavaarte OS - Sistema Web de Mostrador y Operaciones",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.8",
-    "axios": "^1.7.2",
-    "express": "^4.19.2",
-    "pino": "^9.2.0",
-    "qrcode": "^1.5.3",
-    "qrcode-terminal": "^0.12.0"
+    "express": "^4.19.2"
   }
 }
