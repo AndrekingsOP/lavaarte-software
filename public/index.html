@@ -25,77 +25,64 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   body { background: var(--bg-main); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
 
-  /* Navbar */
-  .topbar { background: var(--bg-card); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+  .topbar { background: var(--bg-card); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
   .brand { font-size: 18px; font-weight: 800; color: var(--accent); display: flex; align-items: center; gap: 8px; cursor: pointer; }
-  .nav-btn { background: var(--bg-input); border: 1px solid var(--border); color: var(--text); padding: 7px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
+  .nav-btn { background: var(--bg-input); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
   .nav-btn:hover { border-color: var(--accent); }
 
-  /* Contenedor */
-  .container { max-width: 1250px; width: 100%; margin: 0 auto; padding: 16px; flex: 1; display: flex; flex-direction: column; }
-
-  /* Vistas */
+  .container { max-width: 1280px; width: 100%; margin: 0 auto; padding: 16px; flex: 1; display: flex; flex-direction: column; }
   .view-section { display: none; flex-direction: column; gap: 16px; flex: 1; }
   .view-active { display: flex; }
 
-  /* Menú Dashboard */
   .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 15px; }
   .dash-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; text-align: center; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; }
   .dash-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.15); }
   .dash-card h3 { font-size: 16px; font-weight: 700; color: var(--text); }
   .dash-card p { font-size: 12px; color: var(--text-muted); }
 
-  /* Formularios e Inputs */
   .input-group { display: flex; flex-direction: column; gap: 4px; position: relative; }
   .label-sm { font-size: 12px; font-weight: bold; color: var(--text-muted); }
-  .input-text { width: 100%; background: var(--bg-input); border: 1px solid var(--border); color: white; padding: 10px 12px; border-radius: 8px; font-size: 14px; outline: none; }
+  .input-text { width: 100%; background: var(--bg-input); border: 1px solid var(--border); color: white; padding: 12px 14px; border-radius: 8px; font-size: 15px; outline: none; }
   .input-text:focus { border-color: var(--accent); }
 
-  /* Desplegable Autocomplete */
   .autocomplete-box { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--accent); border-radius: 8px; max-height: 180px; overflow-y: auto; z-index: 50; display: none; }
-  .autocomplete-item { padding: 10px 12px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; }
+  .autocomplete-item { padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; }
   .autocomplete-item:hover { background: var(--bg-input); color: var(--accent); }
 
-  /* Layout Mostrador */
-  .pos-layout { display: flex; gap: 16px; height: calc(100vh - 120px); }
-  .pos-sidebar { width: 420px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; overflow-y: auto; }
+  .pos-layout { display: flex; gap: 16px; min-height: calc(100vh - 130px); }
+  .pos-sidebar { width: 420px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; }
   .pos-catalog { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; }
 
-  /* Grilla de Prendas */
-  .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; overflow-y: auto; flex: 1; align-content: start; }
-  .prenda-btn { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.15s; }
+  .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 10px; overflow-y: auto; flex: 1; align-content: start; }
+  .prenda-btn { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.15s; }
   .prenda-btn:hover { border-color: var(--accent); background: #334155; }
-  .prenda-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .prenda-price { font-size: 13px; font-weight: bold; color: var(--accent); }
+  .prenda-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .prenda-price { font-size: 14px; font-weight: bold; color: var(--accent); }
 
-  /* Ticket List */
   .ticket-list { flex: 1; overflow-y: auto; margin: 10px 0; display: flex; flex-direction: column; gap: 8px; min-height: 120px; }
-  .ticket-item { background: var(--bg-input); padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-  .btn-qty { background: #334155; border: none; color: white; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-  .btn-del { background: none; border: none; color: var(--danger); font-size: 16px; cursor: pointer; margin-left: 8px; }
+  .ticket-item { background: var(--bg-input); padding: 10px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .btn-qty { background: #334155; border: none; color: white; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
+  .btn-del { background: none; border: none; color: var(--danger); font-size: 18px; cursor: pointer; margin-left: 8px; }
 
-  /* Botones */
+  .btn-voice { background: #475569; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .btn-voice.recording { background: var(--danger); animation: pulse 1s infinite; }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
   .btn-primary { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
-  .btn-primary:hover { background: var(--primary-hover); }
-  .btn-success { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
+  .btn-success { background: var(--success); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; }
   .btn-danger { background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
 
-  /* Tablas */
   .data-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
   .data-table th { background: var(--bg-input); padding: 10px; color: var(--accent); border-bottom: 1px solid var(--border); }
   .data-table td { padding: 10px; border-bottom: 1px solid var(--border); }
 
-  /* Modales */
   .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 100; }
-  .modal-content { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; width: 520px; max-width: 90vw; padding: 20px; display: flex; flex-direction: column; gap: 14px; max-height: 85vh; overflow-y: auto; }
+  .modal-content { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; width: 650px; max-width: 92vw; padding: 20px; display: flex; flex-direction: column; gap: 14px; max-height: 85vh; overflow-y: auto; }
 
-  /* Alertas Centinela */
   .centinela-box { background: rgba(239, 68, 68, 0.12); border: 1px solid var(--danger); border-radius: 8px; padding: 12px; }
 
-  /* Ticket Térmico Oculto en Pantalla Regular */
   #ticket-termico-print { display: none; }
 
-  /* Impresión Térmica Xprinter 80mm */
   @media print {
     @page { size: 80mm auto; margin: 0; }
     body * { visibility: hidden; }
@@ -116,9 +103,10 @@
     }
   }
 
-  @media (max-width: 850px) {
+  @media (max-width: 900px) {
     .pos-layout { flex-direction: column; height: auto; }
-    .pos-sidebar { width: 100%; height: auto; }
+    .pos-sidebar { width: 100%; }
+    .catalog-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
   }
 </style>
 </head>
@@ -128,25 +116,25 @@
   <div class="brand" onclick="solicitarAccesoEmpleados()">
     🧺 Lavaarte OS <span>| Control Maestro</span>
   </div>
-  <div style="display: flex; gap: 8px; align-items: center;">
-    <button class="nav-btn" onclick="mostrarVista('vista-portal-hoteles')">🏨 Portal Hoteles</button>
-    <button class="nav-btn" onclick="mostrarVista('vista-portal-cliente')">🌐 Portal Clientes</button>
-    <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Acceso Empleados</button>
+  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+    <button class="nav-btn" id="btn-modo-impresora" onclick="toggleModoImpresoraHP()">🖨️ Modo Impresora HP: OFF</button>
+    <button class="nav-btn" onclick="mostrarVista('vista-portal-hoteles')">🏨 Hoteles</button>
+    <button class="nav-btn" onclick="mostrarVista('vista-portal-cliente')">🌐 Clientes</button>
+    <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Empleados</button>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- VISTA 1: DASHBOARD EMPLEADOS -->
+  <!-- DASHBOARD -->
   <div class="view-section view-active" id="vista-dashboard">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
       <h2>Panel Operativo Lavaarte SAS</h2>
       <span id="hora-actual" style="font-size: 13px; color: var(--accent); font-weight: bold;"></span>
     </div>
 
-    <!-- Alerta Centinela 60 Horas -->
     <div id="box-centinela-alerta" class="centinela-box" style="display: none;">
-      <h4 style="color: var(--danger);">🚨 CENTINELA OPERATIVO: Órdenes con más de 60 Horas sin Entregar</h4>
+      <h4 style="color: var(--danger);">🚨 CENTINELA OPERATIVO: Órdenes con más de 60 Horas en Planta (Sin Alistar)</h4>
       <div id="centinela-resumen" style="font-size: 12px; margin-top: 6px; line-height: 1.5;"></div>
     </div>
 
@@ -154,13 +142,13 @@
       <div class="dash-card" onclick="mostrarVista('vista-pos')">
         <span style="font-size: 32px;">📥</span>
         <h3>1. Ingreso de Prendas</h3>
-        <p>Recepción en mostrador, abonos, estado de prendas y tickets</p>
+        <p>Recepción en mostrador, abonos, kilos y control por voz</p>
       </div>
 
       <div class="dash-card" onclick="mostrarVista('vista-alistar')">
         <span style="font-size: 32px;">🧺</span>
-        <h3>2. Alistar Ropa (Planta / Acople)</h3>
-        <p>Consultar orden y marcar de EN PROCESO a LISTO PARA ENTREGAR</p>
+        <h3>2. Alistar Ropa (Planta)</h3>
+        <p>Marcar listo manualmente o dictando "Orden [Número] lista"</p>
       </div>
 
       <div class="dash-card" onclick="mostrarVista('vista-entrega')">
@@ -184,34 +172,38 @@
       <div class="dash-card" onclick="pedirClaveAdmin()">
         <span style="font-size: 32px;">🔒</span>
         <h3>6. Anulación y Edición</h3>
-        <p>Control administrativo protegido para anular o corregir facturas</p>
+        <p>Control administrativo protegido para facturas</p>
       </div>
 
       <div class="dash-card" onclick="mostrarVista('vista-domicilios-admin')">
         <span style="font-size: 32px;">🛵</span>
-        <h3>7. Solicitudes de Domicilio y Rutas</h3>
-        <p>Pedidos de recogida/entrega de clientes y hoteles</p>
+        <h3>7. Domicilios y Rutas</h3>
+        <p>Pedidos en tiempo real de clientes y hoteles</p>
       </div>
 
       <div class="dash-card" onclick="descargarHistoricoOrdenesExcel()">
         <span style="font-size: 32px;">📑</span>
-        <h3>8. Descargar Recibos / Base de Datos</h3>
-        <p>Exportar toda la base de datos de órdenes a Excel (.xlsx)</p>
+        <h3>8. Descargar Recibos / BD</h3>
+        <p>Exportar toda la base de datos de órdenes a Excel</p>
       </div>
     </div>
   </div>
 
-  <!-- VISTA 2: INGRESO DE PRENDAS (POS) -->
+  <!-- INGRESO POS -->
   <div class="view-section" id="vista-pos">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>📥 Ingreso de Prendas al Sistema</h3>
+      <h3>📥 Ingreso de Prendas</h3>
       <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
     </div>
 
     <div class="pos-layout">
       <div class="pos-sidebar">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label class="label-sm">Buscar Cliente</label>
+          <button id="btn-voz-pos" class="btn-voice" onclick="iniciarVozPOS()">🎙️ Dictar Orden Completa</button>
+        </div>
+
         <div class="input-group">
-          <label class="label-sm">Buscar Cliente por Nombre o Teléfono</label>
           <input type="text" id="busc-cliente" class="input-text" placeholder="Escribe nombre o celular..." oninput="filtrarCliente(this.value)">
           <div id="drop-clientes" class="autocomplete-box"></div>
         </div>
@@ -229,19 +221,18 @@
 
         <div class="ticket-list" id="ticket-items">
           <div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 30px;">
-            Selecciona prendas del catálogo para liquidar.
+            Selecciona prendas del catálogo o dicta por voz.
           </div>
         </div>
 
-        <!-- Desglose exclusivo para Ropa por Kilo -->
         <div class="input-group" id="group-detalle-kilos" style="display: none; margin-bottom: 8px;">
-          <label class="label-sm" style="color: var(--accent);">🧺 Desglose Ropa por Kilo (Prendas que componen el peso)</label>
+          <label class="label-sm" style="color: var(--accent);">🧺 Desglose Ropa por Kilo (Prendas del peso)</label>
           <textarea id="pos-kilo-detalle" class="input-text" style="height: 55px; resize: none; font-size: 12px;" placeholder="Ej: 3 pantalones, 5 medias, 5 bóxer, 2 camisetas"></textarea>
         </div>
 
         <div class="input-group" style="margin-bottom: 8px;">
-          <label class="label-sm">Detalles / Estado de las Prendas (Manchas, Rotos, Desgaste)</label>
-          <textarea id="pos-obs-prendas" class="input-text" style="height: 55px; resize: none; font-size: 12px;" placeholder="Ej: Camisa blanca con mancha de café en cuello; pantalón sin botón"></textarea>
+          <label class="label-sm">Detalles / Estado de las Prendas</label>
+          <textarea id="pos-obs-prendas" class="input-text" style="height: 55px; resize: none; font-size: 12px;" placeholder="Ej: Camisa con mancha de café; pantalón sin botón"></textarea>
         </div>
 
         <div style="background: var(--bg-input); padding: 10px; border-radius: 8px; display: flex; flex-direction: column; gap: 6px;">
@@ -264,7 +255,7 @@
 
       <div class="pos-catalog">
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px; gap: 8px;">
-          <input type="text" id="filtro-prenda" class="input-text" style="max-width: 280px;" placeholder="🔍 Buscar prenda o código..." oninput="renderCatalogo(this.value)">
+          <input type="text" id="filtro-prenda" class="input-text" style="max-width: 280px;" placeholder="🔍 Buscar prenda..." oninput="renderCatalogo(this.value)">
           <button class="nav-btn" onclick="abrirModalOtroItem()">➕ Ítem "Otros"</button>
         </div>
         <div class="catalog-grid" id="grid-catalogo"></div>
@@ -272,15 +263,19 @@
     </div>
   </div>
 
-  <!-- VISTA 3: ALISTAR ROPA -->
+  <!-- ALISTAR ROPA -->
   <div class="view-section" id="vista-alistar">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>🧺 Alistar Ropa (Planta / Control de Calidad)</h3>
+      <h3>🧺 Alistar Ropa (Planta / Control)</h3>
       <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
     </div>
 
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%;">
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Ingresa el número de ticket para cambiar su estado a <strong>LISTO PARA ENTREGAR</strong>:</p>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <span style="font-size: 13px; color: var(--text-muted);">Escribe el ticket o pulsa dictar:</span>
+        <button id="btn-voz-alistar" class="btn-voice" onclick="iniciarVozAlistar()">🎙️ "Orden [Número] lista"</button>
+      </div>
+
       <input type="number" id="alistar-ticket-input" class="input-text" style="font-size: 20px; text-align: center;" placeholder="Ticket #" oninput="buscarTicketAlistar(this.value)">
 
       <div id="alistar-ticket-resumen" style="margin-top: 16px; font-size: 13px; display: none;">
@@ -294,14 +289,14 @@
           <div id="alistar-txt-obs" style="color: var(--warning); margin-top: 4px; font-size: 12px;"></div>
         </div>
 
-        <button class="btn-success" style="width: 100%; margin-top: 14px; padding: 14px; font-size: 16px;" onclick="marcarTicketComoListo()">
+        <button class="btn-success" style="width: 100%; margin-top: 14px;" onclick="marcarTicketComoListo()">
           ✅ MARCAR COMO LISTO PARA ENTREGAR
         </button>
       </div>
     </div>
   </div>
 
-  <!-- VISTA 4: ENTREGAR PRENDAS -->
+  <!-- ENTREGAR PRENDAS -->
   <div class="view-section" id="vista-entrega">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🤝 Entregar Prendas y Liquidar Saldo</h3>
@@ -333,7 +328,7 @@
     </div>
   </div>
 
-  <!-- VISTA 5: SALIDAS DE EFECTIVO -->
+  <!-- EGRESOS -->
   <div class="view-section" id="vista-egresos">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>💸 Salidas de Efectivo (Caja Menor)</h3>
@@ -357,10 +352,10 @@
     </div>
   </div>
 
-  <!-- VISTA 6: GESTIÓN DE DOMICILIOS Y RUTAS -->
+  <!-- DOMICILIOS ADMIN -->
   <div class="view-section" id="vista-domicilios-admin">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>🛵 Solicitudes de Domicilio y Rutas de Hoteles</h3>
+      <h3>🛵 Solicitudes de Domicilio y Rutas (En Vivo)</h3>
       <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
     </div>
     <div style="overflow-x: auto; margin-top: 10px;">
@@ -385,15 +380,14 @@
     </div>
   </div>
 
-  <!-- VISTA 7: PORTAL CLIENTES -->
+  <!-- PORTAL CLIENTES -->
   <div class="view-section" id="vista-portal-cliente">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>🌐 Portal de Autoservicio para Clientes</h3>
-      <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Acceso Empleados</button>
+      <h3>🌐 Portal Clientes</h3>
+      <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Empleados</button>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-top: 10px;">
-      <!-- Rastrear ropa -->
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
         <h4 style="color: var(--accent); margin-bottom: 8px;">🔍 Rastrear Estado de mi Ropa</h4>
         <div style="display: flex; gap: 8px;">
@@ -403,7 +397,6 @@
         <div id="cliente-ticket-result" style="margin-top: 14px; font-size: 13px;"></div>
       </div>
 
-      <!-- Solicitar recogida -->
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
         <h4 style="color: var(--success); margin-bottom: 8px;">📦 Pedir Recogida a Domicilio</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -417,18 +410,17 @@
               <option value="Tarde (2pm - 6pm)">Tarde (2pm - 6pm)</option>
             </select>
           </div>
-          <input type="text" id="dom-rec-notas" class="input-text" placeholder="Prendas aproximadas o notas">
+          <input type="text" id="dom-rec-notas" class="input-text" placeholder="Prendas aproximadas">
           <button class="btn-success" onclick="clienteCrearSolicitud('RECOGIDA_DOMICILIO')">Solicitar Recogida</button>
         </div>
       </div>
 
-      <!-- Solicitar entrega -->
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
         <h4 style="color: var(--warning); margin-bottom: 8px;">🚚 Solicitar Entrega de mi Ropa</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <input type="number" id="dom-ent-ticket" class="input-text" placeholder="Número de Ticket / Recibo">
+          <input type="number" id="dom-ent-ticket" class="input-text" placeholder="Número de Ticket">
           <input type="text" id="dom-ent-nom" class="input-text" placeholder="Nombre de Quien Recibe">
-          <input type="text" id="dom-ent-tel" class="input-text" placeholder="Celular de Contacto">
+          <input type="text" id="dom-ent-tel" class="input-text" placeholder="Celular">
           <input type="text" id="dom-ent-dir" class="input-text" placeholder="Dirección de Entrega">
           <div style="display: flex; gap: 8px;">
             <input type="date" id="dom-ent-fec" class="input-text">
@@ -443,18 +435,18 @@
     </div>
   </div>
 
-  <!-- VISTA 8: PORTAL HOTELES -->
+  <!-- PORTAL HOTELES -->
   <div class="view-section" id="vista-portal-hoteles">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>🏨 Portal Logístico para Hoteles</h3>
-      <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Acceso Empleados</button>
+      <h3>🏨 Portal Logístico Hoteles</h3>
+      <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Empleados</button>
     </div>
 
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; max-width: 580px; margin: 20px auto; width: 100%;">
-      <h4 style="color: var(--accent); margin-bottom: 12px;">Solicitud Inmediata de Ruta y Recogida</h4>
+      <h4 style="color: var(--accent); margin-bottom: 12px;">Solicitud Inmediata de Ruta</h4>
       <div style="display: flex; flex-direction: column; gap: 12px;">
         <div class="input-group">
-          <label class="label-sm">Selecciona tu Hotel</label>
+          <label class="label-sm">Hotel</label>
           <select id="hotel-sel-nom" class="input-text">
             <option value="Hotel Wyndham">Hotel Wyndham</option>
             <option value="Hotel Hilton">Hotel Hilton</option>
@@ -472,7 +464,7 @@
         </div>
 
         <div class="input-group">
-          <label class="label-sm">Servicio Requerido</label>
+          <label class="label-sm">Servicio</label>
           <select id="hotel-sel-servicio" class="input-text">
             <option value="Ropa de Huéspedes">Ropa de Huéspedes</option>
             <option value="Lencería de Habitaciones">Lencería de Habitaciones</option>
@@ -483,21 +475,21 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <div class="input-group">
-            <label class="label-sm">Bultos / Piezas Aprox.</label>
-            <input type="text" id="hotel-cant-bultos" class="input-text" placeholder="Ej: 4 bolsas grandes">
+            <label class="label-sm">Bultos Aprox.</label>
+            <input type="text" id="hotel-cant-bultos" class="input-text" placeholder="Ej: 4 bolsas">
           </div>
           <div class="input-group">
-            <label class="label-sm">Persona de Contacto</label>
-            <input type="text" id="hotel-contacto" class="input-text" placeholder="Ama de llaves / Turno">
+            <label class="label-sm">Contacto</label>
+            <input type="text" id="hotel-contacto" class="input-text" placeholder="Ama de llaves">
           </div>
         </div>
 
         <div class="input-group">
-          <label class="label-sm">Observaciones / Horario Límite</label>
-          <input type="text" id="hotel-notas" class="input-text" placeholder="Ej: Pasar antes de las 11:00 AM">
+          <label class="label-sm">Horario Límite / Observaciones</label>
+          <input type="text" id="hotel-notas" class="input-text" placeholder="Ej: Pasar antes de las 11am">
         </div>
 
-        <button class="btn-success" style="padding: 14px; font-size: 15px;" onclick="hotelEnviarSolicitud()">
+        <button class="btn-success" style="padding: 14px;" onclick="hotelEnviarSolicitud()">
           🚚 SOLICITAR RECOGIDA DE RUTA AHORA
         </button>
       </div>
@@ -508,19 +500,19 @@
 
 <!-- MODALES -->
 
-<!-- Modal: Cobro Entrega con ajuste de saldo -->
+<!-- Cobro Entrega -->
 <div class="modal" id="modal-cobro-entrega">
   <div class="modal-content">
     <h3 style="color: var(--success);">Finalizar Entrega y Cobro</h3>
     <div id="info-orden-cobro" style="font-size: 13px; line-height: 1.6;"></div>
     
-    <div class="input-group" style="margin-top: 4px;">
+    <div class="input-group">
       <label class="label-sm">Ajustar Saldo a Cobrar ($COP) (Opcional):</label>
       <input type="number" id="entrega-saldo-modificable" class="input-text">
     </div>
 
     <div class="input-group">
-      <label class="label-sm">Método de Pago del Saldo</label>
+      <label class="label-sm">Método de Pago</label>
       <select id="entrega-metodo" class="input-text" onchange="toggleComprobanteTransferencia(this.value)">
         <option value="EFECTIVO">Efectivo (Caja Mostrador)</option>
         <option value="TRANSFERENCIA_NEQUI">Transferencia Nequi</option>
@@ -530,7 +522,7 @@
     </div>
 
     <div class="input-group" id="group-comprobante" style="display: none;">
-      <label class="label-sm">Adjuntar Comprobante de Transferencia (Foto)</label>
+      <label class="label-sm">Adjuntar Comprobante (Foto)</label>
       <input type="file" id="entrega-file-comprobante" class="input-text" accept="image/*">
     </div>
 
@@ -539,14 +531,14 @@
   </div>
 </div>
 
-<!-- Modal: Arqueo Diario Desglosado con Centinela 60h -->
+<!-- Arqueo Diario -->
 <div class="modal" id="modal-arqueo">
   <div class="modal-content" style="width: 800px;">
     <h3 style="color: var(--accent);">📊 Arqueo y Cierre Diario Desglosado</h3>
     <div id="caja-resumen" style="font-size: 13px; line-height: 1.8; background: var(--bg-input); padding: 14px; border-radius: 8px;"></div>
 
-    <h4 style="font-size: 14px; color: var(--accent); margin-top: 10px;">📋 Desglose de Recibos e Ingresos del Día</h4>
-    <div style="max-height: 160px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+    <h4 style="font-size: 14px; color: var(--accent); margin-top: 10px;">📋 Desglose de Recibos Cobrados Hoy</h4>
+    <div style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
       <table class="data-table">
         <thead>
           <tr>
@@ -561,7 +553,7 @@
       </table>
     </div>
 
-    <h4 style="font-size: 14px; color: var(--danger); margin-top: 10px;">💸 Desglose de Gastos de Caja Menor</h4>
+    <h4 style="font-size: 14px; color: var(--danger); margin-top: 10px;">💸 Desglose de Egresos de Caja Menor</h4>
     <div style="max-height: 120px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
       <table class="data-table">
         <thead>
@@ -577,24 +569,24 @@
     </div>
 
     <div id="arqueo-centinela-bloque" style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); border-radius: 8px; padding: 12px; font-size: 12px; max-height: 110px; overflow-y: auto;">
-      <strong style="color: var(--danger);">🚨 Auditoría Centinela 60 Horas:</strong>
+      <strong style="color: var(--danger);">🚨 Auditoría Centinela 60 Horas (Órdenes sin alistar):</strong>
       <div id="arqueo-centinela-list" style="margin-top: 6px;"></div>
     </div>
     
     <div style="display: flex; gap: 10px;">
-      <button class="btn-primary" style="flex: 1;" onclick="exportarExcelArqueo()">📥 EXPORTAR INFORME Y AUDITORÍA A EXCEL (.XLSX)</button>
+      <button class="btn-primary" style="flex: 1;" onclick="exportarExcelArqueo()">📥 EXPORTAR INFORME A EXCEL (.XLSX)</button>
       <button class="nav-btn" onclick="cerrarModal('modal-arqueo')">Cerrar</button>
     </div>
   </div>
 </div>
 
-<!-- Modal: Ítem Otros -->
+<!-- Modal Otros -->
 <div class="modal" id="modal-otros">
   <div class="modal-content">
     <h3>➕ Agregar Ítem Personalizado</h3>
     <div class="input-group">
-      <label class="label-sm">Descripción de la prenda / servicio</label>
-      <input type="text" id="otro-desc" class="input-text" placeholder="Ej: Teñido de pantalón especial">
+      <label class="label-sm">Descripción</label>
+      <input type="text" id="otro-desc" class="input-text" placeholder="Ej: Teñido de pantalón">
     </div>
     <div class="input-group">
       <label class="label-sm">Precio acordado ($COP)</label>
@@ -605,23 +597,23 @@
   </div>
 </div>
 
-<!-- Modal: PIN Admin -->
+<!-- Modal PIN -->
 <div class="modal" id="modal-admin-auth">
   <div class="modal-content" style="width: 380px; text-align: center;">
     <h3 style="color: var(--warning);">🔒 Acceso Administrativo</h3>
-    <p style="font-size: 13px; color: var(--text-muted);">Ingresa el PIN de seguridad para continuar:</p>
+    <p style="font-size: 13px; color: var(--text-muted);">Ingresa el PIN de seguridad:</p>
     <input type="password" id="admin-pin" class="input-text" style="font-size: 24px; text-align: center; letter-spacing: 6px;" maxlength="4" placeholder="••••">
     <button class="btn-primary" onclick="validarPinAdmin()">Entrar</button>
     <button class="nav-btn" onclick="cerrarModal('modal-admin-auth')">Cancelar</button>
   </div>
 </div>
 
-<!-- Modal: Control Facturas -->
+<!-- Modal Facturas -->
 <div class="modal" id="modal-admin-panel">
   <div class="modal-content" style="width: 700px;">
     <h3 style="color: var(--danger);">⚙️ Control de Facturas (Anular / Corregir)</h3>
     <div style="display: flex; gap: 8px;">
-      <input type="number" id="admin-ticket-input" class="input-text" placeholder="Número de ticket a modificar...">
+      <input type="number" id="admin-ticket-input" class="input-text" placeholder="Número de ticket...">
       <button class="btn-primary" onclick="adminCargarTicket()">Buscar</button>
     </div>
     <div id="admin-ticket-detalle" style="font-size: 13px;"></div>
@@ -694,12 +686,15 @@
 </div>
 
 <script>
-  // Conexión Supabase Lavaarte SAS
+  // URL DE TU BOT DE WHATSAPP DESPLEGADO EN RENDER
+  const BOT_WHATSAPP_URL = "https://bot-lavaarte.onrender.com";
+
+  // Conexión Supabase
   const SUPABASE_URL = "https://biumkyjjavpfgfishvzp.supabase.co";
   const SUPABASE_KEY = "sb_publishable_vUntLk7lDbQ3DXROxTDCLg_NjgC6IIT";
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Catálogo completo Digitalizado (Kilo de Ropa actualizado a $16.500)
+  // Catálogo completo (Kilo de Ropa: $16.500)
   const CATALOGO_LOCAL = [
     {cod: 1, nom: "Camisa", pre: 5500}, {cod: 2, nom: "Camiseta", pre: 6800}, {cod: 3, nom: "Pantalón", pre: 7500},
     {cod: 4, nom: "Jeans", pre: 7500}, {cod: 5, nom: "Vestido Hombre 2 Pzs.", pre: 14000}, {cod: 6, nom: "Corbata", pre: 7000},
@@ -734,6 +729,7 @@
   let ordenCobroActiva = null;
   let ordenAlistarActiva = null;
   let destinoPinAdmin = "";
+  let modoImpresoraHP = false;
 
   window.onload = () => {
     actualizarReloj();
@@ -741,6 +737,7 @@
     renderCatalogo("");
     precargarClientes();
     chequearCentinela60h();
+    activarSuscripcionesRealtime();
   };
 
   function actualizarReloj() {
@@ -758,7 +755,157 @@
   function cerrarModal(id) { document.getElementById(id).style.display = "none"; }
   function abrirModal(id) { document.getElementById(id).style.display = "flex"; }
 
-  // Control PIN
+  // TIEMPO REAL SUPABASE
+  function activarSuscripcionesRealtime() {
+    db.channel('ordenes-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ordenes' }, async (payload) => {
+        chequearCentinela60h();
+        if (modoImpresoraHP && payload.eventType === 'INSERT' && !payload.new.impresa) {
+          imprimirOrdenRemota(payload.new.id);
+        }
+      })
+      .subscribe();
+
+    db.channel('domicilios-live')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'solicitudes_domicilio' }, () => {
+        cargarDomiciliosAdmin();
+        alert("🔔 ¡Nueva solicitud de domicilio/hotel recibida!");
+      })
+      .subscribe();
+  }
+
+  function toggleModoImpresoraHP() {
+    modoImpresoraHP = !modoImpresoraHP;
+    const btn = document.getElementById("btn-modo-impresora");
+    if (modoImpresoraHP) {
+      btn.style.background = "var(--success)";
+      btn.textContent = "🖨️ Modo Impresora HP: ACTIVO (24/7)";
+      alert("✅ Este computador imprimirá automáticamente cualquier orden generada desde celulares o tablets.");
+    } else {
+      btn.style.background = "var(--bg-input)";
+      btn.textContent = "🖨️ Modo Impresora HP: OFF";
+    }
+  }
+
+  async function imprimirOrdenRemota(ordenId) {
+    try {
+      const { data: o } = await db.from("ordenes").select("*, clientes(*), orden_items(*)").eq("id", ordenId).single();
+      if (!o) return;
+
+      document.getElementById("pr-ticket").textContent = `#${o.consecutivo_ticket}`;
+      document.getElementById("pr-fecha").textContent = new Date(o.created_at).toLocaleString("es-CO");
+      document.getElementById("pr-cliente").textContent = o.clientes?.nombre_o_razon || "Particular";
+      document.getElementById("pr-telefono").textContent = o.clientes?.telefono || "-";
+      document.getElementById("pr-rastreo").textContent = o.codigo_rastreo;
+
+      document.getElementById("pr-items-body").innerHTML = (o.orden_items || []).map(i => `
+        <tr>
+          <td>${i.cantidad}</td>
+          <td>${i.descripcion_prenda}</td>
+          <td style="text-align: right;">$${Number(i.subtotal).toLocaleString("es-CO")}</td>
+        </tr>
+      `).join("");
+
+      const boxObs = document.getElementById("pr-box-obs");
+      if (o.observaciones_estado_prendas) {
+        boxObs.style.display = "block";
+        document.getElementById("pr-obs-texto").textContent = o.observaciones_estado_prendas;
+      } else {
+        boxObs.style.display = "none";
+      }
+
+      document.getElementById("pr-total").textContent = `$${Number(o.total_neto).toLocaleString("es-CO")}`;
+      document.getElementById("pr-abono").textContent = `$${Number(o.abono_inicial || 0).toLocaleString("es-CO")}`;
+      document.getElementById("pr-saldo").textContent = `$${Number(o.saldo_pendiente).toLocaleString("es-CO")}`;
+
+      window.print();
+      await db.from("ordenes").update({ impresa: true }).eq("id", ordenId);
+    } catch (e) { console.error("Error imprimiendo:", e); }
+  }
+
+  // RECONOCIMIENTO DE VOZ
+  function iniciarVozPOS() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return alert("Usa Google Chrome o Edge para el reconocimiento de voz.");
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'es-CO';
+    recognition.interimResults = false;
+
+    const btn = document.getElementById("btn-voz-pos");
+    btn.classList.add("recording");
+    btn.textContent = "🔴 Escuchando orden...";
+
+    recognition.onresult = (e) => {
+      const texto = e.results[0][0].transcript.toLowerCase();
+      btn.classList.remove("recording");
+      btn.textContent = "🎙️ Dictar Orden Completa";
+      procesarVozPOS(texto);
+    };
+
+    recognition.onerror = () => {
+      btn.classList.remove("recording");
+      btn.textContent = "🎙️ Dictar Orden Completa";
+    };
+
+    recognition.start();
+  }
+
+  function procesarVozPOS(txt) {
+    alert(`🗣️ Escuchado: "${txt}"`);
+    const numMatches = txt.replace(/\s/g, '').match(/3\d{9}/);
+    if (numMatches) document.getElementById("pos-cli-tel").value = numMatches[0];
+
+    CATALOGO_LOCAL.forEach(p => {
+      if (txt.includes(p.nom.toLowerCase())) {
+        const regex = new RegExp(`(\\d+)\\s+${p.nom.toLowerCase()}`);
+        const m = txt.match(regex);
+        const cant = m ? parseInt(m[1], 10) : 1;
+        const ex = ticket.find(t => t.cod === p.cod);
+        if (ex) ex.cant += cant;
+        else ticket.push({ cod: p.cod, nom: p.nom, pre: p.pre, cant: cant });
+      }
+    });
+
+    renderTicket();
+  }
+
+  function iniciarVozAlistar() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return alert("Usa Google Chrome o Edge para reconocimiento de voz.");
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'es-CO';
+    recognition.interimResults = false;
+
+    const btn = document.getElementById("btn-voz-alistar");
+    btn.classList.add("recording");
+    btn.textContent = "🔴 Escuchando...";
+
+    recognition.onresult = async (e) => {
+      const texto = e.results[0][0].transcript.toLowerCase();
+      btn.classList.remove("recording");
+      btn.textContent = "🎙️ 'Orden [Número] lista'";
+
+      const match = texto.match(/(\d+)/);
+      if (match) {
+        const numTicket = match[1];
+        document.getElementById("alistar-ticket-input").value = numTicket;
+        await buscarTicketAlistar(numTicket);
+        if (ordenAlistarActiva) marcarTicketComoListo();
+      } else {
+        alert(`No reconocí el número en: "${texto}"`);
+      }
+    };
+
+    recognition.onerror = () => {
+      btn.classList.remove("recording");
+      btn.textContent = "🎙️ 'Orden [Número] lista'";
+    };
+
+    recognition.start();
+  }
+
   function solicitarAccesoEmpleados() {
     destinoPinAdmin = "vista-dashboard";
     document.getElementById("admin-pin").value = "";
@@ -782,7 +929,6 @@
     }
   }
 
-  // Catálogo y Ticket
   function renderCatalogo(filtro) {
     const grid = document.getElementById("grid-catalogo");
     grid.innerHTML = "";
@@ -805,7 +951,7 @@
       ex.cant++;
     } else {
       if (item.cod === 71) {
-        const kilos = prompt("Ingresa la cantidad de kilos de ropa (ej: 1, 2.5, 4):", "1");
+        const kilos = prompt("Ingresa la cantidad de kilos (ej: 1, 2.5, 4):", "1");
         const val = parseFloat(kilos);
         if (isNaN(val) || val <= 0) return;
         ticket.push({ cod: item.cod, nom: item.nom, pre: item.pre, cant: val });
@@ -823,7 +969,7 @@
   }
 
   function editarCantidadDirecta(idx) {
-    const val = prompt(`Ingresa la cantidad o peso para "${ticket[idx].nom}":`, ticket[idx].cant);
+    const val = prompt(`Ingresa la cantidad/peso para "${ticket[idx].nom}":`, ticket[idx].cant);
     if (val !== null && !isNaN(val) && Number(val) > 0) {
       ticket[idx].cant = parseFloat(val);
       renderTicket();
@@ -831,7 +977,7 @@
   }
 
   function editarPrecioTicket(idx) {
-    const nuevo = prompt("Modificar precio unitario ($COP) para " + ticket[idx].nom + ":", ticket[idx].pre);
+    const nuevo = prompt("Modificar precio ($COP) para " + ticket[idx].nom + ":", ticket[idx].pre);
     if (nuevo !== null && !isNaN(nuevo) && Number(nuevo) >= 0) {
       ticket[idx].pre = Number(nuevo);
       renderTicket();
@@ -840,11 +986,10 @@
 
   function renderTicket() {
     const cont = document.getElementById("ticket-items");
-    const grupoKilos = document.getElementById("group-detalle-kilos");
-    grupoKilos.style.display = ticket.some(t => t.cod === 71) ? "flex" : "none";
+    document.getElementById("group-detalle-kilos").style.display = ticket.some(t => t.cod === 71) ? "flex" : "none";
 
     if (ticket.length === 0) {
-      cont.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 30px;">Selecciona prendas del catálogo para liquidar.</div>';
+      cont.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 30px;">Selecciona prendas del catálogo o dicta por voz.</div>';
       document.getElementById("pos-subtotal").textContent = "$0";
       document.getElementById("pos-saldo").textContent = "$0";
       return;
@@ -861,7 +1006,7 @@
           <strong>${it.nom}</strong>
           <div style="font-size: 11px; color: var(--text-muted);">
             <span style="cursor: pointer; text-decoration: underline;" onclick="editarCantidadDirecta(${idx})">${it.cant} uds/kg</span> x 
-            <span style="cursor: pointer; text-decoration: underline;" onclick="editarPrecioTicket(${idx})">$${it.pre.toLocaleString("es-CO")} (✏️ precio)</span>
+            <span style="cursor: pointer; text-decoration: underline;" onclick="editarPrecioTicket(${idx})">$${it.pre.toLocaleString("es-CO")}</span>
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 4px;">
@@ -900,7 +1045,6 @@
     renderTicket();
   }
 
-  // Clientes Autocomplete
   async function precargarClientes() {
     try {
       const { data } = await db.from("clientes").select("id, nombre_o_razon, telefono, direccion").limit(250);
@@ -913,10 +1057,7 @@
     const q = val.toLowerCase().trim();
     if (!q) { box.style.display = "none"; return; }
 
-    const matches = listaClientes.filter(c => 
-      c.nombre_o_razon.toLowerCase().includes(q) || c.telefono.includes(q)
-    );
-
+    const matches = listaClientes.filter(c => c.nombre_o_razon.toLowerCase().includes(q) || c.telefono.includes(q));
     if (matches.length === 0) {
       box.innerHTML = `<div class="autocomplete-item" onclick="seleccionarNuevoCliente('${val}')">➕ Crear cliente nuevo: "<strong>${val}</strong>"</div>`;
     } else {
@@ -947,7 +1088,6 @@
     document.getElementById("drop-clientes").style.display = "none";
   }
 
-  // Guardar Orden, Imprimir en Xprinter y Enviar WhatsApp Automático
   async function confirmarGenerarOrden() {
     if (ticket.length === 0) return alert("El ticket está vacío.");
     const nom = document.getElementById("pos-cli-nom").value.trim();
@@ -958,7 +1098,7 @@
     if (!nom || !tel) return alert("Por favor asigna nombre y teléfono del cliente.");
 
     if (kiloDetalle) {
-      obs = obs ? `${obs} | 📦 Desglose Ropa por Kilo: [${kiloDetalle}]` : `📦 Desglose Ropa por Kilo: [${kiloDetalle}]`;
+      obs = obs ? `${obs} | 📦 Desglose Kilos: [${kiloDetalle}]` : `📦 Desglose Kilos: [${kiloDetalle}]`;
     }
 
     const total = Math.round(ticket.reduce((a, b) => a + (b.pre * b.cant), 0));
@@ -983,20 +1123,14 @@
         total_bruto: total,
         total_neto: total,
         saldo_pendiente: saldo,
-        estado: 'INGRESADO'
+        estado: 'INGRESADO',
+        impresa: false
       };
 
       if (abono > 0) objetoOrden.abono_inicial = abono;
       if (obs) objetoOrden.observaciones_estado_prendas = obs;
 
       let ordRes = await db.from("ordenes").insert(objetoOrden).select("id, consecutivo_ticket").single();
-      
-      if (ordRes.error && ordRes.error.message.includes("column")) {
-        delete objetoOrden.abono_inicial;
-        delete objetoOrden.observaciones_estado_prendas;
-        ordRes = await db.from("ordenes").insert(objetoOrden).select("id, consecutivo_ticket").single();
-      }
-
       if (ordRes.error) throw ordRes.error;
       const ord = ordRes.data;
 
@@ -1010,15 +1144,14 @@
       }));
       await db.from("orden_items").insert(items);
 
-      // 1. POBLAR Y LANZAR TICKET TÉRMICO XPRINTER
+      // Impresión
       document.getElementById("pr-ticket").textContent = `#${ord.consecutivo_ticket}`;
       document.getElementById("pr-fecha").textContent = new Date().toLocaleString("es-CO");
       document.getElementById("pr-cliente").textContent = nom;
       document.getElementById("pr-telefono").textContent = tel;
       document.getElementById("pr-rastreo").textContent = codigoRastreo;
 
-      const tbodyPrint = document.getElementById("pr-items-body");
-      tbodyPrint.innerHTML = items.map(i => `
+      document.getElementById("pr-items-body").innerHTML = items.map(i => `
         <tr>
           <td>${i.cantidad}</td>
           <td>${i.descripcion_prenda}</td>
@@ -1038,10 +1171,10 @@
       document.getElementById("pr-abono").textContent = `$${abono.toLocaleString("es-CO")}`;
       document.getElementById("pr-saldo").textContent = `$${saldo.toLocaleString("es-CO")}`;
 
-      // Abre el diálogo nativo de impresión para la Xprinter
       window.print();
+      await db.from("ordenes").update({ impresa: true }).eq("id", ord.id);
 
-      // 2. ENVIAR WHATSAPP AUTOMÁTICO EN SEGUNDO PLANO
+      // Disparo automático de WhatsApp hacia el Bot
       const detallePrendasWA = items.map(i => `• ${i.cantidad}x ${i.descripcion_prenda} ($${(i.subtotal).toLocaleString("es-CO")})`).join("\n");
       const notaObsWA = obs ? `\n⚠️ *Detalle / Estado de recepción:* _${obs}_\n` : "";
 
@@ -1060,13 +1193,12 @@
         `Rastrea tu ropa en: www.lavaarte.com\n` +
         `¡Gracias por preferirnos!`;
 
-      fetch('/api/enviar-recibo', {
+      fetch(`${BOT_WHATSAPP_URL}/api/enviar-recibo`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ telefono: tel, mensaje: mensajeTexto })
-      }).catch(err => console.error("Error enviando WhatsApp automático:", err));
+      }).catch(err => console.error("Error contactando al bot de WhatsApp:", err));
 
-      // Limpiar formulario
       ticket = [];
       document.getElementById("pos-cli-nom").value = "";
       document.getElementById("pos-cli-tel").value = "";
@@ -1083,7 +1215,6 @@
     }
   }
 
-  // Alistar Ropa
   async function buscarTicketAlistar(num) {
     const resBox = document.getElementById("alistar-ticket-resumen");
     if (!num) { resBox.style.display = "none"; return; }
@@ -1091,11 +1222,7 @@
     try {
       const { data: o } = await db
         .from("ordenes")
-        .select(`
-          id, consecutivo_ticket, estado, total_neto, saldo_pendiente, observaciones_estado_prendas,
-          clientes (nombre_o_razon, telefono),
-          orden_items (descripcion_prenda, cantidad)
-        `)
+        .select(`id, consecutivo_ticket, estado, total_neto, saldo_pendiente, observaciones_estado_prendas, clientes(nombre_o_razon, telefono), orden_items(descripcion_prenda, cantidad)`)
         .eq("consecutivo_ticket", parseInt(num, 10))
         .maybeSingle();
 
@@ -1127,7 +1254,7 @@
           `📌 Saldo por cancelar: $${Number(ord.saldo_pendiente).toLocaleString("es-CO")}.\n` +
           `Puedes pasar por ella en nuestro horario habitual. ¡Te esperamos!`;
 
-        fetch('/api/enviar-recibo', {
+        fetch(`${BOT_WHATSAPP_URL}/api/enviar-recibo`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ telefono: ord.clientes.telefono, mensaje: msgListo })
@@ -1142,9 +1269,6 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Centinela 60 Horas
-  let ordenesRetrasadas60h = [];
-
   async function chequearCentinela60h() {
     try {
       const limite = new Date(Date.now() - 60 * 60 * 1000 * 60).toISOString();
@@ -1153,6 +1277,7 @@
         .select("consecutivo_ticket, created_at, estado, clientes(nombre_o_razon, telefono)")
         .neq("estado", "ENTREGADO")
         .neq("estado", "ANULADO")
+        .neq("estado", "LISTO_ENTREGA")
         .lte("created_at", limite);
 
       ordenesRetrasadas60h = data || [];
@@ -1171,34 +1296,18 @@
     } catch (e) { console.error(e); }
   }
 
-  // Entrega y Cobro
   async function buscarOrdenesEntrega(q) {
     const tbody = document.getElementById("tabla-entrega-body");
     try {
-      let qBuilder = db
-        .from("ordenes")
-        .select(`
-          id, consecutivo_ticket, codigo_rastreo, estado, total_neto, saldo_pendiente, abono_inicial,
-          clientes (nombre_o_razon, telefono),
-          orden_items (descripcion_prenda, cantidad)
-        `)
-        .neq("estado", "ANULADO")
-        .order("consecutivo_ticket", { ascending: false })
-        .limit(15);
-
-      if (q && /^\d+$/.test(q)) {
-        qBuilder = qBuilder.eq("consecutivo_ticket", parseInt(q, 10));
-      }
+      let qBuilder = db.from("ordenes").select(`id, consecutivo_ticket, codigo_rastreo, estado, total_neto, saldo_pendiente, abono_inicial, clientes(nombre_o_razon, telefono), orden_items(descripcion_prenda, cantidad)`).neq("estado", "ANULADO").order("consecutivo_ticket", { ascending: false }).limit(15);
+      if (q && /^\d+$/.test(q)) qBuilder = qBuilder.eq("consecutivo_ticket", parseInt(q, 10));
 
       const { data } = await qBuilder;
       let res = data || [];
 
       if (q && !/^\d+$/.test(q)) {
         const qLow = q.toLowerCase();
-        res = res.filter(o => 
-          o.clientes?.nombre_o_razon?.toLowerCase().includes(qLow) ||
-          o.clientes?.telefono?.includes(q)
-        );
+        res = res.filter(o => o.clientes?.nombre_o_razon?.toLowerCase().includes(qLow) || o.clientes?.telefono?.includes(q));
       }
 
       if (res.length === 0) {
@@ -1265,7 +1374,7 @@
         `Saldo cancelado: *$${saldoACobrar.toLocaleString("es-CO")}* mediante *${metodo}*.\n` +
         `¡Gracias por confiar en Lavaarte!`;
 
-      fetch('/api/enviar-recibo', {
+      fetch(`${BOT_WHATSAPP_URL}/api/enviar-recibo`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ telefono: ord.clientes?.telefono, mensaje: mensajeWA })
@@ -1275,44 +1384,32 @@
       cerrarModal("modal-cobro-entrega");
       buscarOrdenesEntrega("");
       chequearCentinela60h();
-    } catch (e) {
-      alert("Error: " + e.message);
-    }
+    } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Egresos Caja Menor
   async function guardarEgresoCaja() {
     const monto = Number(document.getElementById("egreso-monto").value);
     const conc = document.getElementById("egreso-concepto").value.trim();
     const resp = document.getElementById("egreso-resp").value.trim();
-    if (!monto || monto <= 0 || !conc) return alert("Ingresa un monto y concepto válidos.");
+    if (!monto || monto <= 0 || !conc) return alert("Ingresa monto y concepto válidos.");
 
     try {
-      await db.from("egresos_caja").insert({ monto: monto, concepto: conc, responsable: resp });
-      alert(`🔴 Salida de $${monto.toLocaleString("es-CO")} registrada en caja menor.`);
+      await db.from("egresos_caja").insert({ monto, concepto: conc, responsable: resp });
+      alert(`🔴 Salida de $${monto.toLocaleString("es-CO")} registrada.`);
       document.getElementById("egreso-monto").value = "";
       document.getElementById("egreso-concepto").value = "";
       mostrarVista("vista-dashboard");
     } catch (e) { alert(e.message); }
   }
 
-  // Arqueo Diario Desglosado
   let reporteArqueoActual = null;
-
   async function abrirArqueoCaja() {
     try {
       const hoy = new Date();
       hoy.setHours(0,0,0,0);
 
-      const { data: ords } = await db
-        .from("ordenes")
-        .select("consecutivo_ticket, total_neto, abono_inicial, saldo_pendiente, metodo_pago_saldo, estado, created_at, entregado_at, clientes(nombre_o_razon)")
-        .or(`created_at.gte.${hoy.toISOString()},entregado_at.gte.${hoy.toISOString()}`);
-
-      const { data: egrs } = await db
-        .from("egresos_caja")
-        .select("*")
-        .gte("created_at", hoy.toISOString());
+      const { data: ords } = await db.from("ordenes").select("consecutivo_ticket, total_neto, abono_inicial, saldo_pendiente, metodo_pago_saldo, estado, created_at, entregado_at, clientes(nombre_o_razon)").or(`created_at.gte.${hoy.toISOString()},entregado_at.gte.${hoy.toISOString()}`);
+      const { data: egrs } = await db.from("egresos_caja").select("*").gte("created_at", hoy.toISOString());
 
       let efectivoTotal = 0;
       let transferenciasTotal = 0;
@@ -1322,13 +1419,7 @@
       (ords || []).forEach(o => {
         if (new Date(o.created_at) >= hoy && Number(o.abono_inicial) > 0) {
           efectivoTotal += Number(o.abono_inicial);
-          desgloseRecibos.push({
-            ticket: o.consecutivo_ticket,
-            cliente: o.clientes?.nombre_o_razon || 'Particular',
-            concepto: 'Abono Inicial Mostrador',
-            medio: 'EFECTIVO',
-            monto: Number(o.abono_inicial)
-          });
+          desgloseRecibos.push({ ticket: o.consecutivo_ticket, cliente: o.clientes?.nombre_o_razon || 'Particular', concepto: 'Abono Inicial Mostrador', medio: 'EFECTIVO', monto: Number(o.abono_inicial) });
         }
         if (o.entregado_at && new Date(o.entregado_at) >= hoy && o.estado === "ENTREGADO") {
           const saldo = Number(o.total_neto) - Number(o.abono_inicial || 0);
@@ -1336,78 +1427,30 @@
             const medio = o.metodo_pago_saldo || "EFECTIVO";
             if (medio === "EFECTIVO") efectivoTotal += saldo;
             else transferenciasTotal += saldo;
-
-            desgloseRecibos.push({
-              ticket: o.consecutivo_ticket,
-              cliente: o.clientes?.nombre_o_razon || 'Particular',
-              concepto: 'Saldo Liquidado Entrega',
-              medio: medio,
-              monto: saldo
-            });
+            desgloseRecibos.push({ ticket: o.consecutivo_ticket, cliente: o.clientes?.nombre_o_razon || 'Particular', concepto: 'Saldo Liquidado Entrega', medio, monto: saldo });
           }
         }
       });
 
       const dineroNetoEnCaja = efectivoTotal - totalEgresos;
+      reporteArqueoActual = { fecha: new Date().toLocaleDateString("es-CO"), efectivoTotal, transferenciasTotal, totalEgresos, dineroNetoEnCaja, desgloseRecibos, egresos: egrs || [], centinela: ordenesRetrasadas60h };
 
-      reporteArqueoActual = {
-        fecha: new Date().toLocaleDateString("es-CO"),
-        efectivoTotal,
-        transferenciasTotal,
-        totalEgresos,
-        dineroNetoEnCaja,
-        desgloseRecibos,
-        egresos: egrs || [],
-        centinela: ordenesRetrasadas60h
-      };
-
-      const c = document.getElementById("caja-resumen");
-      c.innerHTML = `
-        <div style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 6px;">
-          <span>💵 Entradas en Efectivo (Abonos + Saldos entregados):</span>
-          <strong style="color: var(--success);">$${efectivoTotal.toLocaleString("es-CO")}</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 6px;">
-          <span>📱 Entradas por Transferencias / Datáfono:</span>
-          <strong style="color: var(--accent);">$${transferenciasTotal.toLocaleString("es-CO")}</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 6px; border-bottom: 1px dashed var(--border); padding-bottom: 6px;">
-          <span>🔴 Egresos de Caja Menor (Gastos del Día):</span>
-          <strong style="color: var(--danger);">$${totalEgresos.toLocaleString("es-CO")}</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between; font-size: 18px; margin-top: 6px;">
-          <span>TOTAL DINERO FÍSICO EN CAJÓN:</span>
-          <strong style="color: var(--accent);">$${dineroNetoEnCaja.toLocaleString("es-CO")}</strong>
-        </div>
+      document.getElementById("caja-resumen").innerHTML = `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>💵 Entradas en Efectivo:</span><strong style="color: var(--success);">$${efectivoTotal.toLocaleString("es-CO")}</strong></div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>📱 Entradas por Transferencias / Datáfono:</span><strong style="color: var(--accent);">$${transferenciasTotal.toLocaleString("es-CO")}</strong></div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed var(--border); padding-bottom: 6px;"><span>🔴 Salidas Caja Menor:</span><strong style="color: var(--danger);">$${totalEgresos.toLocaleString("es-CO")}</strong></div>
+        <div style="display: flex; justify-content: space-between; font-size: 18px; margin-top: 6px;"><span>TOTAL DINERO EN CAJÓN:</span><strong style="color: var(--accent);">$${dineroNetoEnCaja.toLocaleString("es-CO")}</strong></div>
       `;
 
-      const tbodyRecibos = document.getElementById("tabla-desglose-arqueo-body");
-      tbodyRecibos.innerHTML = desgloseRecibos.length === 0 
-        ? '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No se registraron cobros hoy.</td></tr>'
-        : desgloseRecibos.map(r => `
-            <tr>
-              <td><strong>#${r.ticket}</strong></td>
-              <td>${r.cliente}</td>
-              <td>${r.concepto}</td>
-              <td>${r.medio}</td>
-              <td style="color: var(--success); font-weight: bold;">$${r.monto.toLocaleString("es-CO")}</td>
-            </tr>
-          `).join("");
+      document.getElementById("tabla-desglose-arqueo-body").innerHTML = desgloseRecibos.length === 0 
+        ? '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No hay cobros hoy.</td></tr>'
+        : desgloseRecibos.map(r => `<tr><td><strong>#${r.ticket}</strong></td><td>${r.cliente}</td><td>${r.concepto}</td><td>${r.medio}</td><td style="color: var(--success); font-weight: bold;">$${r.monto.toLocaleString("es-CO")}</td></tr>`).join("");
 
-      const tbodyEgresos = document.getElementById("tabla-desglose-egresos-body");
-      tbodyEgresos.innerHTML = (!egrs || egrs.length === 0)
+      document.getElementById("tabla-desglose-egresos-body").innerHTML = (!egrs || egrs.length === 0)
         ? '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Sin egresos hoy.</td></tr>'
-        : egrs.map(e => `
-            <tr>
-              <td>${new Date(e.created_at).toLocaleTimeString("es-CO")}</td>
-              <td>${e.concepto}</td>
-              <td>${e.responsable}</td>
-              <td style="color: var(--danger); font-weight: bold;">$${Number(e.monto).toLocaleString("es-CO")}</td>
-            </tr>
-          `).join("");
+        : egrs.map(e => `<tr><td>${new Date(e.created_at).toLocaleTimeString("es-CO")}</td><td>${e.concepto}</td><td>${e.responsable}</td><td style="color: var(--danger); font-weight: bold;">$${Number(e.monto).toLocaleString("es-CO")}</td></tr>`).join("");
 
-      const centList = document.getElementById("arqueo-centinela-list");
-      centList.innerHTML = ordenesRetrasadas60h.length === 0
+      document.getElementById("arqueo-centinela-list").innerHTML = ordenesRetrasadas60h.length === 0
         ? "✓ Cero órdenes retrasadas. Planta al día."
         : ordenesRetrasadas60h.map(o => {
             const h = Math.round((Date.now() - new Date(o.created_at).getTime()) / 3600000);
@@ -1421,20 +1464,18 @@
   function exportarExcelArqueo() {
     if (!reporteArqueoActual) return;
     const wb = XLSX.utils.book_new();
-
     const ws1Data = [
       ["LAVAARTE LAVANDERÍA SAS - INFORME DIARIO DE CAJA Y ARQUEO"],
-      ["Fecha de Cierre:", reporteArqueoActual.fecha],
-      [""],
+      ["Fecha de Cierre:", reporteArqueoActual.fecha], [""],
       ["Concepto", "Total ($COP)"],
-      ["Entradas en Efectivo (Abonos + Saldos)", reporteArqueoActual.efectivoTotal],
+      ["Entradas en Efectivo", reporteArqueoActual.efectivoTotal],
       ["Entradas por Transferencias / Datáfono", reporteArqueoActual.transferenciasTotal],
-      ["Salidas de Caja Menor (Gastos)", reporteArqueoActual.totalEgresos],
+      ["Salidas de Caja Menor", reporteArqueoActual.totalEgresos],
       ["TOTAL DINERO FÍSICO EN CAJA", reporteArqueoActual.dineroNetoEnCaja]
     ];
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws1Data), "Cierre_Caja");
 
-    const wsRecibosData = [["Ticket #", "Cliente", "Concepto de Ingreso", "Medio de Pago", "Monto ($COP)"]];
+    const wsRecibosData = [["Ticket #", "Cliente", "Concepto", "Medio", "Monto ($COP)"]];
     reporteArqueoActual.desgloseRecibos.forEach(r => wsRecibosData.push([r.ticket, r.cliente, r.concepto, r.medio, r.monto]));
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(wsRecibosData), "Ingresos_Desglosados");
 
@@ -1452,60 +1493,25 @@
     XLSX.writeFile(wb, `Lavaarte_CierreCaja_${reporteArqueoActual.fecha.replace(/\//g,'-')}.xlsx`);
   }
 
-  // Descarga Completa de la Base de Datos a Excel
   async function descargarHistoricoOrdenesExcel() {
     try {
-      const { data, error } = await db
-        .from("ordenes")
-        .select(`
-          consecutivo_ticket, codigo_rastreo, estado, total_neto, abono_inicial, saldo_pendiente,
-          metodo_pago_saldo, created_at, entregado_at, observaciones_estado_prendas,
-          clientes (nombre_o_razon, telefono),
-          orden_items (cantidad, descripcion_prenda, precio_unitario, subtotal)
-        `)
-        .order("consecutivo_ticket", { ascending: false });
-
+      const { data, error } = await db.from("ordenes").select(`consecutivo_ticket, codigo_rastreo, estado, total_neto, abono_inicial, saldo_pendiente, metodo_pago_saldo, created_at, entregado_at, observaciones_estado_prendas, clientes(nombre_o_razon, telefono), orden_items(cantidad, descripcion_prenda, precio_unitario, subtotal)`).order("consecutivo_ticket", { ascending: false });
       if (error) throw error;
-      if (!data || data.length === 0) return alert("No hay órdenes registradas para exportar.");
+      if (!data || data.length === 0) return alert("No hay órdenes registradas.");
 
-      const filasExcel = [
-        [
-          "Ticket #", "Código Rastreo", "Fecha Ingreso", "Cliente", "Teléfono",
-          "Prendas Registradas", "Observaciones / Kilos", "Total Neto ($COP)", 
-          "Abono Inicial ($COP)", "Saldo Pendiente ($COP)", "Estado", 
-          "Medio de Pago Saldo", "Fecha Entrega"
-        ]
-      ];
-
+      const filasExcel = [["Ticket #", "Código Rastreo", "Fecha Ingreso", "Cliente", "Teléfono", "Prendas", "Observaciones / Kilos", "Total Neto", "Abono Inicial", "Saldo Pendiente", "Estado", "Medio Pago Saldo", "Fecha Entrega"]];
       data.forEach(o => {
         const prendasTexto = o.orden_items?.map(i => `${i.cantidad}x ${i.descripcion_prenda}`).join(" | ") || "";
-        filasExcel.push([
-          o.consecutivo_ticket,
-          o.codigo_rastreo || "",
-          new Date(o.created_at).toLocaleString("es-CO"),
-          o.clientes?.nombre_o_razon || "Particular",
-          o.clientes?.telefono || "",
-          prendasTexto,
-          o.observaciones_estado_prendas || "",
-          o.total_neto,
-          o.abono_inicial || 0,
-          o.saldo_pendiente,
-          o.estado,
-          o.metodo_pago_saldo || "",
-          o.entregado_at ? new Date(o.entregado_at).toLocaleString("es-CO") : ""
-        ]);
+        filasExcel.push([o.consecutivo_ticket, o.codigo_rastreo || "", new Date(o.created_at).toLocaleString("es-CO"), o.clientes?.nombre_o_razon || "Particular", o.clientes?.telefono || "", prendasTexto, o.observaciones_estado_prendas || "", o.total_neto, o.abono_inicial || 0, o.saldo_pendiente, o.estado, o.metodo_pago_saldo || "", o.entregado_at ? new Date(o.entregado_at).toLocaleString("es-CO") : ""]);
       });
 
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(filasExcel), "Historico_Recibos");
       XLSX.writeFile(wb, `Lavaarte_BaseDatos_Recibos_${new Date().toISOString().split("T")[0]}.xlsx`);
-      alert("✅ Base de datos descargada con éxito.");
-    } catch (e) {
-      alert("Error exportando base de datos: " + e.message);
-    }
+      alert("✅ Base de datos descargada.");
+    } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Panel Admin Facturas
   async function adminCargarTicket() {
     const tNum = document.getElementById("admin-ticket-input").value.trim();
     if (!tNum) return;
@@ -1544,10 +1550,8 @@
     buscarOrdenesEntrega("");
   }
 
-  // Solicitudes Domicilios Particulares
   async function clienteCrearSolicitud(tipo) {
     let nom, tel, dir, fec, fra, notas, ticketRef = "";
-
     if (tipo === "RECOGIDA_DOMICILIO") {
       nom = document.getElementById("dom-rec-nom").value.trim();
       tel = document.getElementById("dom-rec-tel").value.trim();
@@ -1555,7 +1559,7 @@
       fec = document.getElementById("dom-rec-fec").value;
       fra = document.getElementById("dom-rec-franja").value;
       notas = document.getElementById("dom-rec-notas").value.trim();
-      if (!nom || !tel || !dir || !fec) return alert("Completa todos los campos obligatorios.");
+      if (!nom || !tel || !dir || !fec) return alert("Completa los campos obligatorios.");
     } else {
       ticketRef = document.getElementById("dom-ent-ticket").value.trim();
       nom = document.getElementById("dom-ent-nom").value.trim();
@@ -1563,24 +1567,17 @@
       dir = document.getElementById("dom-ent-dir").value.trim();
       fec = document.getElementById("dom-ent-fec").value;
       fra = document.getElementById("dom-ent-franja").value;
-      if (!ticketRef || !nom || !tel || !dir || !fec) return alert("Por favor ingresa el número de ticket y datos obligatorios.");
+      if (!ticketRef || !nom || !tel || !dir || !fec) return alert("Ingresa el ticket y datos obligatorios.");
       notas = `Entrega solicitada para el Ticket #${ticketRef}`;
     }
 
     try {
       await db.from("solicitudes_domicilio").insert({
-        origen_tipo: 'CLIENTE_PARTICULAR',
-        tipo_servicio: tipo,
-        nombre_entidad: nom,
-        telefono: tel,
-        direccion: dir,
-        ticket_referencia: ticketRef,
-        fecha_programada: fec,
-        franja_horaria: fra,
-        notas: notas
+        origen_tipo: 'CLIENTE_PARTICULAR', tipo_servicio: tipo, nombre_entidad: nom,
+        telefono: tel, direccion: dir, ticket_referencia: ticketRef,
+        fecha_programada: fec, franja_horaria: fra, notas
       });
-
-      alert("✅ Solicitud registrada. La ruta se pondrá en contacto contigo.");
+      alert("✅ Solicitud registrada con éxito.");
       if (tipo === "RECOGIDA_DOMICILIO") {
         document.getElementById("dom-rec-nom").value = "";
         document.getElementById("dom-rec-tel").value = "";
@@ -1594,7 +1591,6 @@
     } catch (e) { alert(e.message); }
   }
 
-  // Solicitudes Hoteles
   async function hotelEnviarSolicitud() {
     const hNom = document.getElementById("hotel-sel-nom").value;
     const hSrv = document.getElementById("hotel-sel-servicio").value;
@@ -1605,24 +1601,18 @@
     try {
       const hoyBog = new Date().toISOString().split("T")[0];
       await db.from("solicitudes_domicilio").insert({
-        origen_tipo: 'HOTEL_RUTA',
-        tipo_servicio: 'RECOGIDA_HOTEL',
-        nombre_entidad: hNom,
-        telefono: "Contacto: " + (hCont || "Recepción"),
-        direccion: "Sede Hotel",
-        fecha_programada: hoyBog,
-        franja_horaria: "Ruta Activa Hoy",
+        origen_tipo: 'HOTEL_RUTA', tipo_servicio: 'RECOGIDA_HOTEL', nombre_entidad: hNom,
+        telefono: "Contacto: " + (hCont || "Recepción"), direccion: "Sede Hotel",
+        fecha_programada: hoyBog, franja_horaria: "Ruta Activa Hoy",
         notas: `Servicio: ${hSrv} | Bultos: ${hBultos || 'N/A'} | Nota: ${hNotas || '-'}`
       });
-
-      alert(`✅ ¡Solicitud enviada para ${hNom}!\nEl despachador de ruta ya tiene la notificación.`);
+      alert(`✅ ¡Solicitud enviada para ${hNom}!`);
       document.getElementById("hotel-cant-bultos").value = "";
       document.getElementById("hotel-contacto").value = "";
       document.getElementById("hotel-notas").value = "";
     } catch (e) { alert(e.message); }
   }
 
-  // Domicilios Admin
   async function cargarDomiciliosAdmin() {
     const tbody = document.getElementById("tabla-domicilios-body");
     try {
@@ -1641,11 +1631,7 @@
           <td>${d.direccion}</td>
           <td>${d.ticket_referencia ? '#' + d.ticket_referencia : '-'}</td>
           <td style="font-size: 11px; color: var(--text-muted);">${d.notas || '-'}</td>
-          <td>
-            <button class="nav-btn" style="padding: 4px 8px; font-size: 11px;" onclick="cambiarEstadoDomicilio('${d.id}', '${d.estado}')">
-              ⚙️ ${d.estado}
-            </button>
-          </td>
+          <td><button class="nav-btn" style="padding: 4px 8px; font-size: 11px;" onclick="cambiarEstadoDomicilio('${d.id}', '${d.estado}')">⚙️ ${d.estado}</button></td>
         </tr>
       `).join("");
     } catch (e) { console.error(e); }
@@ -1655,26 +1641,19 @@
     const opciones = ["PENDIENTE", "EN_CAMINO", "RECOGIDO", "ENTREGADO", "CANCELADO"];
     const sig = prompt(`Cambiar estado actual (${estActual}).\nOpciones: PENDIENTE, EN_CAMINO, RECOGIDO, ENTREGADO o CANCELADO:`, estActual);
     if (!sig || !opciones.includes(sig.toUpperCase().trim())) return;
-
     await db.from("solicitudes_domicilio").update({ estado: sig.toUpperCase().trim() }).eq("id", id);
     cargarDomiciliosAdmin();
   }
 
-  // Consulta Pública Ticket
   async function clienteConsultarTicket() {
     const t = document.getElementById("cliente-ticket-query").value.trim();
     const resBox = document.getElementById("cliente-ticket-result");
     if (!t) return;
 
     try {
-      const { data: o } = await db
-        .from("ordenes")
-        .select("consecutivo_ticket, estado, total_neto, saldo_pendiente, orden_items(cantidad, descripcion_prenda)")
-        .eq("consecutivo_ticket", parseInt(t, 10))
-        .maybeSingle();
-
+      const { data: o } = await db.from("ordenes").select("consecutivo_ticket, estado, total_neto, saldo_pendiente, orden_items(cantidad, descripcion_prenda)").eq("consecutivo_ticket", parseInt(t, 10)).maybeSingle();
       if (!o) {
-        resBox.innerHTML = '<span style="color: var(--danger);">No se encontró ninguna orden con ese número de ticket.</span>';
+        resBox.innerHTML = '<span style="color: var(--danger);">No se encontró ninguna orden con ese ticket.</span>';
         return;
       }
 
@@ -1689,7 +1668,7 @@
             <span style="color: ${color}; font-weight: bold;">[${o.estado}]</span>
           </div>
           <div style="margin-top: 6px; color: var(--text-muted);">
-            Prendas: ${o.orden_items?.map(i => `${i.cantidad}x ${i.descripcion_prenda}`).join(", ")}
+            Prendas: ${o.orden_items?.map(i => `${i.cantidad}x${i.descripcion_prenda}`).join(", ")}
           </div>
           <div style="margin-top: 6px; font-weight: bold; color: var(--accent);">
             Saldo por cancelar: $${Number(o.saldo_pendiente).toLocaleString("es-CO")}
