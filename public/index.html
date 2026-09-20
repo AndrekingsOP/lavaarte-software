@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Lavaarte OS - Sistema Integral</title>
+<title>Lavaarte - El Arte de Lavar</title>
+<meta name="theme-color" content="#0284c7">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
@@ -25,6 +26,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   body { background: var(--bg-main); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
 
+  /* Topbar */
   .topbar { background: var(--bg-card); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
   .brand { font-size: 18px; font-weight: 800; color: var(--accent); display: flex; align-items: center; gap: 8px; cursor: pointer; }
   .nav-btn { background: var(--bg-input); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
@@ -34,12 +36,29 @@
   .view-section { display: none; flex-direction: column; gap: 16px; flex: 1; }
   .view-active { display: flex; }
 
+  /* VISTA HOME DE RECEPCIÓN ELEGANTE */
+  .home-hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 16px 20px 16px; gap: 12px; }
+  .home-logo-svg { width: 120px; height: 120px; filter: drop-shadow(0 4px 15px rgba(2, 132, 199, 0.4)); }
+  .home-title { font-size: 32px; font-weight: 900; letter-spacing: 1px; color: #fff; }
+  .home-title span { color: var(--accent); }
+  .home-slogan { font-style: italic; color: #f87171; font-size: 18px; font-weight: 600; margin-top: -6px; }
+  .home-sub { font-size: 14px; color: var(--text-muted); max-width: 500px; margin-top: 4px; }
+  
+  .portal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 25px; width: 100%; max-width: 1000px; margin-left: auto; margin-right: auto; }
+  .portal-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 16px; padding: 32px 24px; text-align: center; cursor: pointer; transition: all 0.25s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+  .portal-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 25px rgba(2, 132, 199, 0.2); }
+  .portal-icon { font-size: 42px; }
+  .portal-title { font-size: 20px; font-weight: 800; color: #fff; }
+  .portal-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  /* Dashboard Interno */
   .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 15px; }
   .dash-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; text-align: center; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; }
   .dash-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.15); }
   .dash-card h3 { font-size: 16px; font-weight: 700; color: var(--text); }
   .dash-card p { font-size: 12px; color: var(--text-muted); }
 
+  /* Formularios */
   .input-group { display: flex; flex-direction: column; gap: 4px; position: relative; }
   .label-sm { font-size: 12px; font-weight: bold; color: var(--text-muted); }
   .input-text { width: 100%; background: var(--bg-input); border: 1px solid var(--border); color: white; padding: 12px 14px; border-radius: 8px; font-size: 15px; outline: none; }
@@ -64,9 +83,11 @@
   .btn-qty { background: #334155; border: none; color: white; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
   .btn-del { background: none; border: none; color: var(--danger); font-size: 18px; cursor: pointer; margin-left: 8px; }
 
-  .btn-voice { background: #475569; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .btn-voice { background: #0284c7; color: white; border: none; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; justify-content: center; }
   .btn-voice.recording { background: var(--danger); animation: pulse 1s infinite; }
   @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+  .loyalty-badge { background: rgba(245, 158, 11, 0.15); border: 1px solid var(--warning); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: var(--warning); margin-bottom: 8px; display: none; }
 
   .btn-primary { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
   .btn-primary:hover { background: var(--primary-hover); }
@@ -85,13 +106,10 @@
   #ticket-termico-print { display: none; }
 
   /* =========================================================================
-     ESTILOS DE IMPRESIÓN MODERNA Y PROFESIONAL (XPRINTER 80MM / ÚTIL 68MM)
+     IMPRESIÓN TÉRMICA PROFESIONAL (XPRINTER 80MM / ÚTIL 68MM)
      ========================================================================= */
   @media print {
-    @page {
-      size: 80mm auto;
-      margin: 0;
-    }
+    @page { size: 80mm auto; margin: 0; }
     html, body {
       margin: 0 !important;
       padding: 0 !important;
@@ -99,12 +117,8 @@
       color: #000 !important;
       height: auto !important;
     }
-    body * {
-      visibility: hidden;
-    }
-    #ticket-termico-print, #ticket-termico-print * {
-      visibility: visible;
-    }
+    body * { visibility: hidden; }
+    #ticket-termico-print, #ticket-termico-print * { visibility: visible; }
     #ticket-termico-print {
       display: block !important;
       position: absolute;
@@ -112,13 +126,12 @@
       top: 0;
       width: 68mm;
       margin-left: 2mm;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       font-size: 11.5px;
       color: #000;
       background: #fff;
       line-height: 1.3;
     }
-
     .ticket-copia {
       page-break-after: always;
       break-after: page;
@@ -130,50 +143,31 @@
       break-after: avoid;
       padding-bottom: 2mm;
     }
-
-    /* Elementos de Diseño Profesional */
-    .p-logo {
-      display: block;
-      margin: 0 auto 6px auto;
-      max-width: 58mm;
-      max-height: 24mm;
-      object-fit: contain;
-      filter: grayscale(100%) contrast(150%);
-    }
+    .p-logo-wrap { text-align: center; margin-bottom: 4px; }
+    .p-logo-svg { width: 44mm; height: 18mm; }
     .p-header-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 900;
-      letter-spacing: 0.5px;
       text-align: center;
-      margin-bottom: 2px;
+      letter-spacing: 0.5px;
     }
     .p-subtext {
-      font-size: 10.5px;
-      color: #111;
+      font-size: 10px;
       text-align: center;
       line-height: 1.25;
     }
     .p-box-ticket {
       border: 1.5px solid #000;
       padding: 4px 6px;
-      margin: 6px 0;
+      margin: 5px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: bold;
       font-size: 13px;
     }
-    .p-meta-grid {
-      font-size: 11px;
-      line-height: 1.35;
-      margin-bottom: 6px;
-    }
-    .p-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11px;
-      margin: 6px 0;
-    }
+    .p-meta-grid { font-size: 11px; line-height: 1.35; margin-bottom: 5px; }
+    .p-table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 5px 0; }
     .p-table th {
       border-top: 1.5px solid #000;
       border-bottom: 1.5px solid #000;
@@ -181,18 +175,9 @@
       text-align: left;
       font-size: 10px;
       font-weight: 800;
-      text-transform: uppercase;
     }
-    .p-table td {
-      padding: 3px 0;
-      vertical-align: top;
-      border-bottom: 1px dotted #ccc;
-    }
-    .p-totals-box {
-      border-top: 1.5px solid #000;
-      padding-top: 4px;
-      margin-top: 4px;
-    }
+    .p-table td { padding: 3px 0; vertical-align: top; border-bottom: 1px dotted #ccc; }
+    .p-totals-box { border-top: 1.5px solid #000; padding-top: 4px; margin-top: 4px; }
     .p-saldo-destacado {
       border: 1.5px solid #000;
       padding: 4px 6px;
@@ -222,25 +207,71 @@
 </head>
 <body>
 
+<!-- BARRA DE NAVEGACIÓN -->
 <div class="topbar">
-  <div class="brand" onclick="solicitarAccesoEmpleados()">
-    🧺 Lavaarte OS <span>| Control Maestro</span>
+  <div class="brand" onclick="mostrarVista('vista-home')">
+    🧺 Lavaarte <span>| Sistema Integral</span>
   </div>
   <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
     <button class="nav-btn" id="btn-modo-impresora" onclick="toggleModoImpresoraHP()">🖨️ Modo Impresora HP: OFF</button>
-    <button class="nav-btn" onclick="mostrarVista('vista-portal-hoteles')">🏨 Hoteles</button>
-    <button class="nav-btn" onclick="mostrarVista('vista-portal-cliente')">🌐 Clientes</button>
-    <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Empleados</button>
+    <button class="nav-btn" onclick="mostrarVista('vista-portal-hoteles')">🏨 Servicios Hoteles</button>
+    <button class="nav-btn" onclick="mostrarVista('vista-portal-cliente')">🌐 Servicios Clientes</button>
+    <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados('vista-dashboard')">🔐 Lavaarte</button>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- VISTA 1: DASHBOARD EMPLEADOS -->
-  <div class="view-section view-active" id="vista-dashboard">
+  <!-- ==================== VISTA 0: PORTAL DE BIENVENIDA / RECEPCIÓN ELEGANTE ==================== -->
+  <div class="view-section view-active" id="vista-home">
+    <div class="home-hero">
+      <svg class="home-logo-svg" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="46" fill="#0284c7" />
+        <path d="M50 12 A38 38 0 0 1 88 50 A38 38 0 0 1 50 88 C30 88 20 70 35 55 C45 45 55 35 50 12 Z" fill="#38bdf8" />
+        <circle cx="65" cy="45" r="7" fill="#ffffff" />
+        <circle cx="58" cy="33" r="4" fill="#ffffff" />
+        <circle cx="70" cy="30" r="3" fill="#ffffff" />
+      </svg>
+      <h1 class="home-title">LAVAARTE <span>LAVANDERÍA</span></h1>
+      <div class="home-slogan">El Arte de Lavar</div>
+      <p class="home-sub">Servicio textil profesional para hogares, huéspedes y grandes cadenas hoteleras en Bogotá.</p>
+    </div>
+
+    <div class="portal-grid">
+      <!-- Opción 1: Clientes -->
+      <div class="portal-card" onclick="mostrarVista('vista-portal-cliente')">
+        <div class="portal-icon">👕</div>
+        <div class="portal-title">Servicios para Clientes</div>
+        <div class="portal-desc">Rastreo de prendas en tiempo real con tu número de ticket y solicitud de recogida o entrega a domicilio.</div>
+        <button class="btn-primary" style="width: 100%; margin-top: 6px;">Consultar o Pedir Domicilio</button>
+      </div>
+
+      <!-- Opción 2: Hoteles -->
+      <div class="portal-card" onclick="mostrarVista('vista-portal-hoteles')">
+        <div class="portal-icon">🏨</div>
+        <div class="portal-title">Servicios para Hoteles</div>
+        <div class="portal-desc">Portal logístico exclusivo para ama de llaves, lencería de habitaciones, prendas de huéspedes y dotaciones.</div>
+        <button class="btn-primary" style="width: 100%; margin-top: 6px;">Solicitar Ruta Inmediata</button>
+      </div>
+
+      <!-- Opción 3: Empleados (Lavaarte) -->
+      <div class="portal-card" style="border-color: var(--primary);" onclick="solicitarAccesoEmpleados('vista-dashboard')">
+        <div class="portal-icon">🔐</div>
+        <div class="portal-title">Lavaarte</div>
+        <div class="portal-desc">Módulo operativo protegido para colaboradores: mostrador, recepción por voz, alistamiento, arqueo y panel maestro.</div>
+        <button class="btn-success" style="width: 100%; margin-top: 6px;">Acceso Colaboradores (PIN)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VISTA 1: DASHBOARD EMPLEADOS (LAVAARTE) ==================== -->
+  <div class="view-section" id="vista-dashboard">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
       <h2>Panel Operativo Lavaarte SAS</h2>
-      <span id="hora-actual" style="font-size: 13px; color: var(--accent); font-weight: bold;"></span>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <span id="hora-actual" style="font-size: 13px; color: var(--accent); font-weight: bold;"></span>
+        <button class="nav-btn" onclick="mostrarVista('vista-home')">🏠 Salir a Recepción</button>
+      </div>
     </div>
 
     <!-- Centinela 60h -->
@@ -253,7 +284,7 @@
       <div class="dash-card" onclick="mostrarVista('vista-pos')">
         <span style="font-size: 32px;">📥</span>
         <h3>1. Ingreso de Prendas</h3>
-        <p>Recepción en mostrador, abonos, kilos y control por voz</p>
+        <p>Recepción por voz inteligente, abonos, kilos y fidelización</p>
       </div>
 
       <div class="dash-card" onclick="mostrarVista('vista-alistar')">
@@ -306,50 +337,52 @@
     </div>
   </div>
 
-  <!-- VISTA 2: INGRESO DE PRENDAS (POS) -->
+  <!-- ==================== VISTA 2: INGRESO DE PRENDAS (POS) ==================== -->
   <div class="view-section" id="vista-pos">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>📥 Ingreso de Prendas al Sistema</h3>
+      <h3>📥 Ingreso de Prendas al Mostrador</h3>
       <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
     </div>
 
     <div class="pos-layout">
       <div class="pos-sidebar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <label class="label-sm">Buscar Cliente</label>
-          <button id="btn-voz-pos" class="btn-voice" onclick="iniciarVozPOS()">🎙️ Dictar Orden Completa</button>
-        </div>
+        <!-- Reconocimiento de Voz Inteligente -->
+        <button id="btn-voz-pos" class="btn-voice" style="margin-bottom: 8px;" onclick="iniciarVozPOSInteligente()">
+          🎙️ Dictar Orden Completa (Cliente + Prendas + Estado)
+        </button>
+
+        <div id="badge-loyalty" class="loyalty-badge"></div>
 
         <div class="input-group">
-          <input type="text" id="busc-cliente" class="input-text" placeholder="Escribe nombre o celular..." oninput="filtrarCliente(this.value)">
+          <input type="text" id="busc-cliente" class="input-text" placeholder="Buscar cliente por nombre o celular..." oninput="filtrarCliente(this.value)">
           <div id="drop-clientes" class="autocomplete-box"></div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
           <div class="input-group">
-            <label class="label-sm">Teléfono Celular</label>
+            <label class="label-sm">Teléfono Celular *</label>
             <input type="text" id="pos-cli-tel" class="input-text" placeholder="315...">
           </div>
           <div class="input-group">
-            <label class="label-sm">Nombre Cliente</label>
-            <input type="text" id="pos-cli-nom" class="input-text" placeholder="Nombre...">
+            <label class="label-sm">Nombre Cliente *</label>
+            <input type="text" id="pos-cli-nom" class="input-text" placeholder="Nombre completo">
           </div>
         </div>
 
         <div class="ticket-list" id="ticket-items">
           <div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 30px;">
-            Selecciona prendas del catálogo o dicta por voz.
+            Selecciona prendas del catálogo o dicta la orden por voz.
           </div>
         </div>
 
         <div class="input-group" id="group-detalle-kilos" style="display: none; margin-bottom: 8px;">
-          <label class="label-sm" style="color: var(--accent);">🧺 Desglose Ropa por Kilo (Prendas del peso)</label>
+          <label class="label-sm" style="color: var(--accent);">🧺 Desglose Ropa por Kilo (Prendas que componen el peso)</label>
           <textarea id="pos-kilo-detalle" class="input-text" style="height: 55px; resize: none; font-size: 12px;" placeholder="Ej: 3 pantalones, 5 medias, 5 bóxer, 2 camisetas"></textarea>
         </div>
 
         <div class="input-group" style="margin-bottom: 8px;">
-          <label class="label-sm">Detalles / Estado de las Prendas</label>
-          <textarea id="pos-obs-prendas" class="input-text" style="height: 55px; resize: none; font-size: 12px;" placeholder="Ej: Camisa con mancha de café; pantalón sin botón"></textarea>
+          <label class="label-sm">Detalles / Estado de las Prendas (Manchas, rotos, color)</label>
+          <textarea id="pos-obs-prendas" class="input-text" style="height: 55px; resize: none; font-size: 12px;" placeholder="Ej: Camisa blanca con mancha de café; pantalón sin botón"></textarea>
         </div>
 
         <div style="background: var(--bg-input); padding: 10px; border-radius: 8px; display: flex; flex-direction: column; gap: 6px;">
@@ -380,7 +413,7 @@
     </div>
   </div>
 
-  <!-- VISTA 3: ALISTAR ROPA -->
+  <!-- ==================== VISTA 3: ALISTAR ROPA ==================== -->
   <div class="view-section" id="vista-alistar">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🧺 Alistar Ropa (Planta / Control de Calidad)</h3>
@@ -413,7 +446,7 @@
     </div>
   </div>
 
-  <!-- VISTA 4: ENTREGAR PRENDAS -->
+  <!-- ==================== VISTA 4: ENTREGAR PRENDAS ==================== -->
   <div class="view-section" id="vista-entrega">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🤝 Entregar Prendas y Liquidar Saldo</h3>
@@ -445,7 +478,7 @@
     </div>
   </div>
 
-  <!-- VISTA 5: SALIDAS DE EFECTIVO -->
+  <!-- ==================== VISTA 5: SALIDAS DE EFECTIVO ==================== -->
   <div class="view-section" id="vista-egresos">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>💸 Salidas de Efectivo (Caja Menor)</h3>
@@ -469,7 +502,7 @@
     </div>
   </div>
 
-  <!-- VISTA 6: GESTIÓN DE DOMICILIOS Y RUTAS -->
+  <!-- ==================== VISTA 6: GESTIÓN DE DOMICILIOS Y RUTAS ==================== -->
   <div class="view-section" id="vista-domicilios-admin">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🛵 Solicitudes de Domicilio y Rutas (En Vivo)</h3>
@@ -497,18 +530,18 @@
     </div>
   </div>
 
-  <!-- VISTA 7: PORTAL CLIENTES -->
+  <!-- ==================== VISTA 7: PORTAL CLIENTES ==================== -->
   <div class="view-section" id="vista-portal-cliente">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>🌐 Portal de Autoservicio para Clientes</h3>
-      <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Acceso Empleados</button>
+      <h3>🌐 Servicios para Clientes</h3>
+      <button class="nav-btn" onclick="mostrarVista('vista-home')">🏠 Volver al Inicio</button>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-top: 10px;">
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
         <h4 style="color: var(--accent); margin-bottom: 8px;">🔍 Rastrear Estado de mi Ropa</h4>
         <div style="display: flex; gap: 8px;">
-          <input type="number" id="cliente-ticket-query" class="input-text" placeholder="Ej: 45">
+          <input type="number" id="cliente-ticket-query" class="input-text" placeholder="Ingresa tu N° de Ticket (Ej: 45)">
           <button class="btn-primary" onclick="clienteConsultarTicket()">Consultar</button>
         </div>
         <div id="cliente-ticket-result" style="margin-top: 14px; font-size: 13px;"></div>
@@ -552,11 +585,11 @@
     </div>
   </div>
 
-  <!-- VISTA 8: PORTAL HOTELES -->
+  <!-- ==================== VISTA 8: PORTAL HOTELES ==================== -->
   <div class="view-section" id="vista-portal-hoteles">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>🏨 Portal Logístico para Hoteles</h3>
-      <button class="nav-btn" style="background: #0284c7; border: none;" onclick="solicitarAccesoEmpleados()">🔐 Acceso Empleados</button>
+      <h3>🏨 Servicios para Hoteles (Portal Logístico)</h3>
+      <button class="nav-btn" onclick="mostrarVista('vista-home')">🏠 Volver al Inicio</button>
     </div>
 
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; max-width: 580px; margin: 20px auto; width: 100%;">
@@ -717,7 +750,7 @@
 <!-- Modal: PIN Admin -->
 <div class="modal" id="modal-admin-auth">
   <div class="modal-content" style="width: 380px; text-align: center;">
-    <h3 style="color: var(--warning);">🔒 Acceso Administrativo</h3>
+    <h3 style="color: var(--warning);">🔒 Acceso Protegido Lavaarte</h3>
     <p style="font-size: 13px; color: var(--text-muted);">Ingresa el PIN de seguridad para continuar:</p>
     <input type="password" id="admin-pin" class="input-text" style="font-size: 24px; text-align: center; letter-spacing: 6px;" maxlength="4" placeholder="••••">
     <button class="btn-primary" onclick="validarPinAdmin()">Entrar</button>
@@ -738,7 +771,7 @@
   </div>
 </div>
 
-<!-- Modal 9: PANEL MAESTRO ADMINISTRADOR (Catálogo + BD en Vivo + Clientes) -->
+<!-- Modal 9: PANEL MAESTRO ADMINISTRADOR -->
 <div class="modal" id="modal-admin-master">
   <div class="modal-content" style="width: 820px;">
     <h3 style="color: var(--warning);">⚡ Panel Maestro Administrador</h3>
@@ -806,7 +839,7 @@
       </div>
     </div>
 
-    <!-- Sección 4: Borrado Físico Directo por Ticket -->
+    <!-- Sección 4: Borrado Físico de Órdenes -->
     <div style="background: rgba(239, 68, 68, 0.1); padding: 14px; border-radius: 8px; border: 1px solid var(--danger);">
       <h4 style="color: var(--danger); margin-bottom: 4px;">🗑️ Borrado Físico de Orden</h4>
       <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Elimina permanentemente de Supabase el ticket y sus prendas asociadas (no se renumera la secuencia).</p>
@@ -825,7 +858,15 @@
 
   <!-- COPIA 1: ORIGINAL CLIENTE -->
   <div class="ticket-copia">
-    <img src="logo.png" class="p-logo" alt="Lavaarte Logo" onerror="this.style.display='none'">
+    <div class="p-logo-wrap">
+      <svg class="p-logo-svg" viewBox="0 0 100 30">
+        <circle cx="15" cy="15" r="13" fill="#000" />
+        <circle cx="15" cy="15" r="9" fill="#fff" />
+        <path d="M15 6 A9 9 0 0 1 24 15 C20 18 10 18 15 6 Z" fill="#000" />
+        <circle cx="19" cy="12" r="1.5" fill="#fff" />
+        <text x="32" y="19" font-size="14" font-weight="900" fill="#000" letter-spacing="1">LAVAARTE</text>
+      </svg>
+    </div>
     <div class="p-header-title">LAVAARTE LAVANDERÍA</div>
     <div class="p-subtext">
       NIT: 901.344.335<br>
@@ -844,6 +885,7 @@
       <div><strong>CLIENTE:</strong> <span class="pr-cliente">---</span></div>
       <div><strong>TELÉFONO:</strong> <span class="pr-telefono">---</span></div>
       <div><strong>RASTREO WEB:</strong> <span class="pr-rastreo">LAV-XXXXXX</span></div>
+      <div class="pr-loyalty-text" style="font-size: 10px; font-weight: bold; color: #000; margin-top: 2px;"></div>
       <div style="text-align: right; font-size: 9.5px; font-weight: bold; margin-top: 2px;">[ORIGINAL: CLIENTE]</div>
     </div>
 
@@ -860,7 +902,7 @@
 
     <div class="pr-box-obs" style="margin: 4px 0; font-size: 10.5px; display: none;">
       <div style="border-top: 1px dotted #000; padding-top: 3px;">
-        <strong>OBS / KILOS:</strong> <span class="pr-obs-texto"></span>
+        <strong>OBS / ESTADO:</strong> <span class="pr-obs-texto"></span>
       </div>
     </div>
 
@@ -886,9 +928,16 @@
     </div>
   </div>
 
-  <!-- COPIA 2: COPIA PLANTA / ACOPLE -->
+  <!-- COPIA 2: PLANTA / ACOPLE -->
   <div class="ticket-copia">
-    <img src="logo.png" class="p-logo" alt="Lavaarte Logo" onerror="this.style.display='none'">
+    <div class="p-logo-wrap">
+      <svg class="p-logo-svg" viewBox="0 0 100 30">
+        <circle cx="15" cy="15" r="13" fill="#000" />
+        <circle cx="15" cy="15" r="9" fill="#fff" />
+        <path d="M15 6 A9 9 0 0 1 24 15 C20 18 10 18 15 6 Z" fill="#000" />
+        <text x="32" y="19" font-size="14" font-weight="900" fill="#000" letter-spacing="1">LAVAARTE</text>
+      </svg>
+    </div>
     <div class="p-header-title">LAVAARTE LAVANDERÍA</div>
     <div class="p-subtext">
       NIT: 901.344.335 | Diagonal 47 No.77C-80 Bogotá
@@ -918,7 +967,7 @@
 
     <div class="pr-box-obs" style="margin: 4px 0; font-size: 10.5px; display: none;">
       <div style="border-top: 1px dotted #000; padding-top: 3px;">
-        <strong>OBS / KILOS:</strong> <span class="pr-obs-texto"></span>
+        <strong>OBS / ESTADO:</strong> <span class="pr-obs-texto"></span>
       </div>
     </div>
 
@@ -949,7 +998,7 @@
   const SUPABASE_KEY = "sb_publishable_vUntLk7lDbQ3DXROxTDCLg_NjgC6IIT";
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Catálogo inicial con persistencia LocalStorage
+  // Catálogo inicial con persistencia
   const CATALOGO_DEFAULT = [
     {cod: 1, nom: "Camisa", pre: 5500}, {cod: 2, nom: "Camiseta", pre: 6800}, {cod: 3, nom: "Pantalón", pre: 7500},
     {cod: 4, nom: "Jeans", pre: 7500}, {cod: 5, nom: "Vestido Hombre 2 Pzs.", pre: 14000}, {cod: 6, nom: "Corbata", pre: 7000},
@@ -988,6 +1037,7 @@
   let ordenAlistarActiva = null;
   let destinoPinAdmin = "";
   let modoImpresoraHP = false;
+  let clienteVisitasHistorial = 0;
 
   window.onload = () => {
     actualizarReloj();
@@ -1045,12 +1095,13 @@
     }
   }
 
-  function poblarPlantillaImpresion(ticketNum, fechaStr, clienteNom, clienteTel, codigoRastreo, itemsArray, obsTexto, totalNum, abonoNum, saldoNum) {
+  function poblarPlantillaImpresion(ticketNum, fechaStr, clienteNom, clienteTel, codigoRastreo, itemsArray, obsTexto, totalNum, abonoNum, saldoNum, textoLoyalty) {
     document.querySelectorAll(".pr-ticket").forEach(el => el.textContent = `#${ticketNum}`);
     document.querySelectorAll(".pr-fecha").forEach(el => el.textContent = fechaStr);
     document.querySelectorAll(".pr-cliente").forEach(el => el.textContent = clienteNom);
     document.querySelectorAll(".pr-telefono").forEach(el => el.textContent = clienteTel);
     document.querySelectorAll(".pr-rastreo").forEach(el => el.textContent = codigoRastreo);
+    document.querySelectorAll(".pr-loyalty-text").forEach(el => el.textContent = textoLoyalty || "");
 
     const itemsHTML = itemsArray.map(i => `
       <tr>
@@ -1080,7 +1131,7 @@
     try {
       const { data: o } = await db.from("ordenes").select("*, clientes(*), orden_items(*)").eq("id", ordenId).single();
       if (!o) return;
-      poblarPlantillaImpresion(o.consecutivo_ticket, new Date(o.created_at).toLocaleString("es-CO"), o.clientes?.nombre_o_razon || "Particular", o.clientes?.telefono || "-", o.codigo_rastreo, o.orden_items || [], o.observaciones_estado_prendas, o.total_neto, o.abono_inicial || 0, o.saldo_pendiente);
+      poblarPlantillaImpresion(o.consecutivo_ticket, new Date(o.created_at).toLocaleString("es-CO"), o.clientes?.nombre_o_razon || "Particular", o.clientes?.telefono || "-", o.codigo_rastreo, o.orden_items || [], o.observaciones_estado_prendas, o.total_neto, o.abono_inicial || 0, o.saldo_pendiente, "");
       window.print();
       await db.from("ordenes").update({ impresa: true }).eq("id", ordenId);
     } catch (e) { console.error("Error imprimiendo:", e); }
@@ -1242,7 +1293,7 @@
       box.innerHTML = `<div class="autocomplete-item" onclick="seleccionarNuevoCliente('${val}')">➕ Crear cliente nuevo: "<strong>${val}</strong>"</div>`;
     } else {
       box.innerHTML = matches.map(c => `
-        <div class="autocomplete-item" onclick="cargarCliente('${c.nombre_o_razon}', '${c.telefono}')">
+        <div class="autocomplete-item" onclick="cargarCliente('${c.nombre_o_razon}', '${c.telefono}', '${c.id}')">
           👤 ${c.nombre_o_razon} | 📞 ${c.telefono}
         </div>
       `).join("");
@@ -1250,11 +1301,12 @@
     box.style.display = "block";
   }
 
-  function cargarCliente(nom, tel) {
+  async function cargarCliente(nom, tel, cliId) {
     document.getElementById("pos-cli-nom").value = nom;
     document.getElementById("pos-cli-tel").value = tel;
     document.getElementById("busc-cliente").value = nom + " (" + tel + ")";
     document.getElementById("drop-clientes").style.display = "none";
+    await verificarFidelizacionCliente(cliId);
   }
 
   function seleccionarNuevoCliente(val) {
@@ -1266,6 +1318,31 @@
       document.getElementById("pos-cli-tel").focus();
     }
     document.getElementById("drop-clientes").style.display = "none";
+    document.getElementById("badge-loyalty").style.display = "none";
+  }
+
+  // Fidelización Lavaarte Loyalty
+  async function verificarFidelizacionCliente(cliId) {
+    if (!cliId) return;
+    try {
+      const { count } = await db.from("ordenes").select("id", { count: 'exact', head: true }).eq("cliente_id", cliId).neq("estado", "ANULADO");
+      clienteVisitasHistorial = count || 0;
+      const badge = document.getElementById("badge-loyalty");
+      const visitasCiclo = (clienteVisitasHistorial % 5) + 1;
+
+      if (visitasCiclo === 5) {
+        badge.innerHTML = `⭐ <strong>¡LAVAARTE LOYALTY (VISITA #5)!</strong> Este cliente tiene derecho a 1 prenda GRATIS o descuento especial.`;
+        badge.style.display = "block";
+        const aplicar = confirm("⭐ ¡Este cliente cumple 5 visitas!\n¿Deseas aplicar el beneficio Lavaarte Loyalty (1 prenda gratis en esta orden)?");
+        if (aplicar && ticket.length > 0) {
+          ticket[0].pre = 0;
+          renderTicket();
+        }
+      } else {
+        badge.innerHTML = `🎖️ <strong>Lavaarte Loyalty:</strong> Visita #${visitasCiclo} de 5 para su próxima prenda gratis.`;
+        badge.style.display = "block";
+      }
+    } catch (e) { console.error(e); }
   }
 
   // Guardar Orden
@@ -1276,7 +1353,11 @@
     let obs = document.getElementById("pos-obs-prendas").value.trim();
     const kiloDetalle = document.getElementById("pos-kilo-detalle").value.trim();
 
-    if (!nom || !tel) return alert("Por favor asigna nombre y teléfono del cliente.");
+    if (!nom || !tel) {
+      alert("⚠️ REQUISITO OBLIGATORIO: Se necesita nombre y número de celular del cliente para enviar su copia digital.");
+      document.getElementById("pos-cli-tel").focus();
+      return;
+    }
 
     if (kiloDetalle) {
       obs = obs ? `${obs} | 📦 Desglose Kilos: [${kiloDetalle}]` : `📦 Desglose Kilos: [${kiloDetalle}]`;
@@ -1325,8 +1406,13 @@
       }));
       await db.from("orden_items").insert(items);
 
+      const cicloVisita = ((clienteVisitasHistorial) % 5) + 1;
+      const textoLoyalty = cicloVisita === 5 
+        ? "⭐ Beneficio Lavaarte Loyalty: ¡Prenda Gratis Aplicada!" 
+        : `🎖️ Lavaarte Loyalty: Visita ${cicloVisita} de 5 para premio`;
+
       // Doble impresión térmica 68mm
-      poblarPlantillaImpresion(ord.consecutivo_ticket, new Date().toLocaleString("es-CO"), nom, tel, codigoRastreo, items, obs, total, abono, saldo);
+      poblarPlantillaImpresion(ord.consecutivo_ticket, new Date().toLocaleString("es-CO"), nom, tel, codigoRastreo, items, obs, total, abono, saldo, textoLoyalty);
       window.print();
       await db.from("ordenes").update({ impresa: true }).eq("id", ord.id);
 
@@ -1346,7 +1432,8 @@
         `\n💰 *Total:* $${total.toLocaleString("es-CO")}\n` +
         `💵 *Abono inicial:* $${abono.toLocaleString("es-CO")}\n` +
         `📌 *Saldo por pagar:* $${saldo.toLocaleString("es-CO")}\n\n` +
-        `🔍 Recuerda que con tu *Ticket #${ord.consecutivo_ticket}* puedes rastrear el estado de tu ropa en www.lavaarte.com\n` +
+        `${textoLoyalty}\n` +
+        `🔍 Recuerda que con tu *Ticket #${ord.consecutivo_ticket}* puedes rastrear el avance de tu ropa en www.lavaarte.com\n` +
         `¡Gracias por escogernos!`;
 
       despacharWhatsApp(tel, mensajeTexto);
@@ -1359,6 +1446,7 @@
       document.getElementById("pos-abono").value = 0;
       document.getElementById("pos-obs-prendas").value = "";
       document.getElementById("pos-kilo-detalle").value = "";
+      document.getElementById("badge-loyalty").style.display = "none";
       renderTicket();
       precargarClientes();
       chequearCentinela60h();
@@ -1666,8 +1754,8 @@
   }
 
   // Facturas y PIN
-  function solicitarAccesoEmpleados() {
-    destinoPinAdmin = "vista-dashboard";
+  function solicitarAccesoEmpleados(destino) {
+    destinoPinAdmin = destino;
     document.getElementById("admin-pin").value = "";
     abrirModal("modal-admin-auth");
   }
@@ -1686,7 +1774,7 @@
         abrirModalMasterAdmin();
       } else if (destinoPinAdmin === "modal-admin-panel") {
         abrirModal("modal-admin-panel");
-      } else {
+      } else if (destinoPinAdmin === "vista-dashboard") {
         mostrarVista("vista-dashboard");
       }
     } else {
@@ -1908,7 +1996,7 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Importador Masivo desde Excel (.xlsx / .csv)
+  // Importador Masivo desde Excel
   function adminImportarClientesExcel(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -2078,8 +2166,8 @@
     } catch (e) { alert(e.message); }
   }
 
-  // Reconocimiento de Voz
-  function iniciarVozPOS() {
+  // ==================== RECONOCIMIENTO DE VOZ INTEGRAL ====================
+  function iniciarVozPOSInteligente() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) return alert("Usa Google Chrome o Edge para el reconocimiento de voz.");
 
@@ -2089,38 +2177,98 @@
 
     const btn = document.getElementById("btn-voz-pos");
     btn.classList.add("recording");
-    btn.textContent = "🔴 Escuchando orden...";
+    btn.textContent = "🔴 Escuchando... Habla libremente";
 
-    recognition.onresult = (e) => {
-      const texto = e.results[0][0].transcript.toLowerCase();
+    recognition.onresult = async (e) => {
+      const texto = e.results[0][0].transcript;
       btn.classList.remove("recording");
-      btn.textContent = "🎙️ Dictar Orden Completa";
-      procesarVozPOS(texto);
+      btn.textContent = "🎙️ Dictar Orden Completa (Cliente + Prendas + Estado)";
+      await procesarVozIntegral(texto);
     };
 
     recognition.onerror = () => {
       btn.classList.remove("recording");
-      btn.textContent = "🎙️ Dictar Orden Completa";
+      btn.textContent = "🎙️ Dictar Orden Completa (Cliente + Prendas + Estado)";
     };
 
     recognition.start();
   }
 
-  function procesarVozPOS(txt) {
-    alert(`🗣️ Escuchado: "${txt}"`);
-    const numMatches = txt.replace(/\s/g, '').match(/3\d{9}/);
-    if (numMatches) document.getElementById("pos-cli-tel").value = numMatches[0];
+  const PALABRAS_A_NUMEROS = {
+    'un': 1, 'una': 1, 'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4, 'cinco': 5,
+    'seis': 6, 'siete': 7, 'ocho': 8, 'nueve': 9, 'diez': 10
+  };
 
+  async function procesarVozIntegral(textoCompleto) {
+    let t = textoCompleto.toLowerCase().trim();
+
+    // 1. Detección de Cliente Existente o Nombre
+    let clienteDetectado = null;
+    for (const c of listaClientes) {
+      if (t.includes(c.nombre_o_razon.toLowerCase())) {
+        clienteDetectado = c;
+        break;
+      }
+    }
+
+    if (clienteDetectado) {
+      await cargarCliente(clienteDetectado.nombre_o_razon, clienteDetectado.telefono, clienteDetectado.id);
+      t = t.replace(clienteDetectado.nombre_o_razon.toLowerCase(), '').trim();
+    } else {
+      const palabras = t.split(/\s+/);
+      const nombresProbables = [];
+      for (const p of palabras) {
+        if (PALABRAS_A_NUMEROS[p] || /^\d+$/.test(p) || CATALOGO_LOCAL.some(item => item.nom.toLowerCase().includes(p))) {
+          break;
+        }
+        nombresProbables.push(p);
+      }
+      if (nombresProbables.length > 0) {
+        const nomTentativo = nombresProbables.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+        document.getElementById("pos-cli-nom").value = nomTentativo;
+        document.getElementById("busc-cliente").value = nomTentativo;
+        t = t.replace(nombresProbables.join(" "), '').trim();
+
+        setTimeout(() => {
+          const tel = prompt(`👤 Cliente nuevo detectado: "${nomTentativo}".\nPor favor ingresa su número de celular para enviarle su copia digital:`, "");
+          if (tel) {
+            document.getElementById("pos-cli-tel").value = tel.replace(/\D/g, '');
+          }
+        }, 300);
+      }
+    }
+
+    // 2. Extracción de Prendas y Cantidades
     CATALOGO_LOCAL.forEach(p => {
-      if (txt.includes(p.nom.toLowerCase())) {
-        const regex = new RegExp(`(\\d+)\\s+${p.nom.toLowerCase()}`);
-        const m = txt.match(regex);
-        const cant = m ? parseInt(m[1], 10) : 1;
-        const ex = ticket.find(t => t.cod === p.cod);
+      const nombrePrenda = p.nom.toLowerCase();
+      const regex = new RegExp(`(\\d+|un|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez)?\\s*(${nombrePrenda}[s|es]?)`, 'g');
+      let match;
+      while ((match = regex.exec(t)) !== null) {
+        let cant = 1;
+        if (match[1]) {
+          cant = PALABRAS_A_NUMEROS[match[1]] || parseInt(match[1], 10) || 1;
+        }
+        const ex = ticket.find(item => item.cod === p.cod);
         if (ex) ex.cant += cant;
         else ticket.push({ cod: p.cod, nom: p.nom, pre: p.pre, cant: cant });
       }
     });
+
+    // 3. Extracción de Estados, Daños o Manchas
+    const palabrasClaveDanio = ['manchad', 'rot', 'sin boton', 'descosid', 'quemad', 'sucio', 'desgastad', 'desteñid', 'capota', 'cuello', 'cremallera'];
+    const frasesObs = [];
+
+    t.split(/,| y |\./).forEach(frase => {
+      if (palabrasClaveDanio.some(k => frase.includes(k))) {
+        frasesObs.push(frase.trim());
+      }
+    });
+
+    if (frasesObs.length > 0) {
+      const obsActual = document.getElementById("pos-obs-prendas").value.trim();
+      const nuevaObs = frasesObs.join(" | ");
+      document.getElementById("pos-obs-prendas").value = obsActual ? `${obsActual} | ${nuevaObs}` : nuevaObs;
+    }
 
     renderTicket();
   }
