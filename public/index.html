@@ -84,7 +84,9 @@
 
   #ticket-termico-print { display: none; }
 
-  /* Impresión Térmica Xprinter 80mm (Ancho seguro 68mm sin bordes extremos) */
+  /* =========================================================================
+     ESTILOS DE IMPRESIÓN MODERNA Y PROFESIONAL (XPRINTER 80MM / ÚTIL 68MM)
+     ========================================================================= */
   @media print {
     @page {
       size: 80mm auto;
@@ -94,6 +96,7 @@
       margin: 0 !important;
       padding: 0 !important;
       background: #fff !important;
+      color: #000 !important;
       height: auto !important;
     }
     body * {
@@ -109,23 +112,104 @@
       top: 0;
       width: 68mm;
       margin-left: 2mm;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 12px;
-      font-weight: 600;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 11.5px;
       color: #000;
       background: #fff;
-      line-height: 1.25;
+      line-height: 1.3;
     }
+
     .ticket-copia {
       page-break-after: always;
       break-after: page;
-      padding-bottom: 3mm;
+      padding-bottom: 4mm;
       margin-bottom: 0;
     }
     .ticket-copia:last-child {
       page-break-after: avoid;
       break-after: avoid;
       padding-bottom: 2mm;
+    }
+
+    /* Elementos de Diseño Profesional */
+    .p-logo {
+      display: block;
+      margin: 0 auto 6px auto;
+      max-width: 58mm;
+      max-height: 24mm;
+      object-fit: contain;
+      filter: grayscale(100%) contrast(150%);
+    }
+    .p-header-title {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-align: center;
+      margin-bottom: 2px;
+    }
+    .p-subtext {
+      font-size: 10.5px;
+      color: #111;
+      text-align: center;
+      line-height: 1.25;
+    }
+    .p-box-ticket {
+      border: 1.5px solid #000;
+      padding: 4px 6px;
+      margin: 6px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      font-size: 13px;
+    }
+    .p-meta-grid {
+      font-size: 11px;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+    .p-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin: 6px 0;
+    }
+    .p-table th {
+      border-top: 1.5px solid #000;
+      border-bottom: 1.5px solid #000;
+      padding: 3px 0;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .p-table td {
+      padding: 3px 0;
+      vertical-align: top;
+      border-bottom: 1px dotted #ccc;
+    }
+    .p-totals-box {
+      border-top: 1.5px solid #000;
+      padding-top: 4px;
+      margin-top: 4px;
+    }
+    .p-saldo-destacado {
+      border: 1.5px solid #000;
+      padding: 4px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13.5px;
+      font-weight: 900;
+      margin-top: 4px;
+    }
+    .p-footer {
+      text-align: center;
+      font-size: 10px;
+      margin-top: 6px;
+      line-height: 1.3;
+      border-top: 1px dashed #000;
+      padding-top: 5px;
     }
   }
 
@@ -217,7 +301,7 @@
       <div class="dash-card" style="border-color: var(--warning);" onclick="pedirClaveAdmin('modal-admin-master')">
         <span style="font-size: 32px;">⚡</span>
         <h3 style="color: var(--warning);">9. Panel Maestro Administrador</h3>
-        <p>Crear prendas, cambiar precios base y borrar órdenes de la base de datos</p>
+        <p>Gestor de Base de Datos en vivo, Clientes, Precios y Borrado Físico</p>
       </div>
     </div>
   </div>
@@ -654,36 +738,78 @@
   </div>
 </div>
 
-<!-- Modal 9: PANEL MAESTRO ADMINISTRADOR (Catálogo + Borrado BD) -->
+<!-- Modal 9: PANEL MAESTRO ADMINISTRADOR (Catálogo + BD en Vivo + Clientes) -->
 <div class="modal" id="modal-admin-master">
-  <div class="modal-content" style="width: 780px;">
+  <div class="modal-content" style="width: 820px;">
     <h3 style="color: var(--warning);">⚡ Panel Maestro Administrador</h3>
-    <p style="font-size: 12px; color: var(--text-muted);">Control directo sobre el catálogo de precios y la base de datos de Supabase.</p>
+    <p style="font-size: 12px; color: var(--text-muted);">Administración total del catálogo, la base de datos de órdenes y el padrón de clientes.</p>
 
-    <!-- Sección 1: Crear nuevo ítem en catálogo -->
+    <!-- Sección 1: Catálogo y Precios -->
     <div style="background: var(--bg-input); padding: 14px; border-radius: 8px; border: 1px solid var(--border);">
-      <h4 style="color: var(--accent); margin-bottom: 8px;">➕ Crear Nueva Prenda / Servicio en Catálogo</h4>
-      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px;">
-        <input type="text" id="adm-nuevo-nom" class="input-text" placeholder="Nombre prenda (Ej: Cobija Térmica)">
+      <h4 style="color: var(--accent); margin-bottom: 8px;">🏷️ Catálogo de Prendas y Precios</h4>
+      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+        <input type="text" id="adm-nuevo-nom" class="input-text" placeholder="Nueva prenda (Ej: Cobija Térmica)">
         <input type="number" id="adm-nuevo-pre" class="input-text" placeholder="Precio ($COP)">
-        <button class="btn-success" onclick="adminCrearPrendaCatalogo()">Crear Prenda</button>
+        <button class="btn-success" onclick="adminCrearPrendaCatalogo()">➕ Crear Prenda</button>
       </div>
-    </div>
-
-    <!-- Sección 2: Editar precio base de prenda existente -->
-    <div style="background: var(--bg-input); padding: 14px; border-radius: 8px; border: 1px solid var(--border);">
-      <h4 style="color: var(--accent); margin-bottom: 8px;">✏️ Cambiar Precio Base de Prenda Existente</h4>
       <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px;">
         <select id="adm-edit-prenda-sel" class="input-text"></select>
         <input type="number" id="adm-edit-prenda-nuevo-precio" class="input-text" placeholder="Nuevo precio">
-        <button class="btn-primary" onclick="adminGuardarPrecioCatalogo()">Actualizar</button>
+        <button class="btn-primary" onclick="adminGuardarPrecioCatalogo()">✏️ Cambiar Precio</button>
       </div>
     </div>
 
-    <!-- Sección 3: Borrado Físico de Orden en Base de Datos -->
+    <!-- Sección 2: Base de Datos de Órdenes en Tiempo Real -->
+    <div style="background: var(--bg-input); padding: 14px; border-radius: 8px; border: 1px solid var(--border);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h4 style="color: var(--accent);">🗄️ Base de Datos de Órdenes en Vivo</h4>
+        <input type="text" id="adm-busc-ordenes-bd" class="input-text" style="max-width: 250px; padding: 6px 10px; font-size: 12px;" placeholder="🔍 Filtrar ticket, cliente..." oninput="adminFiltrarOrdenesBD(this.value)">
+      </div>
+      <div style="max-height: 180px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Ticket</th>
+              <th>Cliente</th>
+              <th>Estado</th>
+              <th>Saldo</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="adm-tabla-ordenes-bd-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sección 3: Gestor de Clientes e Importación Masiva -->
+    <div style="background: var(--bg-input); padding: 14px; border-radius: 8px; border: 1px solid var(--border);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+        <h4 style="color: var(--success);">👥 Padrón de Clientes</h4>
+        <div style="display: flex; gap: 8px;">
+          <input type="file" id="adm-file-clientes" accept=".xlsx, .xls, .csv" style="display: none;" onchange="adminImportarClientesExcel(event)">
+          <button class="btn-success" style="padding: 6px 12px; font-size: 12px;" onclick="document.getElementById('adm-file-clientes').click()">📥 Importar Clientes (.XLSX)</button>
+          <input type="text" id="adm-busc-clientes-bd" class="input-text" style="max-width: 200px; padding: 6px 10px; font-size: 12px;" placeholder="🔍 Buscar cliente..." oninput="adminFiltrarClientesBD(this.value)">
+        </div>
+      </div>
+      <div style="max-height: 160px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Dirección</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="adm-tabla-clientes-bd-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sección 4: Borrado Físico Directo por Ticket -->
     <div style="background: rgba(239, 68, 68, 0.1); padding: 14px; border-radius: 8px; border: 1px solid var(--danger);">
-      <h4 style="color: var(--danger); margin-bottom: 4px;">🗑️ Borrar Orden Definitivamente de la Base de Datos</h4>
-      <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Esta acción elimina el registro por completo de Supabase (no quedará en el historial ni en arqueo).</p>
+      <h4 style="color: var(--danger); margin-bottom: 4px;">🗑️ Borrado Físico de Orden</h4>
+      <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Elimina permanentemente de Supabase el ticket y sus prendas asociadas (no se renumera la secuencia).</p>
       <div style="display: flex; gap: 8px;">
         <input type="number" id="adm-delete-ticket-input" class="input-text" placeholder="Ticket # a eliminar (Ej: 14)">
         <button class="btn-danger" style="white-space: nowrap;" onclick="adminBorrarOrdenFisica()">ELIMINAR DE RAÍZ</button>
@@ -694,126 +820,121 @@
   </div>
 </div>
 
-<!-- ==================== PLANTILLA IMPRESIÓN XPRINTER (DOBLE COPIA 68MM) ==================== -->
+<!-- ==================== PLANTILLA IMPRESIÓN PROFESIONAL (DOBLE COPIA 68MM) ==================== -->
 <div id="ticket-termico-print">
 
-  <!-- COPIA 1: CLIENTE -->
+  <!-- COPIA 1: ORIGINAL CLIENTE -->
   <div class="ticket-copia">
-    <div style="text-align: center; line-height: 1.25;">
-      <strong style="font-size: 15px;">LAVAARTE LAVANDERÍA SAS</strong><br>
-      <span>NIT: 901.344.335</span><br>
-      <span>Diagonal 47 No.77C-80 Bogotá</span><br>
-      <span>Tels: 314-263-6787 / 315-333-0502</span><br>
-      <strong>www.lavaarte.com</strong><br>
-      <span style="font-size: 11px; font-weight: bold; border: 1px solid #000; padding: 1px 6px; display: inline-block; margin-top: 3px;">ORIGINAL: CLIENTE</span>
+    <img src="logo.png" class="p-logo" alt="Lavaarte Logo" onerror="this.style.display='none'">
+    <div class="p-header-title">LAVAARTE LAVANDERÍA</div>
+    <div class="p-subtext">
+      NIT: 901.344.335<br>
+      Diagonal 47 No.77C-80 Bogotá<br>
+      Tels: 314-263-6787 / 315-333-0502<br>
+      <strong>www.lavaarte.com</strong>
     </div>
 
-    <div style="border-top: 1px dashed #000; margin: 4px 0;"></div>
-
-    <div style="display: flex; justify-content: space-between;">
-      <strong>TICKET: <span class="pr-ticket">#000</span></strong>
-      <span class="pr-fecha" style="font-size: 11px;">--/--/----</span>
+    <div class="p-box-ticket">
+      <span>FACTURA / TICKET</span>
+      <span class="pr-ticket">#000</span>
     </div>
-    <div>CLIENTE: <strong class="pr-cliente">---</strong></div>
-    <div>TELÉFONO: <span class="pr-telefono">---</span></div>
-    <div>RASTREO WEB: <strong class="pr-rastreo">LAV-XXXXXX</strong></div>
 
-    <div style="border-top: 1px dashed #000; margin: 4px 0;"></div>
+    <div class="p-meta-grid">
+      <div><strong>FECHA:</strong> <span class="pr-fecha">--/--/----</span></div>
+      <div><strong>CLIENTE:</strong> <span class="pr-cliente">---</span></div>
+      <div><strong>TELÉFONO:</strong> <span class="pr-telefono">---</span></div>
+      <div><strong>RASTREO WEB:</strong> <span class="pr-rastreo">LAV-XXXXXX</span></div>
+      <div style="text-align: right; font-size: 9.5px; font-weight: bold; margin-top: 2px;">[ORIGINAL: CLIENTE]</div>
+    </div>
 
-    <table style="width: 100%; border-collapse: collapse; font-size: 11.5px;">
+    <table class="p-table">
       <thead>
-        <tr style="border-bottom: 1px dashed #000;">
-          <th style="text-align: left; width: 15%;">CANT</th>
-          <th style="text-align: left; width: 55%;">PRENDA</th>
-          <th style="text-align: right; width: 30%;">TOTAL</th>
+        <tr>
+          <th style="width: 50%;">DETALLE</th>
+          <th style="width: 15%; text-align: center;">CANT</th>
+          <th style="width: 35%; text-align: right;">TOTAL</th>
         </tr>
       </thead>
       <tbody class="pr-items-body"></tbody>
     </table>
 
-    <div class="pr-box-obs" style="margin-top: 4px; font-size: 11px; display: none;">
-      <div style="border-top: 1px dotted #888; padding-top: 2px;">
-        <strong>OBS / KILOS:</strong>
-        <span class="pr-obs-texto"></span>
+    <div class="pr-box-obs" style="margin: 4px 0; font-size: 10.5px; display: none;">
+      <div style="border-top: 1px dotted #000; padding-top: 3px;">
+        <strong>OBS / KILOS:</strong> <span class="pr-obs-texto"></span>
       </div>
     </div>
 
-    <div style="border-top: 1px dashed #000; margin: 4px 0;"></div>
-
-    <div style="display: flex; justify-content: space-between;">
-      <span>SUBTOTAL:</span>
-      <span class="pr-total">$0</span>
+    <div class="p-totals-box">
+      <div style="display: flex; justify-content: space-between; font-size: 11px;">
+        <span>SUBTOTAL:</span>
+        <span class="pr-total">$0</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 11px;">
+        <span>ABONO INICIAL:</span>
+        <span class="pr-abono">$0</span>
+      </div>
+      <div class="p-saldo-destacado">
+        <span>SALDO PENDIENTE:</span>
+        <span class="pr-saldo">$0</span>
+      </div>
     </div>
-    <div style="display: flex; justify-content: space-between;">
-      <span>ABONO INICIAL:</span>
-      <span class="pr-abono">$0</span>
-    </div>
-    <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; border-top: 1px solid #000; margin-top: 2px; padding-top: 2px;">
-      <span>SALDO PENDIENTE:</span>
-      <span class="pr-saldo">$0</span>
-    </div>
 
-    <div style="border-top: 1px dashed #000; margin: 5px 0;"></div>
-
-    <div style="text-align: center; font-size: 11px; line-height: 1.3;">
+    <div class="p-footer">
       🔍 Rastree el avance de su ropa con su <strong>número de ticket</strong> en:<br>
       <strong>www.lavaarte.com</strong><br>
       ¡Gracias por escogernos!
     </div>
   </div>
 
-  <!-- COPIA 2: PLANTA / ACOPLE -->
+  <!-- COPIA 2: COPIA PLANTA / ACOPLE -->
   <div class="ticket-copia">
-    <div style="text-align: center; line-height: 1.25;">
-      <strong style="font-size: 15px;">LAVAARTE LAVANDERÍA SAS</strong><br>
-      <span>NIT: 901.344.335</span><br>
-      <span>Diagonal 47 No.77C-80 Bogotá</span><br>
-      <span style="font-size: 11px; font-weight: bold; border: 1px solid #000; padding: 1px 6px; display: inline-block; margin-top: 3px;">COPIA: PLANTA / ACOPLE</span>
+    <img src="logo.png" class="p-logo" alt="Lavaarte Logo" onerror="this.style.display='none'">
+    <div class="p-header-title">LAVAARTE LAVANDERÍA</div>
+    <div class="p-subtext">
+      NIT: 901.344.335 | Diagonal 47 No.77C-80 Bogotá
     </div>
 
-    <div style="border-top: 1px dashed #000; margin: 4px 0;"></div>
-
-    <div style="display: flex; justify-content: space-between;">
-      <strong>TICKET: <span class="pr-ticket">#000</span></strong>
-      <span class="pr-fecha" style="font-size: 11px;">--/--/----</span>
+    <div class="p-box-ticket" style="border-style: dashed;">
+      <span>ORDEN INTERNA</span>
+      <span class="pr-ticket">#000</span>
     </div>
-    <div>CLIENTE: <strong class="pr-cliente">---</strong></div>
-    <div>TELÉFONO: <span class="pr-telefono">---</span></div>
-    <div>RASTREO WEB: <strong class="pr-rastreo">LAV-XXXXXX</strong></div>
 
-    <div style="border-top: 1px dashed #000; margin: 4px 0;"></div>
+    <div class="p-meta-grid">
+      <div><strong>FECHA:</strong> <span class="pr-fecha">--/--/----</span></div>
+      <div><strong>CLIENTE:</strong> <span class="pr-cliente">---</span> (<span class="pr-telefono">---</span>)</div>
+      <div style="text-align: right; font-size: 9.5px; font-weight: bold; margin-top: 2px;">[COPIA: PLANTA / ACOPLE]</div>
+    </div>
 
-    <table style="width: 100%; border-collapse: collapse; font-size: 11.5px;">
+    <table class="p-table">
       <thead>
-        <tr style="border-bottom: 1px dashed #000;">
-          <th style="text-align: left; width: 15%;">CANT</th>
-          <th style="text-align: left; width: 55%;">PRENDA</th>
-          <th style="text-align: right; width: 30%;">TOTAL</th>
+        <tr>
+          <th style="width: 50%;">DETALLE</th>
+          <th style="width: 15%; text-align: center;">CANT</th>
+          <th style="width: 35%; text-align: right;">TOTAL</th>
         </tr>
       </thead>
       <tbody class="pr-items-body"></tbody>
     </table>
 
-    <div class="pr-box-obs" style="margin-top: 4px; font-size: 11px; display: none;">
-      <div style="border-top: 1px dotted #888; padding-top: 2px;">
-        <strong>OBS / KILOS:</strong>
-        <span class="pr-obs-texto"></span>
+    <div class="pr-box-obs" style="margin: 4px 0; font-size: 10.5px; display: none;">
+      <div style="border-top: 1px dotted #000; padding-top: 3px;">
+        <strong>OBS / KILOS:</strong> <span class="pr-obs-texto"></span>
       </div>
     </div>
 
-    <div style="border-top: 1px dashed #000; margin: 4px 0;"></div>
-
-    <div style="display: flex; justify-content: space-between;">
-      <span>TOTAL:</span>
-      <span class="pr-total">$0</span>
+    <div class="p-totals-box">
+      <div style="display: flex; justify-content: space-between; font-size: 11px;">
+        <span>TOTAL FACTURA:</span>
+        <span class="pr-total">$0</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 12px; margin-top: 2px;">
+        <span>SALDO PENDIENTE:</span>
+        <span class="pr-saldo">$0</span>
+      </div>
     </div>
-    <div style="display: flex; justify-content: space-between; font-weight: bold;">
-      <span>SALDO PENDIENTE:</span>
-      <span class="pr-saldo">$0</span>
-    </div>
 
-    <div style="text-align: center; font-size: 10.5px; margin-top: 4px;">
-      * Control de calidad y acople interno *
+    <div class="p-footer" style="border-top: 1px dotted #000;">
+      * Control de calidad y acople interno de prendas *
     </div>
   </div>
 
@@ -828,7 +949,7 @@
   const SUPABASE_KEY = "sb_publishable_vUntLk7lDbQ3DXROxTDCLg_NjgC6IIT";
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Catálogo inicial (Carga desde LocalStorage si fue modificado)
+  // Catálogo inicial con persistencia LocalStorage
   const CATALOGO_DEFAULT = [
     {cod: 1, nom: "Camisa", pre: 5500}, {cod: 2, nom: "Camiseta", pre: 6800}, {cod: 3, nom: "Pantalón", pre: 7500},
     {cod: 4, nom: "Jeans", pre: 7500}, {cod: 5, nom: "Vestido Hombre 2 Pzs.", pre: 14000}, {cod: 6, nom: "Corbata", pre: 7000},
@@ -862,6 +983,7 @@
 
   let ticket = [];
   let listaClientes = [];
+  let ordenesMasterCache = [];
   let ordenCobroActiva = null;
   let ordenAlistarActiva = null;
   let destinoPinAdmin = "";
@@ -932,8 +1054,8 @@
 
     const itemsHTML = itemsArray.map(i => `
       <tr>
-        <td>${i.cantidad}</td>
-        <td>${i.descripcion_prenda}</td>
+        <td><strong>${i.descripcion_prenda}</strong></td>
+        <td style="text-align: center;">${i.cantidad}</td>
         <td style="text-align: right;">$${Number(i.subtotal).toLocaleString("es-CO")}</td>
       </tr>
     `).join("");
@@ -964,7 +1086,7 @@
     } catch (e) { console.error("Error imprimiendo:", e); }
   }
 
-  // Despacho de WhatsApp con Fallback Directo
+  // Despacho de WhatsApp con Fallback
   async function despacharWhatsApp(telefono, mensajeTexto) {
     let enviadoServidor = false;
     try {
@@ -976,7 +1098,7 @@
       const resJson = await resp.json();
       if (resJson && resJson.ok) enviadoServidor = true;
     } catch (err) {
-      console.warn("Servidor bot no disponible o en reposo, activando fallback...");
+      console.warn("Bot WhatsApp no disponible en Render, lanzando fallback web...");
     }
 
     if (!enviadoServidor) {
@@ -985,7 +1107,7 @@
     }
   }
 
-  // Catálogo
+  // Catálogo Mostrador
   function renderCatalogo(filtro) {
     const grid = document.getElementById("grid-catalogo");
     grid.innerHTML = "";
@@ -1063,7 +1185,7 @@
           <strong>${it.nom}</strong>
           <div style="font-size: 11px; color: var(--text-muted);">
             <span style="cursor: pointer; text-decoration: underline;" onclick="editarCantidadDirecta(${idx})">${it.cant} uds/kg</span> x 
-            <span style="cursor: pointer; text-decoration: underline;" onclick="editarPrecioTicket(${idx})">$${it.pre.toLocaleString("es-CO")} (✏️ cambiar precio)</span>
+            <span style="cursor: pointer; text-decoration: underline;" onclick="editarPrecioTicket(${idx})">$${it.pre.toLocaleString("es-CO")} (✏️ cambiar)</span>
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 4px;">
@@ -1105,7 +1227,7 @@
   // Clientes
   async function precargarClientes() {
     try {
-      const { data } = await db.from("clientes").select("id, nombre_o_razon, telefono, direccion").limit(250);
+      const { data } = await db.from("clientes").select("id, nombre_o_razon, telefono, direccion").order("nombre_o_razon", { ascending: true });
       listaClientes = data || [];
     } catch (e) { console.error(e); }
   }
@@ -1115,7 +1237,7 @@
     const q = val.toLowerCase().trim();
     if (!q) { box.style.display = "none"; return; }
 
-    const matches = listaClientes.filter(c => c.nombre_o_razon.toLowerCase().includes(q) || c.telefono.includes(q));
+    const matches = listaClientes.filter(c => (c.nombre_o_razon || "").toLowerCase().includes(q) || (c.telefono || "").includes(q));
     if (matches.length === 0) {
       box.innerHTML = `<div class="autocomplete-item" onclick="seleccionarNuevoCliente('${val}')">➕ Crear cliente nuevo: "<strong>${val}</strong>"</div>`;
     } else {
@@ -1208,7 +1330,7 @@
       window.print();
       await db.from("ordenes").update({ impresa: true }).eq("id", ord.id);
 
-      // Mensaje estructurado de WhatsApp
+      // Despacho WhatsApp
       const detallePrendasWA = items.map(i => `• ${i.cantidad}x ${i.descripcion_prenda} ($${(i.subtotal).toLocaleString("es-CO")})`).join("\n");
       const notaObsWA = obs ? `\n⚠️ *Detalle / Estado de recepción:* _${obs}_\n` : "";
 
@@ -1229,7 +1351,7 @@
 
       despacharWhatsApp(tel, mensajeTexto);
 
-      // Limpiar interfaz
+      // Limpiar formulario
       ticket = [];
       document.getElementById("pos-cli-nom").value = "";
       document.getElementById("pos-cli-tel").value = "";
@@ -1339,7 +1461,7 @@
 
       if (q && !/^\d+$/.test(q)) {
         const qLow = q.toLowerCase();
-        res = res.filter(o => o.clientes?.nombre_o_razon?.toLowerCase().includes(qLow) || o.clientes?.telefono?.includes(q));
+        res = res.filter(o => (o.clientes?.nombre_o_razon || "").toLowerCase().includes(qLow) || (o.clientes?.telefono || "").includes(q));
       }
 
       if (res.length === 0) {
@@ -1610,9 +1732,11 @@
     buscarOrdenesEntrega("");
   }
 
-  // ==================== LÓGICA PANEL MAESTRO (BOTÓN 9) ====================
-  function abrirModalMasterAdmin() {
+  // ==================== PANEL MAESTRO (BOTÓN 9) ====================
+  async function abrirModalMasterAdmin() {
     poblarSelectPrendasMaster();
+    await adminCargarOrdenesBD();
+    adminRenderClientesBD(listaClientes);
     abrirModal("modal-admin-master");
   }
 
@@ -1653,6 +1777,71 @@
     }
   }
 
+  async function adminCargarOrdenesBD() {
+    try {
+      const { data } = await db.from("ordenes").select("id, consecutivo_ticket, estado, saldo_pendiente, total_neto, clientes(nombre_o_razon)").order("consecutivo_ticket", { ascending: false }).limit(40);
+      ordenesMasterCache = data || [];
+      adminRenderOrdenesBD(ordenesMasterCache);
+    } catch (e) { console.error(e); }
+  }
+
+  function adminRenderOrdenesBD(lista) {
+    const tbody = document.getElementById("adm-tabla-ordenes-bd-body");
+    if (!lista || lista.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Sin órdenes.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = lista.map(o => `
+      <tr>
+        <td><strong>#${o.consecutivo_ticket}</strong></td>
+        <td>${o.clientes?.nombre_o_razon || 'Particular'}</td>
+        <td><span style="font-weight: bold;">${o.estado}</span></td>
+        <td>$${Number(o.saldo_pendiente).toLocaleString("es-CO")}</td>
+        <td>
+          <button class="nav-btn" style="padding: 2px 6px; font-size: 11px;" onclick="adminEditarSaldoOrdenBD('${o.id}', ${o.saldo_pendiente})">✏️ Saldo</button>
+          <button class="nav-btn" style="padding: 2px 6px; font-size: 11px;" onclick="adminEditarEstadoOrdenBD('${o.id}', '${o.estado}')">🔄 Estado</button>
+          <button class="btn-danger" style="padding: 2px 6px; font-size: 11px;" onclick="adminEliminarOrdenPorId('${o.id}', ${o.consecutivo_ticket})">🗑️</button>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  function adminFiltrarOrdenesBD(val) {
+    const q = val.toLowerCase().trim();
+    if (!q) return adminRenderOrdenesBD(ordenesMasterCache);
+    const filtradas = ordenesMasterCache.filter(o => String(o.consecutivo_ticket).includes(q) || (o.clientes?.nombre_o_razon || "").toLowerCase().includes(q) || o.estado.toLowerCase().includes(q));
+    adminRenderOrdenesBD(filtradas);
+  }
+
+  async function adminEditarSaldoOrdenBD(id, saldoActual) {
+    const nuevo = prompt("Modificar saldo pendiente ($COP):", saldoActual);
+    if (nuevo === null || isNaN(nuevo)) return;
+    await db.from("ordenes").update({ saldo_pendiente: Number(nuevo) }).eq("id", id);
+    await adminCargarOrdenesBD();
+  }
+
+  async function adminEditarEstadoOrdenBD(id, estActual) {
+    const opciones = ["INGRESADO", "LISTO_ENTREGA", "ENTREGADO", "ANULADO"];
+    const sig = prompt(`Cambiar estado (${estActual}).\nOpciones: INGRESADO, LISTO_ENTREGA, ENTREGADO o ANULADO:`, estActual);
+    if (!sig || !opciones.includes(sig.toUpperCase().trim())) return;
+    await db.from("ordenes").update({ estado: sig.toUpperCase().trim() }).eq("id", id);
+    await adminCargarOrdenesBD();
+    chequearCentinela60h();
+  }
+
+  async function adminEliminarOrdenPorId(id, numTicket) {
+    const conf = confirm(`¿Eliminar permanentemente de la base de datos la orden #${numTicket}?`);
+    if (!conf) return;
+    try {
+      await db.from("orden_items").delete().eq("orden_id", id);
+      await db.from("ordenes").delete().eq("id", id);
+      alert(`Orden #${numTicket} borrada de la base de datos.`);
+      await adminCargarOrdenesBD();
+      chequearCentinela60h();
+      buscarOrdenesEntrega("");
+    } catch (e) { alert("Error: " + e.message); }
+  }
+
   async function adminBorrarOrdenFisica() {
     const ticketInput = document.getElementById("adm-delete-ticket-input").value.trim();
     if (!ticketInput) return alert("Ingresa el número de ticket que deseas eliminar.");
@@ -1665,13 +1854,12 @@
       const { data: orden, error: errBusq } = await db.from("ordenes").select("id").eq("consecutivo_ticket", numTicket).maybeSingle();
       if (errBusq || !orden) return alert(`No se encontró ninguna orden con el ticket #${numTicket}.`);
 
-      // 1. Borrar items relacionados
       await db.from("orden_items").delete().eq("orden_id", orden.id);
-      // 2. Borrar orden
       await db.from("ordenes").delete().eq("id", orden.id);
 
       alert(`🗑️ Orden #${numTicket} eliminada físicamente de la base de datos con éxito.`);
       document.getElementById("adm-delete-ticket-input").value = "";
+      await adminCargarOrdenesBD();
       chequearCentinela60h();
       buscarOrdenesEntrega("");
     } catch (e) {
@@ -1679,7 +1867,88 @@
     }
   }
 
-  // Domicilios
+  // Gestor de Clientes en BD
+  function adminRenderClientesBD(lista) {
+    const tbody = document.getElementById("adm-tabla-clientes-bd-body");
+    if (!lista || lista.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Sin clientes.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = lista.slice(0, 50).map(c => `
+      <tr>
+        <td><strong>${c.nombre_o_razon}</strong></td>
+        <td>${c.telefono}</td>
+        <td>${c.direccion || '-'}</td>
+        <td>
+          <button class="nav-btn" style="padding: 2px 6px; font-size: 11px;" onclick="adminEditarClienteBD('${c.id}', '${c.nombre_o_razon.replace(/'/g, "")}', '${c.telefono}', '${(c.direccion || "").replace(/'/g, "")}')">✏️ Editar</button>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  function adminFiltrarClientesBD(val) {
+    const q = val.toLowerCase().trim();
+    if (!q) return adminRenderClientesBD(listaClientes);
+    const filtrados = listaClientes.filter(c => (c.nombre_o_razon || "").toLowerCase().includes(q) || (c.telefono || "").includes(q));
+    adminRenderClientesBD(filtrados);
+  }
+
+  async function adminEditarClienteBD(id, nomAct, telAct, dirAct) {
+    const nuevoNom = prompt("Nombre del cliente:", nomAct);
+    if (!nuevoNom) return;
+    const nuevoTel = prompt("Teléfono del cliente:", telAct);
+    if (!nuevoTel) return;
+    const nuevaDir = prompt("Dirección del cliente:", dirAct);
+
+    try {
+      await db.from("clientes").update({ nombre_o_razon: nuevoNom, telefono: nuevoTel, direccion: nuevaDir }).eq("id", id);
+      alert("✅ Datos del cliente actualizados.");
+      await precargarClientes();
+      adminRenderClientesBD(listaClientes);
+    } catch (e) { alert("Error: " + e.message); }
+  }
+
+  // Importador Masivo desde Excel (.xlsx / .csv)
+  function adminImportarClientesExcel(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const filas = XLSX.utils.sheet_to_json(sheet);
+
+        if (!filas || filas.length === 0) return alert("El archivo Excel está vacío.");
+
+        let importados = 0;
+        for (const f of filas) {
+          const nom = f.Nombre || f.nombre || f.Cliente || f.cliente || f.RAZON_SOCIAL;
+          const tel = String(f.Telefono || f.telefono || f.Celular || f.celular || f.TEL || "").replace(/\D/g, '');
+          const dir = f.Direccion || f.direccion || f.Dir || "";
+
+          if (nom && tel) {
+            const { data: ex } = await db.from("clientes").select("id").eq("telefono", tel).maybeSingle();
+            if (!ex) {
+              await db.from("clientes").insert({ nombre_o_razon: nom, telefono: tel, direccion: dir });
+              importados++;
+            }
+          }
+        }
+
+        alert(`✅ Importación finalizada: ${importados} clientes nuevos agregados a la base de datos.`);
+        await precargarClientes();
+        adminRenderClientesBD(listaClientes);
+      } catch (err) {
+        alert("Error procesando Excel: " + err.message);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  // Domicilios Particulares
   async function clienteCrearSolicitud(tipo) {
     let nom, tel, dir, fec, fra, notas, ticketRef = "";
     if (tipo === "RECOGIDA_DOMICILIO") {
@@ -1721,6 +1990,7 @@
     } catch (e) { alert(e.message); }
   }
 
+  // Domicilios Hoteles
   async function hotelEnviarSolicitud() {
     const hNom = document.getElementById("hotel-sel-nom").value;
     const hSrv = document.getElementById("hotel-sel-servicio").value;
