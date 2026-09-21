@@ -632,7 +632,7 @@
     </div>
   </div>
 
-  <!-- ==================== VISTA 8: PORTAL HOTELES (DIRECCIÓN OPCIONAL) ==================== -->
+  <!-- ==================== VISTA 8: PORTAL HOTELES ==================== -->
   <div class="view-section" id="vista-portal-hoteles">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🏨 Servicios para Hoteles (Portal Logístico Privado)</h3>
@@ -1222,7 +1222,7 @@
 
   // ==================== SUSCRIPCIONES REALTIME TOTALES ====================
   function activarSuscripcionesRealtime() {
-    // 1. Órdenes en tiempo real
+    // 1. Órdenes en tiempo real (impresión HP desatendida 24/7)
     db.channel('ordenes-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'ordenes' }, async (payload) => {
         chequearCentinela60h();
@@ -1733,6 +1733,7 @@
         origen_tipo: 'HOTEL_RUTA',
         tipo_servicio: 'RECOGIDA_HOTEL',
         nombre_entidad: hNom,
+        nombre_cliente: hNom,
         telefono: hCont || "Recepción / Ama de llaves",
         direccion: direccionFinal,
         fecha_programada: hoyBog,
@@ -2225,7 +2226,7 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Seguridad Jerárquica
+  // Seguridad Jerárquica (PINs 100% ocultos)
   function solicitarAccesoEmpleados(destino) {
     destinoPinAdmin = destino;
     document.getElementById("auth-modal-title").textContent = "🔒 Acceso Colaboradores Lavaarte";
@@ -2305,7 +2306,7 @@
     buscarOrdenesEntrega("");
   }
 
-  // Panel Maestro (Botón 9) - Sincronizado a Supabase
+  // Panel Maestro (Botón 9)
   async function abrirModalMasterAdmin() {
     poblarSelectPrendasMaster();
     await adminCargarOrdenesBD();
@@ -2556,6 +2557,7 @@
         origen_tipo: 'CLIENTE_PARTICULAR',
         tipo_servicio: tipo,
         nombre_entidad: nom,
+        nombre_cliente: nom,
         telefono: tel,
         direccion: direccionCompleta,
         ticket_referencia: ticketRef,
@@ -2613,12 +2615,14 @@
           ? `<span style="color: var(--success); font-weight: bold;">✓ Completado</span>`
           : `<button class="btn-success" style="padding: 4px 8px; font-size: 11px;" onclick="chulearDomicilio('${d.id}')">✓ Completar</button>`;
 
+        const nom = d.nombre_entidad || d.nombre_cliente || 'Particular';
+
         return `
           <tr style="${esCompletado ? 'opacity: 0.6;' : ''}">
             <td>${new Date(d.created_at).toLocaleDateString("es-CO")}</td>
             <td><strong style="color: ${d.origen_tipo === 'HOTEL_RUTA' ? 'var(--accent)' : 'var(--success)'};">${d.origen_tipo}</strong></td>
             <td>${d.tipo_servicio}</td>
-            <td><strong>${d.nombre_entidad}</strong></td>
+            <td><strong>${nom}</strong></td>
             <td>${d.telefono}</td>
             <td>${d.direccion || '-'}</td>
             <td>${d.ticket_referencia ? '#' + d.ticket_referencia : '-'}</td>
