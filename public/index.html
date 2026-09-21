@@ -735,7 +735,7 @@
 
 <!-- ==================== MODALES ==================== -->
 
-<!-- Modal: REGISTRAR NUEVO CLIENTE (Ventana emergente editable) -->
+<!-- Modal: REGISTRAR NUEVO CLIENTE -->
 <div class="modal" id="modal-nuevo-cliente">
   <div class="modal-content" style="width: 480px;">
     <h3 style="color: var(--accent);">👤 Registrar Nuevo Cliente</h3>
@@ -1203,14 +1203,13 @@
   function cerrarModal(id) { document.getElementById(id).style.display = "none"; }
   function abrirModal(id) { document.getElementById(id).style.display = "flex"; }
 
-  // ==================== CATÁLOGO CENTRALIZADO EN SUPABASE (SINCRONIZACIÓN MÓVIL/PC) ====================
+  // Sincronización de Catálogo en Supabase
   async function sincronizarCatalogoSupabase() {
     try {
       const { data, error } = await db.from("catalogo_prendas").select("*").order("codigo", { ascending: true });
       if (!error && data && data.length > 0) {
         CATALOGO_CENTRAL = data;
       } else {
-        // Inicializar por primera vez en Supabase si la tabla está vacía
         CATALOGO_CENTRAL = CATALOGO_DEFAULT;
         await db.from("catalogo_prendas").upsert(CATALOGO_DEFAULT);
       }
@@ -1221,24 +1220,46 @@
     renderCatalogo("");
   }
 
+  // ==================== SUSCRIPCIONES REALTIME TOTALES ====================
   function activarSuscripcionesRealtime() {
+    // 1. Órdenes en tiempo real
     db.channel('ordenes-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'ordenes' }, async (payload) => {
         chequearCentinela60h();
+        if (document.getElementById("vista-busquedas").classList.contains("view-active")) {
+          ejecutarBusquedaAuditoria(document.getElementById("busc-auditoria-input").value);
+        }
         if (modoImpresoraHP && payload.eventType === 'INSERT' && !payload.new.impresa) {
           imprimirOrdenRemota(payload.new.id);
         }
       })
       .subscribe();
 
-    db.channel('domicilios-live')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'solicitudes_domicilio' }, () => {
-        cargarDomiciliosAdmin();
-        alert("🔔 ¡Nueva solicitud de domicilio o ruta recibida!");
+    // 2. Clientes en tiempo real
+    db.channel('clientes-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'clientes' }, async () => {
+        await precargarClientes();
+        if (document.getElementById("modal-admin-master").style.display === "flex") {
+          adminRenderClientesBD(listaClientes);
+        }
       })
       .subscribe();
 
-    // Sincronización instantánea de precios entre todos los celulares y PCs
+    // 3. Hoteles en tiempo real
+    db.channel('hoteles-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'hoteles' }, async () => {
+        await precargarHotelesBD();
+      })
+      .subscribe();
+
+    // 4. Domicilios y Rutas en tiempo real
+    db.channel('domicilios-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'solicitudes_domicilio' }, () => {
+        cargarDomiciliosAdmin();
+      })
+      .subscribe();
+
+    // 5. Precios de Catálogo en tiempo real
     db.channel('catalogo-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'catalogo_prendas' }, async () => {
         const { data } = await db.from("catalogo_prendas").select("*").order("codigo", { ascending: true });
@@ -1517,7 +1538,7 @@
     renderTicket();
   }
 
-  // ==================== REGISTRO DIRECTO Y VENTANA EMERGENTE DE CLIENTES ====================
+  // Clientes
   async function precargarClientes() {
     try {
       const { data } = await db.from("clientes").select("id, nombre_o_razon, telefono, direccion").order("nombre_o_razon", { ascending: true });
@@ -1533,7 +1554,6 @@
     const matches = listaClientes.filter(c => (c.nombre_o_razon || "").toLowerCase().includes(q) || (c.telefono || "").includes(q));
     
     let html = "";
-    // Opción para abrir el modal de crear cliente nuevo
     html += `<div class="autocomplete-item" style="color: var(--accent); font-weight: bold; background: #0f172a;" onclick="abrirModalCrearCliente('${val.replace(/'/g, "")}')">
       ➕ REGISTRAR NUEVO CLIENTE: "${val}"
     </div>`;
@@ -1568,7 +1588,6 @@
     }
 
     try {
-      // Si ya existe por celular, actualizarlo
       let clienteGuardado = null;
       const { data: ex } = await db.from("clientes").select("id").eq("telefono", tel).maybeSingle();
       if (ex) {
@@ -1582,8 +1601,6 @@
 
       await precargarClientes();
       cerrarModal("modal-nuevo-cliente");
-
-      // Autoseleccionar inmediatamente en el mostrador
       cargarCliente(clienteGuardado.nombre_o_razon, clienteGuardado.telefono, clienteGuardado.id, clienteGuardado.direccion);
       alert(`✅ Cliente "${clienteGuardado.nombre_o_razon}" registrado y seleccionado con éxito.`);
     } catch (e) {
@@ -1622,7 +1639,7 @@
     } catch (e) { console.error(e); }
   }
 
-  // ==================== BASE DE DATOS Y MODAL DE HOTELES ====================
+  // Base de Datos y Modal de Hoteles
   async function precargarHotelesBD() {
     try {
       const { data } = await db.from("hoteles").select("id, nombre, telefono_contacto, direccion").order("nombre", { ascending: true });
@@ -1688,7 +1705,6 @@
     document.getElementById("drop-hoteles").style.display = "none";
   }
 
-  // Envío Solicitud Hotel (Compatible con esquema)
   async function hotelEnviarSolicitudPrivada() {
     const hNom = document.getElementById("hotel-busc-input").value.trim();
     const hSrv = document.getElementById("hotel-sel-servicio").value;
@@ -2567,7 +2583,7 @@
     } catch (e) { alert("Error registrando solicitud: " + e.message); }
   }
 
-  // Domicilios Admin (Regla 24h para completados)
+  // Domicilios Admin
   async function cargarDomiciliosAdmin() {
     const tbody = document.getElementById("tabla-domicilios-body");
     try {
