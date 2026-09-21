@@ -64,7 +64,7 @@
   .input-text { width: 100%; background: var(--bg-input); border: 1px solid var(--border); color: white; padding: 12px 14px; border-radius: 8px; font-size: 15px; outline: none; }
   .input-text:focus { border-color: var(--accent); }
 
-  .autocomplete-box { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--accent); border-radius: 8px; max-height: 180px; overflow-y: auto; z-index: 50; display: none; }
+  .autocomplete-box { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--accent); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 50; display: none; }
   .autocomplete-item { padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; }
   .autocomplete-item:hover { background: var(--bg-input); color: var(--accent); }
 
@@ -339,7 +339,6 @@
         <p>Pedidos en tiempo real de clientes y hoteles</p>
       </div>
 
-      <!-- BOTÓN 8 ACTUALIZADO A BÚSQUEDAS Y AUDITORÍA HISTÓRICA -->
       <div class="dash-card" onclick="abrirVistaBusquedas()">
         <span style="font-size: 32px;">🔍</span>
         <h3>8. Búsquedas y Auditoría</h3>
@@ -668,7 +667,7 @@
           </div>
           <div class="input-group">
             <label class="label-sm">Contacto (Celular o Cargo)</label>
-            <input type="text" id="hotel-contacto" class="input-text" placeholder="Ej: Ama de llaves / 315...">
+            <input type="text" id="hotel-contacto" class="input-text" placeholder="Ej: Ama de llaves / Turno">
           </div>
         </div>
 
@@ -724,7 +723,6 @@
         </table>
       </div>
 
-      <!-- Botón Exportar Excel situado en la esquina inferior derecha -->
       <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
         <button class="btn-primary" style="padding: 10px 18px; font-size: 13px;" onclick="descargarHistoricoOrdenesExcel()">
           📥 Exportar Base de Datos Completa a Excel (.xlsx)
@@ -736,6 +734,58 @@
 </div>
 
 <!-- ==================== MODALES ==================== -->
+
+<!-- Modal: REGISTRAR NUEVO CLIENTE (Ventana emergente editable) -->
+<div class="modal" id="modal-nuevo-cliente">
+  <div class="modal-content" style="width: 480px;">
+    <h3 style="color: var(--accent);">👤 Registrar Nuevo Cliente</h3>
+    <p style="font-size: 12px; color: var(--text-muted);">Los datos se guardarán de forma permanente en la base de datos de Supabase.</p>
+    
+    <div class="input-group">
+      <label class="label-sm">Nombre Completo *</label>
+      <input type="text" id="m-cli-nombre" class="input-text" placeholder="Ej: Roberto Casas">
+    </div>
+
+    <div class="input-group">
+      <label class="label-sm">Teléfono Celular / WhatsApp (Obligatorio) *</label>
+      <input type="text" id="m-cli-telefono" class="input-text" placeholder="Ej: 3151234567">
+    </div>
+
+    <div class="input-group">
+      <label class="label-sm">Dirección de Residencia / Entrega (Opcional)</label>
+      <input type="text" id="m-cli-direccion" class="input-text" placeholder="Ej: Calle 45 # 12-34 Apto 201">
+    </div>
+
+    <button class="btn-success" onclick="guardarNuevoClienteDesdeModal()">💾 GUARDAR CLIENTE Y SELECCIONAR</button>
+    <button class="nav-btn" onclick="cerrarModal('modal-nuevo-cliente')">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal: REGISTRAR NUEVO HOTEL -->
+<div class="modal" id="modal-nuevo-hotel">
+  <div class="modal-content" style="width: 480px;">
+    <h3 style="color: var(--accent);">🏨 Registrar Nuevo Hotel</h3>
+    <p style="font-size: 12px; color: var(--text-muted);">Inscribe el establecimiento en el padrón privado de hoteles.</p>
+    
+    <div class="input-group">
+      <label class="label-sm">Nombre del Hotel / Establecimiento *</label>
+      <input type="text" id="m-hotel-nombre" class="input-text" placeholder="Ej: Hotel Hilton Corferias">
+    </div>
+
+    <div class="input-group">
+      <label class="label-sm">Teléfono / Contacto (Opcional)</label>
+      <input type="text" id="m-hotel-telefono" class="input-text" placeholder="Ej: 3101234567 / Recepción">
+    </div>
+
+    <div class="input-group">
+      <label class="label-sm">Dirección / Sede (Opcional)</label>
+      <input type="text" id="m-hotel-direccion" class="input-text" placeholder="Ej: Carrera 37 # 24-29">
+    </div>
+
+    <button class="btn-success" onclick="guardarNuevoHotelDesdeModal()">💾 GUARDAR ESTABLECIMIENTO</button>
+    <button class="nav-btn" onclick="cerrarModal('modal-nuevo-hotel')">Cancelar</button>
+  </div>
+</div>
 
 <!-- Modal: Cobro Entrega -->
 <div class="modal" id="modal-cobro-entrega">
@@ -834,7 +884,7 @@
   </div>
 </div>
 
-<!-- Modal: Autenticación con PIN (Sin revelar códigos) -->
+<!-- Modal: Autenticación con PIN -->
 <div class="modal" id="modal-admin-auth">
   <div class="modal-content" style="width: 380px; text-align: center;">
     <h3 id="auth-modal-title" style="color: var(--warning);">🔒 Acceso Protegido</h3>
@@ -862,11 +912,11 @@
 <div class="modal" id="modal-admin-master">
   <div class="modal-content" style="width: 820px;">
     <h3 style="color: var(--warning);">⚡ Panel Maestro Administrador</h3>
-    <p style="font-size: 12px; color: var(--text-muted);">Administración total del catálogo, base de datos de órdenes y padrón de clientes.</p>
+    <p style="font-size: 12px; color: var(--text-muted);">Los cambios de precio se sincronizan automáticamente en Supabase para todos los celulares y computadores.</p>
 
     <!-- Sección 1: Catálogo y Precios -->
     <div style="background: var(--bg-input); padding: 14px; border-radius: 8px; border: 1px solid var(--border);">
-      <h4 style="color: var(--accent); margin-bottom: 8px;">🏷️ Catálogo de Prendas y Precios</h4>
+      <h4 style="color: var(--accent); margin-bottom: 8px;">🏷️ Catálogo de Prendas y Precios (Base de Datos)</h4>
       <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; margin-bottom: 10px;">
         <input type="text" id="adm-nuevo-nom" class="input-text" placeholder="Nueva prenda (Ej: Cobija Térmica)">
         <input type="number" id="adm-nuevo-pre" class="input-text" placeholder="Precio ($COP)">
@@ -1086,38 +1136,37 @@
   const SUPABASE_KEY = "sb_publishable_vUntLk7lDbQ3DXROxTDCLg_NjgC6IIT";
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Catálogo inicial con persistencia
+  // Catálogo inicial de referencia
   const CATALOGO_DEFAULT = [
-    {cod: 1, nom: "Camisa", pre: 5500}, {cod: 2, nom: "Camiseta", pre: 6800}, {cod: 3, nom: "Pantalón", pre: 7500},
-    {cod: 4, nom: "Jeans", pre: 7500}, {cod: 5, nom: "Vestido Hombre 2 Pzs.", pre: 14000}, {cod: 6, nom: "Corbata", pre: 7000},
-    {cod: 7, nom: "Chaqueta Sencilla", pre: 8000}, {cod: 8, nom: "Chaqueta Acolchada", pre: 11000}, {cod: 9, nom: "Chaqueta Moto", pre: 25000},
-    {cod: 10, nom: "Chaqueta De Plumas", pre: 18000}, {cod: 11, nom: "Chaqueta Cuero (Solo Lavado)", pre: 120000}, {cod: 12, nom: "Chaqueta Cuero (Lavado Y Renovado)", pre: 120000},
-    {cod: 13, nom: "Chaqueta De Gamuza", pre: 150000}, {cod: 14, nom: "Chaqueta De Cuerina", pre: 25000}, {cod: 15, nom: "Gabán", pre: 14000},
-    {cod: 16, nom: "Abrigo", pre: 14000}, {cod: 17, nom: "Saco", pre: 8000}, {cod: 18, nom: "Suéter", pre: 7000},
-    {cod: 19, nom: "Buso", pre: 7000}, {cod: 20, nom: "Chaleco Sencillo", pre: 8000}, {cod: 21, nom: "Chaleco Plumas", pre: 18000},
-    {cod: 22, nom: "Blusa", pre: 7000}, {cod: 23, nom: "Falda", pre: 7000}, {cod: 24, nom: "Jardinera", pre: 14000},
-    {cod: 25, nom: "Bata Dama", pre: 14000}, {cod: 26, nom: "Vestido Dama 2 Pzs.", pre: 14000}, {cod: 27, nom: "Enterizo", pre: 14000},
-    {cod: 28, nom: "Sudadera", pre: 14000}, {cod: 29, nom: "Faja", pre: 9000}, {cod: 30, nom: "Pijama", pre: 9000},
-    {cod: 31, nom: "Chal", pre: 12000}, {cod: 32, nom: "Bufanda", pre: 7000}, {cod: 33, nom: "Ruana", pre: 18000},
-    {cod: 34, nom: "Bermuda", pre: 5000}, {cod: 35, nom: "Botas", pre: 25000}, {cod: 36, nom: "Tenis", pre: 15000},
-    {cod: 37, nom: "Gorra", pre: 7000}, {cod: 38, nom: "Bolso Dama", pre: 15000}, {cod: 39, nom: "Morral", pre: 15000},
-    {cod: 40, nom: "Maleta Viaje", pre: 35000}, {cod: 41, nom: "Overol", pre: 14000}, {cod: 42, nom: "Almohada Sencilla", pre: 15000},
-    {cod: 43, nom: "Almohada De Plumas", pre: 25000}, {cod: 44, nom: "Cubrelecho Sencillo", pre: 20000}, {cod: 45, nom: "Cubrelecho Doble", pre: 25000},
-    {cod: 46, nom: "Cubrelecho Queen", pre: 30000}, {cod: 47, nom: "Cubrelecho Plumas Sencillo", pre: 35000}, {cod: 48, nom: "Cubrelecho Plumas Doble", pre: 45000},
-    {cod: 49, nom: "Cubrelecho Plumas Queen", pre: 70000}, {cod: 50, nom: "Duvet", pre: 18000}, {cod: 51, nom: "Juego Sábanas", pre: 15000},
-    {cod: 52, nom: "Cobija Sencilla", pre: 20000}, {cod: 53, nom: "Cobija Doble", pre: 25000}, {cod: 54, nom: "Hamaca", pre: 35000},
-    {cod: 55, nom: "Cojín Relleno", pre: 10000}, {cod: 56, nom: "Mantel", pre: 12000}, {cod: 57, nom: "Toalla", pre: 12000},
-    {cod: 58, nom: "Cortina Velo Prense", pre: 2000}, {cod: 59, nom: "Cortina Pesada Prense", pre: 2500}, {cod: 60, nom: "Tapete Mt Cuadrado", pre: 35000},
-    {cod: 61, nom: "Muñeco", pre: 15000}, {cod: 62, nom: "Vestido Novia", pre: 200000}, {cod: 63, nom: "Vestido Quinceañera", pre: 50000},
-    {cod: 64, nom: "Vestido Fiesta Corto", pre: 35000}, {cod: 65, nom: "Vestido Fiesta Largo", pre: 50000}, {cod: 66, nom: "Vestido Primera Comunión", pre: 35000},
-    {cod: 67, nom: "Tintura Prenda", pre: 20000}, {cod: 68, nom: "Tintura Chaqueta", pre: 25000}, {cod: 69, nom: "Solo Plancha", pre: 5500},
-    {cod: 70, nom: "Forros De Carro", pre: 50000}, {cod: 71, nom: "Kilo De Ropa", pre: 16500}, {cod: 72, nom: "Bóxer", pre: 1800},
-    {cod: 73, nom: "Par Medias", pre: 1800}, {cod: 74, nom: "Brassiere", pre: 3900}, {cod: 75, nom: "Cama Mascota", pre: 25000},
-    {cod: 76, nom: "Camisa Galvis", pre: 4200}, {cod: 77, nom: "Muñeco Mediano", pre: 20000}
+    {codigo: 1, nombre: "Camisa", precio: 5500}, {codigo: 2, nombre: "Camiseta", precio: 6800}, {codigo: 3, nombre: "Pantalón", precio: 7500},
+    {codigo: 4, nombre: "Jeans", precio: 7500}, {codigo: 5, nombre: "Vestido Hombre 2 Pzs.", precio: 14000}, {codigo: 6, nombre: "Corbata", precio: 7000},
+    {codigo: 7, nombre: "Chaqueta Sencilla", precio: 8000}, {codigo: 8, nombre: "Chaqueta Acolchada", precio: 11000}, {codigo: 9, nombre: "Chaqueta Moto", precio: 25000},
+    {codigo: 10, nombre: "Chaqueta De Plumas", precio: 18000}, {codigo: 11, nombre: "Chaqueta Cuero (Solo Lavado)", precio: 120000}, {codigo: 12, nombre: "Chaqueta Cuero (Lavado Y Renovado)", precio: 120000},
+    {codigo: 13, nombre: "Chaqueta De Gamuza", precio: 150000}, {codigo: 14, nombre: "Chaqueta De Cuerina", precio: 25000}, {codigo: 15, nombre: "Gabán", precio: 14000},
+    {codigo: 16, nombre: "Abrigo", precio: 14000}, {codigo: 17, nombre: "Saco", precio: 8000}, {codigo: 18, nombre: "Suéter", precio: 7000},
+    {codigo: 19, nombre: "Buso", precio: 7000}, {codigo: 20, nombre: "Chaleco Sencillo", precio: 8000}, {codigo: 21, nombre: "Chaleco Plumas", precio: 18000},
+    {codigo: 22, nombre: "Blusa", precio: 7000}, {codigo: 23, nombre: "Falda", precio: 7000}, {codigo: 24, nombre: "Jardinera", precio: 14000},
+    {codigo: 25, nombre: "Bata Dama", precio: 14000}, {codigo: 26, nombre: "Vestido Dama 2 Pzs.", precio: 14000}, {codigo: 27, nombre: "Enterizo", precio: 14000},
+    {codigo: 28, nombre: "Sudadera", precio: 14000}, {codigo: 29, nombre: "Faja", precio: 9000}, {codigo: 30, nombre: "Pijama", precio: 9000},
+    {codigo: 31, nombre: "Chal", precio: 12000}, {codigo: 32, nombre: "Bufanda", precio: 7000}, {codigo: 33, nombre: "Ruana", precio: 18000},
+    {codigo: 34, nombre: "Bermuda", precio: 5000}, {codigo: 35, nombre: "Botas", precio: 25000}, {codigo: 36, nombre: "Tenis", precio: 15000},
+    {codigo: 37, nombre: "Gorra", precio: 7000}, {codigo: 38, nombre: "Bolso Dama", precio: 15000}, {codigo: 39, nombre: "Morral", precio: 15000},
+    {codigo: 40, nombre: "Maleta Viaje", precio: 35000}, {codigo: 41, nombre: "Overol", precio: 14000}, {codigo: 42, nombre: "Almohada Sencilla", precio: 15000},
+    {codigo: 43, nombre: "Almohada De Plumas", precio: 25000}, {codigo: 44, nombre: "Cubrelecho Sencillo", precio: 20000}, {codigo: 45, nombre: "Cubrelecho Doble", precio: 25000},
+    {codigo: 46, nombre: "Cubrelecho Queen", precio: 30000}, {codigo: 47, nombre: "Cubrelecho Plumas Sencillo", precio: 35000}, {codigo: 48, nombre: "Cubrelecho Plumas Doble", precio: 45000},
+    {codigo: 49, nombre: "Cubrelecho Plumas Queen", precio: 70000}, {codigo: 50, nombre: "Duvet", precio: 18000}, {codigo: 51, nombre: "Juego Sábanas", precio: 15000},
+    {codigo: 52, nombre: "Cobija Sencilla", precio: 20000}, {codigo: 53, nombre: "Cobija Doble", precio: 25000}, {codigo: 54, nombre: "Hamaca", precio: 35000},
+    {codigo: 55, nombre: "Cojín Relleno", precio: 10000}, {codigo: 56, nombre: "Mantel", precio: 12000}, {codigo: 57, nombre: "Toalla", precio: 12000},
+    {codigo: 58, nombre: "Cortina Velo Prense", precio: 2000}, {codigo: 59, nombre: "Cortina Pesada Prense", precio: 2500}, {codigo: 60, nombre: "Tapete Mt Cuadrado", precio: 35000},
+    {codigo: 61, nombre: "Muñeco", precio: 15000}, {codigo: 62, nombre: "Vestido Novia", precio: 200000}, {codigo: 63, nombre: "Vestido Quinceañera", precio: 50000},
+    {codigo: 64, nombre: "Vestido Fiesta Corto", precio: 35000}, {codigo: 65, nombre: "Vestido Fiesta Largo", precio: 50000}, {codigo: 66, nombre: "Vestido Primera Comunión", precio: 35000},
+    {codigo: 67, nombre: "Tintura Prenda", precio: 20000}, {codigo: 68, nombre: "Tintura Chaqueta", precio: 25000}, {codigo: 69, nombre: "Solo Plancha", precio: 5500},
+    {codigo: 70, nombre: "Forros De Carro", precio: 50000}, {codigo: 71, nombre: "Kilo De Ropa", precio: 16500}, {codigo: 72, nombre: "Bóxer", precio: 1800},
+    {codigo: 73, nombre: "Par Medias", precio: 1800}, {codigo: 74, nombre: "Brassiere", precio: 3900}, {codigo: 75, nombre: "Cama Mascota", precio: 25000},
+    {codigo: 76, nombre: "Camisa Galvis", precio: 4200}, {codigo: 77, nombre: "Muñeco Mediano", precio: 20000}
   ];
 
-  let CATALOGO_LOCAL = JSON.parse(localStorage.getItem("lavaarte_catalogo")) || CATALOGO_DEFAULT;
-
+  let CATALOGO_CENTRAL = [];
   let ticket = [];
   let listaClientes = [];
   let listaHotelesBD = [];
@@ -1129,10 +1178,10 @@
   let clienteVisitasHistorial = 0;
   let itemSeleccionadoQuickBar = null;
 
-  window.onload = () => {
+  window.onload = async () => {
     actualizarReloj();
     setInterval(actualizarReloj, 1000);
-    renderCatalogo("");
+    await sincronizarCatalogoSupabase();
     precargarClientes();
     precargarHotelesBD();
     chequearCentinela60h();
@@ -1154,6 +1203,24 @@
   function cerrarModal(id) { document.getElementById(id).style.display = "none"; }
   function abrirModal(id) { document.getElementById(id).style.display = "flex"; }
 
+  // ==================== CATÁLOGO CENTRALIZADO EN SUPABASE (SINCRONIZACIÓN MÓVIL/PC) ====================
+  async function sincronizarCatalogoSupabase() {
+    try {
+      const { data, error } = await db.from("catalogo_prendas").select("*").order("codigo", { ascending: true });
+      if (!error && data && data.length > 0) {
+        CATALOGO_CENTRAL = data;
+      } else {
+        // Inicializar por primera vez en Supabase si la tabla está vacía
+        CATALOGO_CENTRAL = CATALOGO_DEFAULT;
+        await db.from("catalogo_prendas").upsert(CATALOGO_DEFAULT);
+      }
+    } catch (e) {
+      console.warn("Usando catálogo local de fallback:", e);
+      CATALOGO_CENTRAL = CATALOGO_DEFAULT;
+    }
+    renderCatalogo("");
+  }
+
   function activarSuscripcionesRealtime() {
     db.channel('ordenes-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'ordenes' }, async (payload) => {
@@ -1168,6 +1235,20 @@
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'solicitudes_domicilio' }, () => {
         cargarDomiciliosAdmin();
         alert("🔔 ¡Nueva solicitud de domicilio o ruta recibida!");
+      })
+      .subscribe();
+
+    // Sincronización instantánea de precios entre todos los celulares y PCs
+    db.channel('catalogo-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'catalogo_prendas' }, async () => {
+        const { data } = await db.from("catalogo_prendas").select("*").order("codigo", { ascending: true });
+        if (data) {
+          CATALOGO_CENTRAL = data;
+          renderCatalogo("");
+          if (document.getElementById("modal-admin-master").style.display === "flex") {
+            poblarSelectPrendasMaster();
+          }
+        }
       })
       .subscribe();
   }
@@ -1253,13 +1334,13 @@
     const q = val.toLowerCase().trim();
     if (!q) { box.style.display = "none"; return; }
 
-    const matches = CATALOGO_LOCAL.filter(p => p.nom.toLowerCase().includes(q) || String(p.cod).includes(q));
+    const matches = CATALOGO_CENTRAL.filter(p => p.nombre.toLowerCase().includes(q) || String(p.codigo).includes(q));
     if (matches.length === 0) {
-      box.innerHTML = `<div class="autocomplete-item" onclick="quickBarSeleccionarPrenda({cod: 99, nom: '${val}', pre: 0})">➕ Personalizado: "<strong>${val}</strong>"</div>`;
+      box.innerHTML = `<div class="autocomplete-item" onclick="quickBarSeleccionarPrenda({codigo: 99, nombre: '${val}', precio: 0})">➕ Personalizado: "<strong>${val}</strong>"</div>`;
     } else {
       box.innerHTML = matches.slice(0, 10).map(p => `
         <div class="autocomplete-item" onclick='quickBarSeleccionarPrenda(${JSON.stringify(p)})'>
-          [${p.cod}] <strong>${p.nom}</strong> - $${p.pre.toLocaleString("es-CO")}
+          [${p.codigo}] <strong>${p.nombre}</strong> - $${Number(p.precio).toLocaleString("es-CO")}
         </div>
       `).join("");
     }
@@ -1268,8 +1349,8 @@
 
   function quickBarSeleccionarPrenda(p) {
     itemSeleccionadoQuickBar = p;
-    document.getElementById("quick-bar-search").value = `[${p.cod}] ${p.nom}`;
-    document.getElementById("quick-bar-price").value = p.pre;
+    document.getElementById("quick-bar-search").value = `[${p.codigo}] ${p.nombre}`;
+    document.getElementById("quick-bar-price").value = p.precio;
     document.getElementById("drop-quick-prendas").style.display = "none";
     document.getElementById("quick-bar-price").focus();
     document.getElementById("quick-bar-price").select();
@@ -1290,8 +1371,8 @@
     let codPrenda = 99;
 
     if (itemSeleccionadoQuickBar) {
-      nombrePrenda = itemSeleccionadoQuickBar.nom;
-      codPrenda = itemSeleccionadoQuickBar.cod;
+      nombrePrenda = itemSeleccionadoQuickBar.nombre;
+      codPrenda = itemSeleccionadoQuickBar.codigo;
     } else {
       const txt = searchInput.value.trim();
       if (!txt) return alert("Por favor busca o escribe una prenda.");
@@ -1324,13 +1405,13 @@
     const grid = document.getElementById("grid-catalogo");
     grid.innerHTML = "";
     const f = filtro.toLowerCase();
-    CATALOGO_LOCAL.filter(p => p.nom.toLowerCase().includes(f) || String(p.cod).includes(f)).forEach(p => {
+    CATALOGO_CENTRAL.filter(p => p.nombre.toLowerCase().includes(f) || String(p.codigo).includes(f)).forEach(p => {
       const btn = document.createElement("div");
       btn.className = "prenda-btn";
-      btn.onclick = () => agregarAlTicket(p);
+      btn.onclick = () => agregarAlTicket({ cod: p.codigo, nom: p.nombre, pre: Number(p.precio) });
       btn.innerHTML = `
-        <div class="prenda-name">[${p.cod}] ${p.nom}</div>
-        <div class="prenda-price">$${p.pre.toLocaleString("es-CO")}</div>
+        <div class="prenda-name">[${p.codigo}] ${p.nombre}</div>
+        <div class="prenda-price">$${Number(p.precio).toLocaleString("es-CO")}</div>
       `;
       grid.appendChild(btn);
     });
@@ -1436,6 +1517,7 @@
     renderTicket();
   }
 
+  // ==================== REGISTRO DIRECTO Y VENTANA EMERGENTE DE CLIENTES ====================
   async function precargarClientes() {
     try {
       const { data } = await db.from("clientes").select("id, nombre_o_razon, telefono, direccion").order("nombre_o_razon", { ascending: true });
@@ -1449,36 +1531,72 @@
     if (!q) { box.style.display = "none"; return; }
 
     const matches = listaClientes.filter(c => (c.nombre_o_razon || "").toLowerCase().includes(q) || (c.telefono || "").includes(q));
-    if (matches.length === 0) {
-      box.innerHTML = `<div class="autocomplete-item" onclick="seleccionarNuevoCliente('${val}')">➕ Crear cliente nuevo: "<strong>${val}</strong>"</div>`;
-    } else {
-      box.innerHTML = matches.map(c => `
-        <div class="autocomplete-item" onclick="cargarCliente('${c.nombre_o_razon}', '${c.telefono}', '${c.id}')">
-          👤 ${c.nombre_o_razon} | 📞 ${c.telefono}
+    
+    let html = "";
+    // Opción para abrir el modal de crear cliente nuevo
+    html += `<div class="autocomplete-item" style="color: var(--accent); font-weight: bold; background: #0f172a;" onclick="abrirModalCrearCliente('${val.replace(/'/g, "")}')">
+      ➕ REGISTRAR NUEVO CLIENTE: "${val}"
+    </div>`;
+
+    if (matches.length > 0) {
+      html += matches.map(c => `
+        <div class="autocomplete-item" onclick="cargarCliente('${c.nombre_o_razon.replace(/'/g, "")}', '${c.telefono}', '${c.id}', '${(c.direccion || "").replace(/'/g, "")}')">
+          👤 ${c.nombre_o_razon} | 📞 ${c.telefono} ${c.direccion ? '(' + c.direccion + ')' : ''}
         </div>
       `).join("");
     }
+    box.innerHTML = html;
     box.style.display = "block";
   }
 
-  async function cargarCliente(nom, tel, cliId) {
+  function abrirModalCrearCliente(nombreSugerido) {
+    document.getElementById("drop-clientes").style.display = "none";
+    document.getElementById("m-cli-nombre").value = nombreSugerido || "";
+    document.getElementById("m-cli-telefono").value = "";
+    document.getElementById("m-cli-direccion").value = "";
+    abrirModal("modal-nuevo-cliente");
+    document.getElementById("m-cli-telefono").focus();
+  }
+
+  async function guardarNuevoClienteDesdeModal() {
+    const nom = document.getElementById("m-cli-nombre").value.trim();
+    const tel = document.getElementById("m-cli-telefono").value.replace(/\D/g, '').trim();
+    const dir = document.getElementById("m-cli-direccion").value.trim();
+
+    if (!nom || !tel) {
+      return alert("El nombre y el número de celular son estrictamente obligatorios.");
+    }
+
+    try {
+      // Si ya existe por celular, actualizarlo
+      let clienteGuardado = null;
+      const { data: ex } = await db.from("clientes").select("id").eq("telefono", tel).maybeSingle();
+      if (ex) {
+        const { data: upd } = await db.from("clientes").update({ nombre_o_razon: nom, direccion: dir }).eq("id", ex.id).select().single();
+        clienteGuardado = upd;
+      } else {
+        const { data: ins, error: errIns } = await db.from("clientes").insert({ nombre_o_razon: nom, telefono: tel, direccion: dir }).select().single();
+        if (errIns) throw errIns;
+        clienteGuardado = ins;
+      }
+
+      await precargarClientes();
+      cerrarModal("modal-nuevo-cliente");
+
+      // Autoseleccionar inmediatamente en el mostrador
+      cargarCliente(clienteGuardado.nombre_o_razon, clienteGuardado.telefono, clienteGuardado.id, clienteGuardado.direccion);
+      alert(`✅ Cliente "${clienteGuardado.nombre_o_razon}" registrado y seleccionado con éxito.`);
+    } catch (e) {
+      alert("Error guardando cliente: " + e.message);
+    }
+  }
+
+  async function cargarCliente(nom, tel, cliId, dir) {
     document.getElementById("pos-cli-nom").value = nom;
     document.getElementById("pos-cli-tel").value = tel;
     document.getElementById("busc-cliente").value = nom + " (" + tel + ")";
     document.getElementById("drop-clientes").style.display = "none";
     await verificarFidelizacionCliente(cliId);
-  }
-
-  function seleccionarNuevoCliente(val) {
-    if (/^\d+$/.test(val)) {
-      document.getElementById("pos-cli-tel").value = val;
-      document.getElementById("pos-cli-nom").focus();
-    } else {
-      document.getElementById("pos-cli-nom").value = val;
-      document.getElementById("pos-cli-tel").focus();
-    }
-    document.getElementById("drop-clientes").style.display = "none";
-    document.getElementById("badge-loyalty").style.display = "none";
   }
 
   async function verificarFidelizacionCliente(cliId) {
@@ -1504,7 +1622,7 @@
     } catch (e) { console.error(e); }
   }
 
-  // Base de Datos Privada de Hoteles
+  // ==================== BASE DE DATOS Y MODAL DE HOTELES ====================
   async function precargarHotelesBD() {
     try {
       const { data } = await db.from("hoteles").select("id, nombre, telefono_contacto, direccion").order("nombre", { ascending: true });
@@ -1519,16 +1637,46 @@
 
     const matches = listaHotelesBD.filter(h => h.nombre.toLowerCase().includes(q));
 
-    if (matches.length === 0) {
-      box.innerHTML = `<div class="autocomplete-item" onclick="hotelSeleccionarNuevo('${val}')">🏨 Registrar establecimiento: "<strong>${val}</strong>"</div>`;
-    } else {
-      box.innerHTML = matches.map(h => `
+    let html = "";
+    html += `<div class="autocomplete-item" style="color: var(--accent); font-weight: bold; background: #0f172a;" onclick="abrirModalCrearHotel('${val.replace(/'/g, "")}')">
+      🏨 REGISTRAR NUEVO ESTABLECIMIENTO: "${val}"
+    </div>`;
+
+    if (matches.length > 0) {
+      html += matches.map(h => `
         <div class="autocomplete-item" onclick="hotelCargarSeleccion('${h.nombre.replace(/'/g,"")}', '${(h.telefono_contacto || "").replace(/'/g,"")}', '${(h.direccion || "").replace(/'/g,"")}')">
           🏨 ${h.nombre} ${h.direccion ? '(' + h.direccion + ')' : ''}
         </div>
       `).join("");
     }
+    box.innerHTML = html;
     box.style.display = "block";
+  }
+
+  function abrirModalCrearHotel(nombreSugerido) {
+    document.getElementById("drop-hoteles").style.display = "none";
+    document.getElementById("m-hotel-nombre").value = nombreSugerido || "";
+    document.getElementById("m-hotel-telefono").value = "";
+    document.getElementById("m-hotel-direccion").value = "";
+    abrirModal("modal-nuevo-hotel");
+  }
+
+  async function guardarNuevoHotelDesdeModal() {
+    const nom = document.getElementById("m-hotel-nombre").value.trim();
+    const tel = document.getElementById("m-hotel-telefono").value.trim();
+    const dir = document.getElementById("m-hotel-direccion").value.trim();
+
+    if (!nom) return alert("El nombre del hotel es obligatorio.");
+
+    try {
+      await db.from("hoteles").insert({ nombre: nom, telefono_contacto: tel || null, direccion: dir || null });
+      await precargarHotelesBD();
+      cerrarModal("modal-nuevo-hotel");
+      hotelCargarSeleccion(nom, tel, dir);
+      alert(`✅ Establecimiento "${nom}" registrado con éxito.`);
+    } catch (e) {
+      alert("Error registrando hotel: " + e.message);
+    }
   }
 
   function hotelCargarSeleccion(nom, tel, dir) {
@@ -1540,13 +1688,7 @@
     document.getElementById("drop-hoteles").style.display = "none";
   }
 
-  function hotelSeleccionarNuevo(val) {
-    document.getElementById("hotel-busc-input").value = val;
-    document.getElementById("drop-hoteles").style.display = "none";
-    document.getElementById("hotel-contacto").focus();
-  }
-
-  // Envío Solicitud Hotel (Dirección Opcional y Compatible 100%)
+  // Envío Solicitud Hotel (Compatible con esquema)
   async function hotelEnviarSolicitudPrivada() {
     const hNom = document.getElementById("hotel-busc-input").value.trim();
     const hSrv = document.getElementById("hotel-sel-servicio").value;
@@ -1997,7 +2139,7 @@
       let qBuilder = db.from("ordenes")
         .select(`id, consecutivo_ticket, codigo_rastreo, estado, total_neto, abono_inicial, saldo_pendiente, metodo_pago_saldo, created_at, entregado_at, observaciones_estado_prendas, clientes(nombre_o_razon, telefono), orden_items(cantidad, descripcion_prenda)`)
         .order("consecutivo_ticket", { ascending: false })
-        .limit(40);
+        .limit(50);
 
       if (q && /^\d+$/.test(q)) {
         qBuilder = qBuilder.eq("consecutivo_ticket", parseInt(q, 10));
@@ -2147,7 +2289,7 @@
     buscarOrdenesEntrega("");
   }
 
-  // Panel Maestro (Botón 9)
+  // Panel Maestro (Botón 9) - Sincronizado a Supabase
   async function abrirModalMasterAdmin() {
     poblarSelectPrendasMaster();
     await adminCargarOrdenesBD();
@@ -2157,38 +2299,45 @@
 
   function poblarSelectPrendasMaster() {
     const sel = document.getElementById("adm-edit-prenda-sel");
-    sel.innerHTML = CATALOGO_LOCAL.map(p => `<option value="${p.cod}">[${p.cod}] ${p.nom} - $${p.pre.toLocaleString("es-CO")}</option>`).join("");
+    sel.innerHTML = CATALOGO_CENTRAL.map(p => `<option value="${p.codigo}">[${p.codigo}] ${p.nombre} - $${Number(p.precio).toLocaleString("es-CO")}</option>`).join("");
   }
 
-  function adminCrearPrendaCatalogo() {
+  async function adminCrearPrendaCatalogo() {
     const nom = document.getElementById("adm-nuevo-nom").value.trim();
     const pre = Number(document.getElementById("adm-nuevo-pre").value);
     if (!nom || isNaN(pre) || pre <= 0) return alert("Ingresa un nombre y precio válidos.");
 
-    const nuevoCod = CATALOGO_LOCAL.length > 0 ? Math.max(...CATALOGO_LOCAL.map(p => p.cod)) + 1 : 1;
-    CATALOGO_LOCAL.push({ cod: nuevoCod, nom: nom, pre: pre });
-    localStorage.setItem("lavaarte_catalogo", JSON.stringify(CATALOGO_LOCAL));
+    const nuevoCod = CATALOGO_CENTRAL.length > 0 ? Math.max(...CATALOGO_CENTRAL.map(p => p.codigo)) + 1 : 1;
 
-    renderCatalogo("");
-    poblarSelectPrendasMaster();
-    document.getElementById("adm-nuevo-nom").value = "";
-    document.getElementById("adm-nuevo-pre").value = "";
-    alert(`✅ Prenda "${nom}" creada a $${pre.toLocaleString("es-CO")}.`);
+    try {
+      const { error } = await db.from("catalogo_prendas").insert({ codigo: nuevoCod, nombre: nom, precio: pre });
+      if (error) throw error;
+
+      await sincronizarCatalogoSupabase();
+      poblarSelectPrendasMaster();
+      document.getElementById("adm-nuevo-nom").value = "";
+      document.getElementById("adm-nuevo-pre").value = "";
+      alert(`✅ Prenda "${nom}" creada en Supabase a $${pre.toLocaleString("es-CO")}.`);
+    } catch (e) {
+      alert("Error creando prenda: " + e.message);
+    }
   }
 
-  function adminGuardarPrecioCatalogo() {
+  async function adminGuardarPrecioCatalogo() {
     const cod = Number(document.getElementById("adm-edit-prenda-sel").value);
     const nuevoPre = Number(document.getElementById("adm-edit-prenda-nuevo-precio").value);
     if (isNaN(nuevoPre) || nuevoPre <= 0) return alert("Ingresa un nuevo precio válido.");
 
-    const item = CATALOGO_LOCAL.find(p => p.cod === cod);
-    if (item) {
-      item.pre = nuevoPre;
-      localStorage.setItem("lavaarte_catalogo", JSON.stringify(CATALOGO_LOCAL));
-      renderCatalogo("");
+    try {
+      const { error } = await db.from("catalogo_prendas").update({ precio: nuevoPre, updated_at: new Date().toISOString() }).eq("codigo", cod);
+      if (error) throw error;
+
+      await sincronizarCatalogoSupabase();
       poblarSelectPrendasMaster();
       document.getElementById("adm-edit-prenda-nuevo-precio").value = "";
-      alert(`✅ Precio de "${item.nom}" actualizado a $${nuevoPre.toLocaleString("es-CO")}.`);
+      alert(`✅ Precio actualizado a $${nuevoPre.toLocaleString("es-CO")} en todos los dispositivos.`);
+    } catch (e) {
+      alert("Error actualizando precio: " + e.message);
     }
   }
 
@@ -2361,7 +2510,7 @@
     reader.readAsArrayBuffer(file);
   }
 
-  // Domicilios Particulares (Unifica dirección y detalles en columna 'direccion')
+  // Domicilios Particulares
   async function clienteCrearSolicitud(tipo) {
     let nom, tel, dir, detDir, fec, fra, notas, ticketRef = "";
     if (tipo === "RECOGIDA_DOMICILIO") {
@@ -2431,7 +2580,6 @@
       if (error) throw error;
 
       let registros = data || [];
-      // Ocultar completados que tengan más de 24h
       registros = registros.filter(d => {
         if (d.estado !== "COMPLETADO") return true;
         if (!d.completado_at) return true;
@@ -2554,34 +2702,26 @@
     }
 
     if (clienteDetectado) {
-      await cargarCliente(clienteDetectado.nombre_o_razon, clienteDetectado.telefono, clienteDetectado.id);
+      await cargarCliente(clienteDetectado.nombre_o_razon, clienteDetectado.telefono, clienteDetectado.id, clienteDetectado.direccion);
       t = t.replace(clienteDetectado.nombre_o_razon.toLowerCase(), '').trim();
     } else {
       const palabras = t.split(/\s+/);
       const nombresProbables = [];
       for (const p of palabras) {
-        if (PALABRAS_A_NUMEROS[p] || /^\d+$/.test(p) || CATALOGO_LOCAL.some(item => item.nom.toLowerCase().includes(p))) {
+        if (PALABRAS_A_NUMEROS[p] || /^\d+$/.test(p) || CATALOGO_CENTRAL.some(item => item.nombre.toLowerCase().includes(p))) {
           break;
         }
         nombresProbables.push(p);
       }
       if (nombresProbables.length > 0) {
         const nomTentativo = nombresProbables.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-        document.getElementById("pos-cli-nom").value = nomTentativo;
-        document.getElementById("busc-cliente").value = nomTentativo;
+        abrirModalCrearCliente(nomTentativo);
         t = t.replace(nombresProbables.join(" "), '').trim();
-
-        setTimeout(() => {
-          const tel = prompt(`👤 Cliente nuevo detectado: "${nomTentativo}".\nPor favor ingresa su número de celular para enviarle su copia digital:`, "");
-          if (tel) {
-            document.getElementById("pos-cli-tel").value = tel.replace(/\D/g, '');
-          }
-        }, 300);
       }
     }
 
-    CATALOGO_LOCAL.forEach(p => {
-      const nombrePrenda = p.nom.toLowerCase();
+    CATALOGO_CENTRAL.forEach(p => {
+      const nombrePrenda = p.nombre.toLowerCase();
       const regex = new RegExp(`(\\d+|un|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez)?\\s*(${nombrePrenda}[s|es]?)`, 'g');
       let match;
       while ((match = regex.exec(t)) !== null) {
@@ -2589,9 +2729,9 @@
         if (match[1]) {
           cant = PALABRAS_A_NUMEROS[match[1]] || parseInt(match[1], 10) || 1;
         }
-        const ex = ticket.find(item => item.cod === p.cod);
+        const ex = ticket.find(item => item.cod === p.codigo);
         if (ex) ex.cant += cant;
-        else ticket.push({ cod: p.cod, nom: p.nom, pre: p.pre, cant: cant });
+        else ticket.push({ cod: p.codigo, nom: p.nombre, pre: Number(p.precio), cant: cant });
       }
     });
 
