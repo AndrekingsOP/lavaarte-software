@@ -800,7 +800,7 @@
   </div>
 </div>
 
-<!-- Modal: Autenticación con PIN (Sin revelar códigos en pantalla) -->
+<!-- Modal: Autenticación con PIN -->
 <div class="modal" id="modal-admin-auth">
   <div class="modal-content" style="width: 380px; text-align: center;">
     <h3 id="auth-modal-title" style="color: var(--warning);">🔒 Acceso Protegido</h3>
@@ -912,7 +912,6 @@
   <!-- COPIA 1: ORIGINAL CLIENTE -->
   <div class="ticket-copia">
     <div class="p-logo-wrap">
-      <!-- Logo centrado sin textos laterales para evitar cortes -->
       <svg class="p-logo-svg" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r="46" fill="#000" />
         <circle cx="50" cy="50" r="38" fill="#fff" />
@@ -927,7 +926,7 @@
       NIT: 901.344.335<br>
       Diagonal 47 No.77C-80 Bogotá<br>
       Tels: 314-263-6787 / 315-333-0502<br>
-      <strong>www.lavaarte.com</strong>
+      <strong>lavaarte-software.onrender.com</strong>
     </div>
 
     <div class="p-box-ticket">
@@ -978,12 +977,12 @@
 
     <div class="p-footer">
       🔍 Rastree el avance de su ropa con su <strong>número de ticket</strong> en:<br>
-      <strong>www.lavaarte.com</strong><br>
+      <strong>lavaarte-software.onrender.com</strong><br>
       ¡Gracias por escogernos!
     </div>
   </div>
 
-  <!-- COPIA 2: PLANTA / ACOPLE (Con salto de página para corte de cuchilla) -->
+  <!-- COPIA 2: PLANTA / ACOPLE -->
   <div class="ticket-copia">
     <div class="p-logo-wrap">
       <svg class="p-logo-svg" viewBox="0 0 100 100">
@@ -1046,6 +1045,7 @@
 <script>
   // ENDPOINT BOT DE WHATSAPP EN RENDER
   const BOT_WHATSAPP_URL = "https://bot-lavaarte-whatsapp.onrender.com";
+  const APP_WEB_URL = "https://lavaarte-software.onrender.com";
 
   // Conexión Supabase Lavaarte
   const SUPABASE_URL = "https://biumkyjjavpfgfishvzp.supabase.co";
@@ -1213,7 +1213,7 @@
     }
   }
 
-  // ==================== BARRA RÁPIDA DE TECLADO PARA COMPUTADOR ====================
+  // Barra Rápida Teclado
   function quickBarFiltrarPrenda(val) {
     const box = document.getElementById("drop-quick-prendas");
     const q = val.toLowerCase().trim();
@@ -1563,7 +1563,7 @@
     }
   }
 
-  // Guardar Orden Mostrador (WhatsApp prioritario antes de print)
+  // Guardar Orden Mostrador
   async function confirmarGenerarOrden() {
     if (ticket.length === 0) return alert("El ticket está vacío.");
     const nom = document.getElementById("pos-cli-nom").value.trim();
@@ -1629,7 +1629,7 @@
         ? "⭐ Beneficio Lavaarte Loyalty: ¡Prenda Gratis Aplicada!" 
         : `🎖️ Lavaarte Loyalty: Visita ${cicloVisita} de 5 para premio`;
 
-      // 1. Despachar WhatsApp inmediatamente por red (asíncrono)
+      // Despachar WhatsApp por red antes de print
       const detallePrendasWA = items.map(i => `• ${i.cantidad}x ${i.descripcion_prenda} ($${(i.subtotal).toLocaleString("es-CO")})`).join("\n");
       const notaObsWA = obs ? `\n⚠️ *Detalle / Estado de recepción:* _${obs}_\n` : "";
 
@@ -1646,12 +1646,12 @@
         `💵 *Abono inicial:* $${abono.toLocaleString("es-CO")}\n` +
         `📌 *Saldo por pagar:* $${saldo.toLocaleString("es-CO")}\n\n` +
         `${textoLoyalty}\n` +
-        `🔍 Recuerda que con tu *Ticket #${ord.consecutivo_ticket}* puedes rastrear el avance de tu ropa en www.lavaarte.com\n` +
+        `🔍 Recuerda que con tu *Ticket #${ord.consecutivo_ticket}* puedes rastrear el avance de tu ropa en:\n${APP_WEB_URL}\n` +
         `¡Gracias por escogernos!`;
 
       despacharWhatsApp(tel, mensajeTexto);
 
-      // 2. Ejecutar impresión térmica doble
+      // Doble impresión térmica 68mm
       poblarPlantillaImpresion(ord.consecutivo_ticket, new Date().toLocaleString("es-CO"), nom, tel, codigoRastreo, items, obs, total, abono, saldo, textoLoyalty);
       window.print();
       await db.from("ordenes").update({ impresa: true }).eq("id", ord.id);
@@ -1712,7 +1712,7 @@
           `*LAVAARTE LAVANDERÍA SAS*\n` +
           `Hola *${ord.clientes.nombre_o_razon}*, tu orden *#${ord.consecutivo_ticket}* está *100% LISTA PARA ENTREGAR*.\n` +
           `📌 Saldo por cancelar: $${Number(ord.saldo_pendiente).toLocaleString("es-CO")}.\n` +
-          `Puedes pasar por ella en nuestro horario habitual. ¡Gracias por escogernos!`;
+          `Puedes pasar por ella en nuestro horario habitual o solicitar entrega a domicilio en:\n${APP_WEB_URL}\n¡Gracias por escogernos!`;
 
         despacharWhatsApp(ord.clientes.telefono, msgListo);
       }
@@ -1970,7 +1970,7 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // ==================== SISTEMA DE SEGURIDAD JERÁRQUICO ====================
+  // Seguridad Jerárquica
   function solicitarAccesoEmpleados(destino) {
     destinoPinAdmin = destino;
     document.getElementById("auth-modal-title").textContent = "🔒 Acceso Colaboradores Lavaarte";
@@ -2050,7 +2050,7 @@
     buscarOrdenesEntrega("");
   }
 
-  // ==================== PANEL MAESTRO (BOTÓN 9) ====================
+  // Panel Maestro (Botón 9)
   async function abrirModalMasterAdmin() {
     poblarSelectPrendasMaster();
     await adminCargarOrdenesBD();
@@ -2222,7 +2222,7 @@
       alert("✅ Datos del cliente actualizados.");
       await precargarClientes();
       adminRenderClientesBD(listaClientes);
-    } catch (e) { alert(e.message); }
+    } catch (e) { alert("Error: " + e.message); }
   }
 
   function adminImportarClientesExcel(event) {
@@ -2264,7 +2264,7 @@
     reader.readAsArrayBuffer(file);
   }
 
-  // ==================== DOMICILIOS CLIENTES ====================
+  // Domicilios Particulares
   async function clienteCrearSolicitud(tipo) {
     let nom, tel, dir, detDir, fec, fra, notas, ticketRef = "";
     if (tipo === "RECOGIDA_DOMICILIO") {
@@ -2321,7 +2321,7 @@
     } catch (e) { alert("Error registrando solicitud: " + e.message); }
   }
 
-  // Cargar Domicilios con Regla 24h para completados
+  // Domicilios Admin (Regla 24h)
   async function cargarDomiciliosAdmin() {
     const tbody = document.getElementById("tabla-domicilios-body");
     try {
@@ -2407,7 +2407,7 @@
     } catch (e) { alert(e.message); }
   }
 
-  // ==================== RECONOCIMIENTO DE VOZ INTEGRAL ====================
+  // Reconocimiento de Voz
   function iniciarVozPOSInteligente() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) return alert("Usa Google Chrome o Edge para el reconocimiento de voz.");
