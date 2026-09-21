@@ -153,7 +153,7 @@
     .ticket-copia {
       page-break-after: always;
       break-after: page;
-      padding-bottom: 4mm;
+      padding-bottom: 5mm;
       margin-bottom: 0;
     }
     .ticket-copia:last-child {
@@ -162,12 +162,13 @@
       padding-bottom: 2mm;
     }
     .p-logo-wrap { text-align: center; margin-bottom: 4px; }
-    .p-logo-svg { width: 44mm; height: 18mm; }
+    .p-logo-svg { width: 34mm; height: 34mm; margin: 0 auto; display: block; }
     .p-header-title {
       font-size: 15px;
       font-weight: 900;
       text-align: center;
       letter-spacing: 0.5px;
+      margin-top: 2px;
     }
     .p-subtext {
       font-size: 10px;
@@ -273,12 +274,12 @@
         <button class="btn-primary" style="width: 100%; margin-top: 6px;">Solicitar Ruta Inmediata</button>
       </div>
 
-      <!-- Opción 3: Lavaarte (PIN Empleados: 1510) -->
+      <!-- Opción 3: Lavaarte -->
       <div class="portal-card" style="border-color: var(--primary);" onclick="solicitarAccesoEmpleados('vista-dashboard')">
         <div class="portal-icon">🔐</div>
         <div class="portal-title">Lavaarte</div>
         <div class="portal-desc">Módulo operativo protegido: mostrador, recepción por voz, alistamiento, arqueo y panel maestro.</div>
-        <button class="btn-success" style="width: 100%; margin-top: 6px;">Acceso Colaboradores (PIN)</button>
+        <button class="btn-success" style="width: 100%; margin-top: 6px;">Acceso Colaboradores</button>
       </div>
     </div>
   </div>
@@ -366,7 +367,6 @@
     <div class="pos-layout">
       <!-- SIDEBAR IZQUIERDO: CLIENTE Y TICKET -->
       <div class="pos-sidebar">
-        <!-- Reconocimiento de Voz Inteligente -->
         <button id="btn-voz-pos" class="btn-voice" style="margin-bottom: 8px;" onclick="iniciarVozPOSInteligente()">
           🎙️ Dictar Orden Completa (Cliente + Prendas + Estado)
         </button>
@@ -425,35 +425,29 @@
 
       <!-- PANEL DERECHO: BARRA RÁPIDA COMPUTADOR + CATÁLOGO -->
       <div class="pos-catalog">
-        
-        <!-- BARRA RÁPIDA DE TECLADO PARA COMPUTADOR -->
         <div class="quick-bar-card">
           <div style="font-size: 12px; font-weight: bold; color: var(--accent); display: flex; justify-content: space-between;">
             <span>⌨️ ENTRADA RÁPIDA DE MOSTRADOR (PC)</span>
             <span style="color: var(--text-muted); font-size: 11px;">[Cantidad] ➔ [Buscar Prenda] ➔ [Editar Precio] ➔ [Enter]</span>
           </div>
           <div class="quick-bar-inputs">
-            <!-- 1. Campo Cantidad / Kilos -->
             <div class="input-group">
               <label class="label-sm">Cantidad</label>
               <input type="number" id="quick-bar-cant" class="input-text" style="text-align: center; font-weight: bold;" value="1" min="0.1" step="any">
             </div>
 
-            <!-- 2. Barra de Búsqueda Predictiva de Prenda -->
             <div class="input-group">
               <label class="label-sm">Buscar Prenda / Ítem</label>
-              <input type="text" id="quick-bar-search" class="input-text" placeholder="Escribe prenda o código (ej: camisa, 1)..." oninput="quickBarFiltrarPrenda(this.value)">
+              <input type="text" id="quick-bar-search" class="input-text" placeholder="Escribe prenda o código..." oninput="quickBarFiltrarPrenda(this.value)">
               <div id="drop-quick-prendas" class="autocomplete-box"></div>
             </div>
 
-            <!-- 3. Campo de Precio Unitario Editable -->
             <div class="input-group">
               <label class="label-sm">Precio ($COP)</label>
               <input type="number" id="quick-bar-price" class="input-text" style="text-align: right; font-weight: bold; color: var(--accent);" placeholder="0" onkeydown="if(event.key==='Enter') quickBarAgregarAlTicket()">
             </div>
           </div>
 
-          <!-- 4. Botón Verde de Inserción Rápida -->
           <button class="btn-success" style="padding: 10px; font-size: 13px;" onclick="quickBarAgregarAlTicket()">
             ➕ AGREGAR PRENDA AL TICKET
           </button>
@@ -572,10 +566,10 @@
             <th>Servicio</th>
             <th>Nombre / Hotel</th>
             <th>Contacto</th>
-            <th>Dirección</th>
+            <th>Dirección y Detalles</th>
             <th>Ticket Ref</th>
             <th>Detalle</th>
-            <th>Estado</th>
+            <th>Estado / Acción</th>
           </tr>
         </thead>
         <tbody id="tabla-domicilios-body">
@@ -602,12 +596,14 @@
         <div id="cliente-ticket-result" style="margin-top: 14px; font-size: 13px;"></div>
       </div>
 
+      <!-- Recogida a Domicilio -->
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
         <h4 style="color: var(--success); margin-bottom: 8px;">📦 Pedir Recogida a Domicilio</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <input type="text" id="dom-rec-nom" class="input-text" placeholder="Nombre Completo">
-          <input type="text" id="dom-rec-tel" class="input-text" placeholder="Celular / WhatsApp">
-          <input type="text" id="dom-rec-dir" class="input-text" placeholder="Dirección exacta">
+          <input type="text" id="dom-rec-nom" class="input-text" placeholder="Nombre Completo *">
+          <input type="text" id="dom-rec-tel" class="input-text" placeholder="Celular / WhatsApp *">
+          <input type="text" id="dom-rec-dir" class="input-text" placeholder="Dirección exacta (Ej: Cra 50 # 34-25) *">
+          <input type="text" id="dom-rec-detalles" class="input-text" placeholder="Detalles de dirección (Ej: Casa azul, Torre 5 Apto 302 Balcones) *">
           <div style="display: flex; gap: 8px;">
             <input type="date" id="dom-rec-fec" class="input-text">
             <select id="dom-rec-franja" class="input-text">
@@ -615,18 +611,20 @@
               <option value="Tarde (2pm - 6pm)">Tarde (2pm - 6pm)</option>
             </select>
           </div>
-          <input type="text" id="dom-rec-notas" class="input-text" placeholder="Prendas aproximadas o notas">
+          <input type="text" id="dom-rec-notas" class="input-text" placeholder="Prendas aproximadas o notas adicionales">
           <button class="btn-success" onclick="clienteCrearSolicitud('RECOGIDA_DOMICILIO')">Solicitar Recogida</button>
         </div>
       </div>
 
+      <!-- Entrega a Domicilio -->
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
         <h4 style="color: var(--warning); margin-bottom: 8px;">🚚 Solicitar Entrega de mi Ropa</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <input type="number" id="dom-ent-ticket" class="input-text" placeholder="Número de Ticket / Recibo">
-          <input type="text" id="dom-ent-nom" class="input-text" placeholder="Nombre de Quien Recibe">
-          <input type="text" id="dom-ent-tel" class="input-text" placeholder="Celular de Contacto">
-          <input type="text" id="dom-ent-dir" class="input-text" placeholder="Dirección de Entrega">
+          <input type="number" id="dom-ent-ticket" class="input-text" placeholder="Número de Ticket / Recibo *">
+          <input type="text" id="dom-ent-nom" class="input-text" placeholder="Nombre de Quien Recibe *">
+          <input type="text" id="dom-ent-tel" class="input-text" placeholder="Celular de Contacto *">
+          <input type="text" id="dom-ent-dir" class="input-text" placeholder="Dirección de Entrega (Ej: Cra 50 # 34-25) *">
+          <input type="text" id="dom-ent-detalles" class="input-text" placeholder="Detalles de dirección (Ej: Casa azul, Torre 5 Apto 302) *">
           <div style="display: flex; gap: 8px;">
             <input type="date" id="dom-ent-fec" class="input-text">
             <select id="dom-ent-franja" class="input-text">
@@ -680,8 +678,13 @@
         </div>
 
         <div class="input-group">
-          <label class="label-sm">Dirección / Sede (Opcional si ya está registrada)</label>
+          <label class="label-sm">Dirección / Sede</label>
           <input type="text" id="hotel-direccion-input" class="input-text" placeholder="Dirección del hotel...">
+        </div>
+
+        <div class="input-group">
+          <label class="label-sm">Detalles de Entrega / Acceso</label>
+          <input type="text" id="hotel-detalles-input" class="input-text" placeholder="Ej: Entrada por bahía de proveedores, sótano 1">
         </div>
 
         <div class="input-group">
@@ -797,7 +800,7 @@
   </div>
 </div>
 
-<!-- Modal: Autenticación con PIN -->
+<!-- Modal: Autenticación con PIN (Sin revelar códigos en pantalla) -->
 <div class="modal" id="modal-admin-auth">
   <div class="modal-content" style="width: 380px; text-align: center;">
     <h3 id="auth-modal-title" style="color: var(--warning);">🔒 Acceso Protegido</h3>
@@ -824,8 +827,8 @@
 <!-- Modal 9: PANEL MAESTRO ADMINISTRADOR -->
 <div class="modal" id="modal-admin-master">
   <div class="modal-content" style="width: 820px;">
-    <h3 style="color: var(--warning);">⚡ Panel Maestro Administrador (Acceso 2415)</h3>
-    <p style="font-size: 12px; color: var(--text-muted);">Administración total del catálogo, la base de datos de órdenes y el padrón de clientes.</p>
+    <h3 style="color: var(--warning);">⚡ Panel Maestro Administrador</h3>
+    <p style="font-size: 12px; color: var(--text-muted);">Administración total del catálogo, base de datos de órdenes y padrón de clientes.</p>
 
     <!-- Sección 1: Catálogo y Precios -->
     <div style="background: var(--bg-input); padding: 14px; border-radius: 8px; border: 1px solid var(--border);">
@@ -909,12 +912,14 @@
   <!-- COPIA 1: ORIGINAL CLIENTE -->
   <div class="ticket-copia">
     <div class="p-logo-wrap">
-      <svg class="p-logo-svg" viewBox="0 0 100 30">
-        <circle cx="15" cy="15" r="13" fill="#000" />
-        <circle cx="15" cy="15" r="9" fill="#fff" />
-        <path d="M15 6 A9 9 0 0 1 24 15 C20 18 10 18 15 6 Z" fill="#000" />
-        <circle cx="19" cy="12" r="1.5" fill="#fff" />
-        <text x="32" y="19" font-size="14" font-weight="900" fill="#000" letter-spacing="1">LAVAARTE</text>
+      <!-- Logo centrado sin textos laterales para evitar cortes -->
+      <svg class="p-logo-svg" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="46" fill="#000" />
+        <circle cx="50" cy="50" r="38" fill="#fff" />
+        <path d="M50 12 A38 38 0 0 1 88 50 A38 38 0 0 1 50 88 C30 88 20 70 35 55 C45 45 55 35 50 12 Z" fill="#000" />
+        <circle cx="65" cy="45" r="7" fill="#fff" />
+        <circle cx="58" cy="33" r="4" fill="#fff" />
+        <circle cx="70" cy="30" r="3" fill="#fff" />
       </svg>
     </div>
     <div class="p-header-title">LAVAARTE LAVANDERÍA</div>
@@ -978,14 +983,13 @@
     </div>
   </div>
 
-  <!-- COPIA 2: PLANTA / ACOPLE -->
+  <!-- COPIA 2: PLANTA / ACOPLE (Con salto de página para corte de cuchilla) -->
   <div class="ticket-copia">
     <div class="p-logo-wrap">
-      <svg class="p-logo-svg" viewBox="0 0 100 30">
-        <circle cx="15" cy="15" r="13" fill="#000" />
-        <circle cx="15" cy="15" r="9" fill="#fff" />
-        <path d="M15 6 A9 9 0 0 1 24 15 C20 18 10 18 15 6 Z" fill="#000" />
-        <text x="32" y="19" font-size="14" font-weight="900" fill="#000" letter-spacing="1">LAVAARTE</text>
+      <svg class="p-logo-svg" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="46" fill="#000" />
+        <circle cx="50" cy="50" r="38" fill="#fff" />
+        <path d="M50 12 A38 38 0 0 1 88 50 A38 38 0 0 1 50 88 C30 88 20 70 35 55 C45 45 55 35 50 12 Z" fill="#000" />
       </svg>
     </div>
     <div class="p-header-title">LAVAARTE LAVANDERÍA</div>
@@ -1116,7 +1120,6 @@
   function cerrarModal(id) { document.getElementById(id).style.display = "none"; }
   function abrirModal(id) { document.getElementById(id).style.display = "flex"; }
 
-  // Suscripciones en tiempo real
   function activarSuscripcionesRealtime() {
     db.channel('ordenes-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'ordenes' }, async (payload) => {
@@ -1130,7 +1133,7 @@
     db.channel('domicilios-live')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'solicitudes_domicilio' }, () => {
         cargarDomiciliosAdmin();
-        alert("🔔 ¡Nueva solicitud de domicilio/hotel recibida!");
+        alert("🔔 ¡Nueva solicitud de domicilio o ruta recibida!");
       })
       .subscribe();
   }
@@ -1141,7 +1144,7 @@
     if (modoImpresoraHP) {
       btn.style.background = "var(--success)";
       btn.textContent = "🖨️ Modo Impresora HP: ACTIVO (24/7)";
-      alert("✅ Este computador imprimirá automáticamente cualquier orden generada desde celulares o tablets.");
+      alert("✅ Este equipo imprimirá de forma automática cualquier orden recibida.");
     } else {
       btn.style.background = "var(--bg-input)";
       btn.textContent = "🖨️ Modo Impresora HP: OFF";
@@ -1190,7 +1193,6 @@
     } catch (e) { console.error("Error imprimiendo:", e); }
   }
 
-  // Despacho WhatsApp
   async function despacharWhatsApp(telefono, mensajeTexto) {
     let enviadoServidor = false;
     try {
@@ -1202,7 +1204,7 @@
       const resJson = await resp.json();
       if (resJson && resJson.ok) enviadoServidor = true;
     } catch (err) {
-      console.warn("Bot WhatsApp en Render en reposo, activando fallback...");
+      console.warn("Bot WhatsApp no respondió, utilizando fallback web...");
     }
 
     if (!enviadoServidor) {
@@ -1277,7 +1279,6 @@
 
     renderTicket();
 
-    // Resetear barra para el siguiente ítem
     itemSeleccionadoQuickBar = null;
     searchInput.value = "";
     priceInput.value = "";
@@ -1285,7 +1286,6 @@
     searchInput.focus();
   }
 
-  // Catálogo Mostrador (Botones)
   function renderCatalogo(filtro) {
     const grid = document.getElementById("grid-catalogo");
     grid.innerHTML = "";
@@ -1346,7 +1346,7 @@
     document.getElementById("group-detalle-kilos").style.display = ticket.some(t => t.cod === 71) ? "flex" : "none";
 
     if (ticket.length === 0) {
-      cont.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 30px;">Selecciona prendas del catálogo o dicta por voz.</div>';
+      cont.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 30px;">Selecciona prendas del catálogo o utiliza la barra rápida de teclado.</div>';
       document.getElementById("pos-subtotal").textContent = "$0";
       document.getElementById("pos-saldo").textContent = "$0";
       return;
@@ -1402,7 +1402,6 @@
     renderTicket();
   }
 
-  // Clientes Mostrador
   async function precargarClientes() {
     try {
       const { data } = await db.from("clientes").select("id, nombre_o_razon, telefono, direccion").order("nombre_o_razon", { ascending: true });
@@ -1448,7 +1447,6 @@
     document.getElementById("badge-loyalty").style.display = "none";
   }
 
-  // Fidelización Lavaarte Loyalty
   async function verificarFidelizacionCliente(cliId) {
     if (!cliId) return;
     try {
@@ -1488,7 +1486,7 @@
     const matches = listaHotelesBD.filter(h => h.nombre.toLowerCase().includes(q));
 
     if (matches.length === 0) {
-      box.innerHTML = `<div class="autocomplete-item" onclick="hotelSeleccionarNuevo('${val}')">🏨 Registrar como nuevo establecimiento: "<strong>${val}</strong>"</div>`;
+      box.innerHTML = `<div class="autocomplete-item" onclick="hotelSeleccionarNuevo('${val}')">🏨 Registrar establecimiento: "<strong>${val}</strong>"</div>`;
     } else {
       box.innerHTML = matches.map(h => `
         <div class="autocomplete-item" onclick="hotelCargarSeleccion('${h.nombre.replace(/'/g,"")}', '${(h.telefono_contacto || "").replace(/'/g,"")}', '${(h.direccion || "").replace(/'/g,"")}')">
@@ -1520,6 +1518,7 @@
     const hBultos = document.getElementById("hotel-cant-bultos").value.trim();
     const hCont = document.getElementById("hotel-contacto").value.trim();
     const hDir = document.getElementById("hotel-direccion-input").value.trim();
+    const hDetalles = document.getElementById("hotel-detalles-input").value.trim();
     const hNotas = document.getElementById("hotel-notas").value.trim();
 
     if (!hNom) return alert("Por favor ingresa el nombre de tu hotel.");
@@ -1536,16 +1535,19 @@
       }
 
       const hoyBog = new Date().toISOString().split("T")[0];
-      await db.from("solicitudes_domicilio").insert({
+      const { error: insErr } = await db.from("solicitudes_domicilio").insert({
         origen_tipo: 'HOTEL_RUTA',
         tipo_servicio: 'RECOGIDA_HOTEL',
         nombre_entidad: hNom,
         telefono: hCont || "Recepción / Ama de llaves",
         direccion: hDir || (exHotel?.direccion || "Sede Hotel"),
+        detalles_direccion: hDetalles || "",
         fecha_programada: hoyBog,
         franja_horaria: "Ruta Activa Hoy",
         notas: `Servicio: ${hSrv} | Bultos: ${hBultos || 'N/A'} | Nota: ${hNotas || '-'}`
       });
+
+      if (insErr) throw insErr;
 
       alert(`✅ ¡Solicitud registrada exitosamente para ${hNom}!\nEl conductor y despachador de ruta ya tienen la notificación activa.`);
       
@@ -1553,6 +1555,7 @@
       document.getElementById("hotel-cant-bultos").value = "";
       document.getElementById("hotel-contacto").value = "";
       document.getElementById("hotel-direccion-input").value = "";
+      document.getElementById("hotel-detalles-input").value = "";
       document.getElementById("hotel-notas").value = "";
       mostrarVista("vista-home");
     } catch (e) {
@@ -1560,7 +1563,7 @@
     }
   }
 
-  // Guardar Orden Mostrador
+  // Guardar Orden Mostrador (WhatsApp prioritario antes de print)
   async function confirmarGenerarOrden() {
     if (ticket.length === 0) return alert("El ticket está vacío.");
     const nom = document.getElementById("pos-cli-nom").value.trim();
@@ -1626,12 +1629,7 @@
         ? "⭐ Beneficio Lavaarte Loyalty: ¡Prenda Gratis Aplicada!" 
         : `🎖️ Lavaarte Loyalty: Visita ${cicloVisita} de 5 para premio`;
 
-      // Doble impresión térmica 68mm
-      poblarPlantillaImpresion(ord.consecutivo_ticket, new Date().toLocaleString("es-CO"), nom, tel, codigoRastreo, items, obs, total, abono, saldo, textoLoyalty);
-      window.print();
-      await db.from("ordenes").update({ impresa: true }).eq("id", ord.id);
-
-      // Despacho WhatsApp
+      // 1. Despachar WhatsApp inmediatamente por red (asíncrono)
       const detallePrendasWA = items.map(i => `• ${i.cantidad}x ${i.descripcion_prenda} ($${(i.subtotal).toLocaleString("es-CO")})`).join("\n");
       const notaObsWA = obs ? `\n⚠️ *Detalle / Estado de recepción:* _${obs}_\n` : "";
 
@@ -1652,6 +1650,11 @@
         `¡Gracias por escogernos!`;
 
       despacharWhatsApp(tel, mensajeTexto);
+
+      // 2. Ejecutar impresión térmica doble
+      poblarPlantillaImpresion(ord.consecutivo_ticket, new Date().toLocaleString("es-CO"), nom, tel, codigoRastreo, items, obs, total, abono, saldo, textoLoyalty);
+      window.print();
+      await db.from("ordenes").update({ impresa: true }).eq("id", ord.id);
 
       // Limpiar formulario
       ticket = [];
@@ -1948,7 +1951,6 @@
     XLSX.writeFile(wb, `Lavaarte_CierreCaja_${reporteArqueoActual.fecha.replace(/\//g,'-')}.xlsx`);
   }
 
-  // Descarga BD
   async function descargarHistoricoOrdenesExcel() {
     try {
       const { data, error } = await db.from("ordenes").select(`consecutivo_ticket, codigo_rastreo, estado, total_neto, abono_inicial, saldo_pendiente, metodo_pago_saldo, created_at, entregado_at, observaciones_estado_prendas, clientes(nombre_o_razon, telefono), orden_items(cantidad, descripcion_prenda, precio_unitario, subtotal)`).order("consecutivo_ticket", { ascending: false });
@@ -1968,21 +1970,19 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // ==================== SISTEMA DE SEGURIDAD JERÁRQUICO (1510 vs 2415) ====================
-  // Nivel 1: Empleados (1510) para ingresar a Lavaarte
+  // ==================== SISTEMA DE SEGURIDAD JERÁRQUICO ====================
   function solicitarAccesoEmpleados(destino) {
     destinoPinAdmin = destino;
     document.getElementById("auth-modal-title").textContent = "🔒 Acceso Colaboradores Lavaarte";
-    document.getElementById("auth-modal-desc").textContent = "Ingresa tu PIN de colaborador (1510):";
+    document.getElementById("auth-modal-desc").textContent = "Ingresa tu PIN de colaborador para continuar:";
     document.getElementById("admin-pin").value = "";
     abrirModal("modal-admin-auth");
   }
 
-  // Nivel 2: Administrador Maestro (2415) para finanzas, anulaciones y BD
   function pedirClaveSegura(destinoModal) {
     destinoPinAdmin = destinoModal;
-    document.getElementById("auth-modal-title").textContent = "🛡️ Control Administrativo Maestro";
-    document.getElementById("auth-modal-desc").textContent = "Acceso restringido. Ingresa el PIN Administrador (2415):";
+    document.getElementById("auth-modal-title").textContent = "🛡️ Control Administrativo";
+    document.getElementById("auth-modal-desc").textContent = "Acceso restringido. Ingresa el PIN de Administrador:";
     document.getElementById("admin-pin").value = "";
     abrirModal("modal-admin-auth");
   }
@@ -1990,7 +1990,6 @@
   function validarPinSeguro() {
     const pin = document.getElementById("admin-pin").value.trim();
 
-    // 1. Si el destino es el acceso regular a Lavaarte (Mostrador / Planta)
     if (destinoPinAdmin === "vista-dashboard") {
       if (pin === "1510" || pin === "2415") {
         cerrarModal("modal-admin-auth");
@@ -2001,7 +2000,6 @@
       return;
     }
 
-    // 2. Si el destino son funciones críticas (Arqueo, Anulación, Panel Maestro)
     if (destinoPinAdmin === "modal-admin-master" || destinoPinAdmin === "modal-admin-panel" || destinoPinAdmin === "modal-arqueo") {
       if (pin === "2415") {
         cerrarModal("modal-admin-auth");
@@ -2009,7 +2007,7 @@
         else if (destinoPinAdmin === "modal-admin-panel") abrirModal("modal-admin-panel");
         else if (destinoPinAdmin === "modal-arqueo") abrirArqueoCaja();
       } else {
-        alert("⚠️ PIN ADMINISTRADOR INCORRECTO. Función restringida.");
+        alert("⚠️ PIN ADMINISTRADOR INCORRECTO. Acceso denegado.");
       }
     }
   }
@@ -2187,7 +2185,6 @@
     }
   }
 
-  // Gestor de Clientes en BD
   function adminRenderClientesBD(lista) {
     const tbody = document.getElementById("adm-tabla-clientes-bd-body");
     if (!lista || lista.length === 0) {
@@ -2225,10 +2222,9 @@
       alert("✅ Datos del cliente actualizados.");
       await precargarClientes();
       adminRenderClientesBD(listaClientes);
-    } catch (e) { alert("Error: " + e.message); }
+    } catch (e) { alert(e.message); }
   }
 
-  // Importador Masivo desde Excel
   function adminImportarClientesExcel(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -2268,78 +2264,114 @@
     reader.readAsArrayBuffer(file);
   }
 
-  // Domicilios Particulares
+  // ==================== DOMICILIOS CLIENTES ====================
   async function clienteCrearSolicitud(tipo) {
-    let nom, tel, dir, fec, fra, notas, ticketRef = "";
+    let nom, tel, dir, detDir, fec, fra, notas, ticketRef = "";
     if (tipo === "RECOGIDA_DOMICILIO") {
       nom = document.getElementById("dom-rec-nom").value.trim();
       tel = document.getElementById("dom-rec-tel").value.trim();
       dir = document.getElementById("dom-rec-dir").value.trim();
+      detDir = document.getElementById("dom-rec-detalles").value.trim();
       fec = document.getElementById("dom-rec-fec").value;
       fra = document.getElementById("dom-rec-franja").value;
       notas = document.getElementById("dom-rec-notas").value.trim();
-      if (!nom || !tel || !dir || !fec) return alert("Completa los campos obligatorios.");
+      if (!nom || !tel || !dir || !detDir || !fec) return alert("Completa los campos obligatorios (*).");
     } else {
       ticketRef = document.getElementById("dom-ent-ticket").value.trim();
       nom = document.getElementById("dom-ent-nom").value.trim();
       tel = document.getElementById("dom-ent-tel").value.trim();
       dir = document.getElementById("dom-ent-dir").value.trim();
+      detDir = document.getElementById("dom-ent-detalles").value.trim();
       fec = document.getElementById("dom-ent-fec").value;
       fra = document.getElementById("dom-ent-franja").value;
-      if (!ticketRef || !nom || !tel || !dir || !fec) return alert("Ingresa el ticket y datos obligatorios.");
+      if (!ticketRef || !nom || !tel || !dir || !detDir || !fec) return alert("Completa los campos obligatorios (*).");
       notas = `Entrega solicitada para el Ticket #${ticketRef}`;
     }
 
     try {
-      await db.from("solicitudes_domicilio").insert({
-        origen_tipo: 'CLIENTE_PARTICULAR', tipo_servicio: tipo, nombre_entidad: nom,
-        telefono: tel, direccion: dir, ticket_referencia: ticketRef,
-        fecha_programada: fec, franja_horaria: fra, notas
+      const { error: errDom } = await db.from("solicitudes_domicilio").insert({
+        origen_tipo: 'CLIENTE_PARTICULAR',
+        tipo_servicio: tipo,
+        nombre_entidad: nom,
+        telefono: tel,
+        direccion: dir,
+        detalles_direccion: detDir,
+        ticket_referencia: ticketRef,
+        fecha_programada: fec,
+        franja_horaria: fra,
+        notas
       });
-      alert("✅ Solicitud registrada con éxito.");
+
+      if (errDom) throw errDom;
+
+      alert("✅ Solicitud de servicio registrada con éxito. Lavaarte ya tiene tu pedido en cola.");
       if (tipo === "RECOGIDA_DOMICILIO") {
         document.getElementById("dom-rec-nom").value = "";
         document.getElementById("dom-rec-tel").value = "";
         document.getElementById("dom-rec-dir").value = "";
+        document.getElementById("dom-rec-detalles").value = "";
       } else {
         document.getElementById("dom-ent-ticket").value = "";
         document.getElementById("dom-ent-nom").value = "";
         document.getElementById("dom-ent-tel").value = "";
         document.getElementById("dom-ent-dir").value = "";
+        document.getElementById("dom-ent-detalles").value = "";
       }
-    } catch (e) { alert(e.message); }
+      mostrarVista("vista-home");
+    } catch (e) { alert("Error registrando solicitud: " + e.message); }
   }
 
+  // Cargar Domicilios con Regla 24h para completados
   async function cargarDomiciliosAdmin() {
     const tbody = document.getElementById("tabla-domicilios-body");
     try {
-      const { data } = await db.from("solicitudes_domicilio").select("*").order("created_at", { ascending: false }).limit(25);
+      const limite24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      
+      const { data, error } = await db.from("solicitudes_domicilio")
+        .select("*")
+        .or(`estado.neq.COMPLETADO,completado_at.gte.${limite24h}`)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-muted);">Sin solicitudes registradas.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-muted);">Sin solicitudes pendientes en ruta.</td></tr>';
         return;
       }
-      tbody.innerHTML = data.map(d => `
-        <tr>
-          <td>${new Date(d.created_at).toLocaleDateString("es-CO")}</td>
-          <td><strong style="color: ${d.origen_tipo === 'HOTEL_RUTA' ? 'var(--accent)' : 'var(--success)'};">${d.origen_tipo}</strong></td>
-          <td>${d.tipo_servicio}</td>
-          <td><strong>${d.nombre_entidad}</strong></td>
-          <td>${d.telefono}</td>
-          <td>${d.direccion}</td>
-          <td>${d.ticket_referencia ? '#' + d.ticket_referencia : '-'}</td>
-          <td style="font-size: 11px; color: var(--text-muted);">${d.notas || '-'}</td>
-          <td><button class="nav-btn" style="padding: 4px 8px; font-size: 11px;" onclick="cambiarEstadoDomicilio('${d.id}', '${d.estado}')">⚙️ ${d.estado}</button></td>
-        </tr>
-      `).join("");
+
+      tbody.innerHTML = data.map(d => {
+        const dirCompleta = `${d.direccion || '-'} <br><small style="color: var(--accent);">${d.detalles_direccion ? '📍 ' + d.detalles_direccion : ''}</small>`;
+        const esCompletado = d.estado === "COMPLETADO";
+
+        const botonAccion = esCompletado
+          ? `<span style="color: var(--success); font-weight: bold;">✓ Completado</span>`
+          : `<button class="btn-success" style="padding: 4px 8px; font-size: 11px;" onclick="chulearDomicilio('${d.id}')">✓ Completar</button>`;
+
+        return `
+          <tr style="${esCompletado ? 'opacity: 0.6;' : ''}">
+            <td>${new Date(d.created_at).toLocaleDateString("es-CO")}</td>
+            <td><strong style="color: ${d.origen_tipo === 'HOTEL_RUTA' ? 'var(--accent)' : 'var(--success)'};">${d.origen_tipo}</strong></td>
+            <td>${d.tipo_servicio}</td>
+            <td><strong>${d.nombre_entidad}</strong></td>
+            <td>${d.telefono}</td>
+            <td>${dirCompleta}</td>
+            <td>${d.ticket_referencia ? '#' + d.ticket_referencia : '-'}</td>
+            <td style="font-size: 11px; color: var(--text-muted);">${d.notas || '-'}</td>
+            <td>${botonAccion}</td>
+          </tr>
+        `;
+      }).join("");
     } catch (e) { console.error(e); }
   }
 
-  async function cambiarEstadoDomicilio(id, estActual) {
-    const opciones = ["PENDIENTE", "EN_CAMINO", "RECOGIDO", "ENTREGADO", "CANCELADO"];
-    const sig = prompt(`Cambiar estado actual (${estActual}).\nOpciones: PENDIENTE, EN_CAMINO, RECOGIDO, ENTREGADO o CANCELADO:`, estActual);
-    if (!sig || !opciones.includes(sig.toUpperCase().trim())) return;
-    await db.from("solicitudes_domicilio").update({ estado: sig.toUpperCase().trim() }).eq("id", id);
-    cargarDomiciliosAdmin();
+  async function chulearDomicilio(id) {
+    try {
+      await db.from("solicitudes_domicilio").update({
+        estado: 'COMPLETADO',
+        completado_at: new Date().toISOString()
+      }).eq("id", id);
+      cargarDomiciliosAdmin();
+    } catch (e) { alert("Error: " + e.message); }
   }
 
   async function clienteConsultarTicket() {
@@ -2411,7 +2443,6 @@
   async function procesarVozIntegral(textoCompleto) {
     let t = textoCompleto.toLowerCase().trim();
 
-    // 1. Detección de Cliente Existente o Nombre
     let clienteDetectado = null;
     for (const c of listaClientes) {
       if (t.includes(c.nombre_o_razon.toLowerCase())) {
@@ -2447,7 +2478,6 @@
       }
     }
 
-    // 2. Extracción de Prendas y Cantidades
     CATALOGO_LOCAL.forEach(p => {
       const nombrePrenda = p.nom.toLowerCase();
       const regex = new RegExp(`(\\d+|un|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez)?\\s*(${nombrePrenda}[s|es]?)`, 'g');
@@ -2463,7 +2493,6 @@
       }
     });
 
-    // 3. Extracción de Estados, Daños o Manchas
     const palabrasClaveDanio = ['manchad', 'rot', 'sin boton', 'descosid', 'quemad', 'sucio', 'desgastad', 'desteñid', 'capota', 'cuello', 'cremallera'];
     const frasesObs = [];
 
