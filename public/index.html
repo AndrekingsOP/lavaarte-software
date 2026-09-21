@@ -36,7 +36,7 @@
   .view-section { display: none; flex-direction: column; gap: 16px; flex: 1; }
   .view-active { display: flex; }
 
-  /* VISTA HOME DE RECEPCIÓN ELEGANTE */
+  /* VISTA HOME DE BIENVENIDA */
   .home-hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 16px 20px 16px; gap: 12px; }
   .home-logo-svg { width: 120px; height: 120px; filter: drop-shadow(0 4px 15px rgba(2, 132, 199, 0.4)); }
   .home-title { font-size: 32px; font-weight: 900; letter-spacing: 1px; color: #fff; }
@@ -105,9 +105,7 @@
 
   #ticket-termico-print { display: none; }
 
-  /* =========================================================================
-     IMPRESIÓN TÉRMICA PROFESIONAL (XPRINTER 80MM / ÚTIL 68MM)
-     ========================================================================= */
+  /* Impresión Térmica 80mm / 68mm útil */
   @media print {
     @page { size: 80mm auto; margin: 0; }
     html, body {
@@ -222,7 +220,7 @@
 
 <div class="container">
 
-  <!-- ==================== VISTA 0: PORTAL DE BIENVENIDA / RECEPCIÓN ELEGANTE ==================== -->
+  <!-- VISTA 0: PORTAL DE BIENVENIDA / RECEPCIÓN ELEGANTE -->
   <div class="view-section view-active" id="vista-home">
     <div class="home-hero">
       <svg class="home-logo-svg" viewBox="0 0 100 100">
@@ -250,7 +248,7 @@
       <div class="portal-card" onclick="mostrarVista('vista-portal-hoteles')">
         <div class="portal-icon">🏨</div>
         <div class="portal-title">Servicios para Hoteles</div>
-        <div class="portal-desc">Portal logístico exclusivo para ama de llaves, lencería de habitaciones, prendas de huéspedes y dotaciones.</div>
+        <div class="portal-desc">Portal logístico para solicitud inmediata de ruta: lencería de habitaciones, prendas de huéspedes y dotaciones.</div>
         <button class="btn-primary" style="width: 100%; margin-top: 6px;">Solicitar Ruta Inmediata</button>
       </div>
 
@@ -264,7 +262,7 @@
     </div>
   </div>
 
-  <!-- ==================== VISTA 1: DASHBOARD EMPLEADOS (LAVAARTE) ==================== -->
+  <!-- VISTA 1: DASHBOARD EMPLEADOS (LAVAARTE) -->
   <div class="view-section" id="vista-dashboard">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
       <h2>Panel Operativo Lavaarte SAS</h2>
@@ -337,7 +335,7 @@
     </div>
   </div>
 
-  <!-- ==================== VISTA 2: INGRESO DE PRENDAS (POS) ==================== -->
+  <!-- VISTA 2: INGRESO DE PRENDAS (POS) -->
   <div class="view-section" id="vista-pos">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>📥 Ingreso de Prendas al Mostrador</h3>
@@ -413,7 +411,7 @@
     </div>
   </div>
 
-  <!-- ==================== VISTA 3: ALISTAR ROPA ==================== -->
+  <!-- VISTA 3: ALISTAR ROPA -->
   <div class="view-section" id="vista-alistar">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🧺 Alistar Ropa (Planta / Control de Calidad)</h3>
@@ -446,7 +444,7 @@
     </div>
   </div>
 
-  <!-- ==================== VISTA 4: ENTREGAR PRENDAS ==================== -->
+  <!-- VISTA 4: ENTREGAR PRENDAS -->
   <div class="view-section" id="vista-entrega">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🤝 Entregar Prendas y Liquidar Saldo</h3>
@@ -478,7 +476,7 @@
     </div>
   </div>
 
-  <!-- ==================== VISTA 5: SALIDAS DE EFECTIVO ==================== -->
+  <!-- VISTA 5: SALIDAS DE EFECTIVO -->
   <div class="view-section" id="vista-egresos">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>💸 Salidas de Efectivo (Caja Menor)</h3>
@@ -502,10 +500,10 @@
     </div>
   </div>
 
-  <!-- ==================== VISTA 6: GESTIÓN DE DOMICILIOS Y RUTAS ==================== -->
+  <!-- VISTA 6: GESTIÓN DE DOMICILIOS Y RUTAS (ADMIN) -->
   <div class="view-section" id="vista-domicilios-admin">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>🛵 Solicitudes de Domicilio y Rutas (En Vivo)</h3>
+      <h3>🛵 Solicitudes de Domicilio y Rutas de Hoteles (En Vivo)</h3>
       <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
     </div>
     <div style="overflow-x: auto; margin-top: 10px;">
@@ -516,7 +514,7 @@
             <th>Origen</th>
             <th>Servicio</th>
             <th>Nombre / Hotel</th>
-            <th>Teléfono</th>
+            <th>Contacto</th>
             <th>Dirección</th>
             <th>Ticket Ref</th>
             <th>Detalle</th>
@@ -530,7 +528,7 @@
     </div>
   </div>
 
-  <!-- ==================== VISTA 7: PORTAL CLIENTES ==================== -->
+  <!-- VISTA 7: PORTAL CLIENTES -->
   <div class="view-section" id="vista-portal-cliente">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🌐 Servicios para Clientes</h3>
@@ -585,36 +583,26 @@
     </div>
   </div>
 
-  <!-- ==================== VISTA 8: PORTAL HOTELES ==================== -->
+  <!-- VISTA 8: PORTAL HOTELES (SIN LISTA EXPUESTA - AUTOCOMPLETADO PRIVADO) -->
   <div class="view-section" id="vista-portal-hoteles">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🏨 Servicios para Hoteles (Portal Logístico)</h3>
       <button class="nav-btn" onclick="mostrarVista('vista-home')">🏠 Volver al Inicio</button>
     </div>
 
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; max-width: 580px; margin: 20px auto; width: 100%;">
-      <h4 style="color: var(--accent); margin-bottom: 12px;">Solicitud Inmediata de Ruta y Recogida</h4>
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; max-width: 580px; margin: 20px auto; width: 100%;">
+      <h4 style="color: var(--accent); margin-bottom: 14px;">Solicitud Inmediata de Ruta y Recogida</h4>
       <div style="display: flex; flex-direction: column; gap: 12px;">
+
+        <!-- Nombre de Hotel con Autocompletado Privado -->
         <div class="input-group">
-          <label class="label-sm">Selecciona tu Hotel</label>
-          <select id="hotel-sel-nom" class="input-text">
-            <option value="Hotel Wyndham">Hotel Wyndham</option>
-            <option value="Hotel Hilton">Hotel Hilton</option>
-            <option value="Hotel Hampton">Hotel Hampton</option>
-            <option value="Hotel Oceania">Hotel Oceania</option>
-            <option value="Hotel Fontana">Hotel Fontana</option>
-            <option value="Hotel Dann">Hotel Dann</option>
-            <option value="Hotel Suite">Hotel Suite</option>
-            <option value="Hotel Virrey">Hotel Virrey</option>
-            <option value="Hotel Andes Plaza">Hotel Andes Plaza</option>
-            <option value="Bogotá Plaza">Bogotá Plaza</option>
-            <option value="Eficacia">Eficacia Dotaciones</option>
-            <option value="Otro Hotel">Otro Hotel</option>
-          </select>
+          <label class="label-sm">Nombre del Hotel o Establecimiento *</label>
+          <input type="text" id="hotel-input-nom" class="input-text" placeholder="Escribe el nombre de tu hotel..." oninput="filtrarHotelPrivado(this.value)" autocomplete="off">
+          <div id="drop-hoteles" class="autocomplete-box"></div>
         </div>
 
         <div class="input-group">
-          <label class="label-sm">Servicio Requerido</label>
+          <label class="label-sm">Servicio Requerido *</label>
           <select id="hotel-sel-servicio" class="input-text">
             <option value="Ropa de Huéspedes">Ropa de Huéspedes</option>
             <option value="Lencería de Habitaciones">Lencería de Habitaciones</option>
@@ -632,6 +620,12 @@
             <label class="label-sm">Persona de Contacto</label>
             <input type="text" id="hotel-contacto" class="input-text" placeholder="Ama de llaves / Turno">
           </div>
+        </div>
+
+        <!-- Celular 100% Opcional -->
+        <div class="input-group">
+          <label class="label-sm">Teléfono / Celular de Contacto (Opcional)</label>
+          <input type="text" id="hotel-tel-opcional" class="input-text" placeholder="Número de turno o recepción (opcional)">
         </div>
 
         <div class="input-group">
@@ -775,7 +769,7 @@
 <div class="modal" id="modal-admin-master">
   <div class="modal-content" style="width: 820px;">
     <h3 style="color: var(--warning);">⚡ Panel Maestro Administrador</h3>
-    <p style="font-size: 12px; color: var(--text-muted);">Administración total del catálogo, la base de datos de órdenes y el padrón de clientes.</p>
+    <p style="font-size: 12px; color: var(--text-muted);">Administración total del catálogo, la base de datos de órdenes y el padrón de clientes/hoteles.</p>
 
     <!-- Sección 1: Catálogo y Precios -->
     <div style="background: var(--bg-input); padding: 14px; border-radius: 8px; border: 1px solid var(--border);">
@@ -1032,6 +1026,7 @@
 
   let ticket = [];
   let listaClientes = [];
+  let listaHotelesRegistrados = [];
   let ordenesMasterCache = [];
   let ordenCobroActiva = null;
   let ordenAlistarActiva = null;
@@ -1044,6 +1039,7 @@
     setInterval(actualizarReloj, 1000);
     renderCatalogo("");
     precargarClientes();
+    precargarHoteles();
     chequearCentinela60h();
     activarSuscripcionesRealtime();
   };
@@ -2036,6 +2032,81 @@
     reader.readAsArrayBuffer(file);
   }
 
+  // ==================== AUTOCOMPLETADO PRIVADO PARA HOTELES ====================
+  async function precargarHoteles() {
+    try {
+      // Cargar hoteles únicos que ya hayan pedido antes desde la BD
+      const { data } = await db.from("solicitudes_domicilio").select("nombre_entidad").eq("origen_tipo", "HOTEL_RUTA").limit(100);
+      const nombresUnicos = [...new Set((data || []).map(d => d.nombre_entidad))];
+      listaHotelesRegistrados = nombresUnicos;
+    } catch (e) { console.error(e); }
+  }
+
+  function filtrarHotelPrivado(val) {
+    const box = document.getElementById("drop-hoteles");
+    const q = val.toLowerCase().trim();
+    if (!q) { box.style.display = "none"; return; }
+
+    // Solo muestra coincidencias si el usuario ya escribió al menos 2 letras
+    const matches = listaHotelesRegistrados.filter(h => h.toLowerCase().includes(q));
+    if (matches.length > 0) {
+      box.innerHTML = matches.map(h => `
+        <div class="autocomplete-item" onclick="seleccionarHotelAuto('${h.replace(/'/g, "")}')">
+          🏨 ${h}
+        </div>
+      `).join("");
+      box.style.display = "block";
+    } else {
+      box.style.display = "none";
+    }
+  }
+
+  function seleccionarHotelAuto(nombreHotel) {
+    document.getElementById("hotel-input-nom").value = nombreHotel;
+    document.getElementById("drop-hoteles").style.display = "none";
+  }
+
+  async function hotelEnviarSolicitud() {
+    const hNom = document.getElementById("hotel-input-nom").value.trim();
+    const hSrv = document.getElementById("hotel-sel-servicio").value;
+    const hBultos = document.getElementById("hotel-cant-bultos").value.trim();
+    const hCont = document.getElementById("hotel-contacto").value.trim();
+    const hTel = document.getElementById("hotel-tel-opcional").value.trim();
+    const hNotas = document.getElementById("hotel-notas").value.trim();
+
+    if (!hNom) return alert("Por favor ingresa el nombre de tu hotel o establecimiento.");
+
+    try {
+      const hoyBog = new Date().toISOString().split("T")[0];
+      const contactoStr = hCont ? (hTel ? `${hCont} (Tel: ${hTel})` : hCont) : (hTel ? `Tel: ${hTel}` : "Recepción / Ama de llaves");
+
+      await db.from("solicitudes_domicilio").insert({
+        origen_tipo: 'HOTEL_RUTA',
+        tipo_servicio: 'RECOGIDA_HOTEL',
+        nombre_entidad: hNom,
+        telefono: contactoStr,
+        direccion: "Sede Hotel",
+        fecha_programada: hoyBog,
+        franja_horaria: "Ruta Activa Hoy",
+        notas: `Servicio: ${hSrv} | Bultos: ${hBultos || 'N/A'} | Notas: ${hNotas || '-'}`
+      });
+
+      alert(`✅ ¡Solicitud enviada para ${hNom}!\nEl despachador y el conductor de ruta ya tienen la notificación en tiempo real.`);
+      
+      // Guardar en cache de hoteles registrados
+      if (!listaHotelesRegistrados.includes(hNom)) {
+        listaHotelesRegistrados.push(hNom);
+      }
+
+      document.getElementById("hotel-input-nom").value = "";
+      document.getElementById("hotel-cant-bultos").value = "";
+      document.getElementById("hotel-contacto").value = "";
+      document.getElementById("hotel-tel-opcional").value = "";
+      document.getElementById("hotel-notas").value = "";
+      mostrarVista("vista-home");
+    } catch (e) { alert("Error enviando solicitud: " + e.message); }
+  }
+
   // Domicilios Particulares
   async function clienteCrearSolicitud(tipo) {
     let nom, tel, dir, fec, fra, notas, ticketRef = "";
@@ -2075,36 +2146,14 @@
         document.getElementById("dom-ent-tel").value = "";
         document.getElementById("dom-ent-dir").value = "";
       }
-    } catch (e) { alert(e.message); }
-  }
-
-  // Domicilios Hoteles
-  async function hotelEnviarSolicitud() {
-    const hNom = document.getElementById("hotel-sel-nom").value;
-    const hSrv = document.getElementById("hotel-sel-servicio").value;
-    const hBultos = document.getElementById("hotel-cant-bultos").value.trim();
-    const hCont = document.getElementById("hotel-contacto").value.trim();
-    const hNotas = document.getElementById("hotel-notas").value.trim();
-
-    try {
-      const hoyBog = new Date().toISOString().split("T")[0];
-      await db.from("solicitudes_domicilio").insert({
-        origen_tipo: 'HOTEL_RUTA', tipo_servicio: 'RECOGIDA_HOTEL', nombre_entidad: hNom,
-        telefono: "Contacto: " + (hCont || "Recepción"), direccion: "Sede Hotel",
-        fecha_programada: hoyBog, franja_horaria: "Ruta Activa Hoy",
-        notas: `Servicio: ${hSrv} | Bultos: ${hBultos || 'N/A'} | Nota: ${hNotas || '-'}`
-      });
-      alert(`✅ ¡Solicitud enviada para ${hNom}!`);
-      document.getElementById("hotel-cant-bultos").value = "";
-      document.getElementById("hotel-contacto").value = "";
-      document.getElementById("hotel-notas").value = "";
+      mostrarVista("vista-home");
     } catch (e) { alert(e.message); }
   }
 
   async function cargarDomiciliosAdmin() {
     const tbody = document.getElementById("tabla-domicilios-body");
     try {
-      const { data } = await db.from("solicitudes_domicilio").select("*").order("created_at", { ascending: false }).limit(25);
+      const { data } = await db.from("solicitudes_domicilio").select("*").order("created_at", { ascending: false }).limit(30);
       if (!data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-muted);">Sin solicitudes registradas.</td></tr>';
         return;
@@ -2202,7 +2251,7 @@
   async function procesarVozIntegral(textoCompleto) {
     let t = textoCompleto.toLowerCase().trim();
 
-    // 1. Detección de Cliente Existente o Nombre
+    // 1. Detección de Cliente
     let clienteDetectado = null;
     for (const c of listaClientes) {
       if (t.includes(c.nombre_o_razon.toLowerCase())) {
@@ -2230,7 +2279,7 @@
         t = t.replace(nombresProbables.join(" "), '').trim();
 
         setTimeout(() => {
-          const tel = prompt(`👤 Cliente nuevo detectado: "${nomTentativo}".\nPor favor ingresa su número de celular para enviarle su copia digital:`, "");
+          const tel = prompt(`👤 Cliente nuevo detectado: "${nomTentativo}".\nPor favor ingresa su número de celular para enviarle su copia digital por WhatsApp:`, "");
           if (tel) {
             document.getElementById("pos-cli-tel").value = tel.replace(/\D/g, '');
           }
