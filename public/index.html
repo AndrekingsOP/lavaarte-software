@@ -36,7 +36,7 @@
   .view-section { display: none; flex-direction: column; gap: 16px; flex: 1; }
   .view-active { display: flex; }
 
-  /* VISTA HOME DE BIENVENIDA */
+  /* VISTA HOME DE RECEPCIÓN */
   .home-hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 16px 20px 16px; gap: 12px; }
   .home-logo-svg { width: 120px; height: 120px; filter: drop-shadow(0 4px 15px rgba(2, 132, 199, 0.4)); }
   .home-title { font-size: 32px; font-weight: 900; letter-spacing: 1px; color: #fff; }
@@ -72,6 +72,24 @@
   .pos-sidebar { width: 420px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; }
   .pos-catalog { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; }
 
+  /* Barra de Teclado Rápido para PC */
+  .quick-bar-card {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .quick-bar-inputs {
+    display: grid;
+    grid-template-columns: 85px 1fr 130px;
+    gap: 8px;
+    align-items: flex-end;
+  }
+
   .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 10px; overflow-y: auto; flex: 1; align-content: start; }
   .prenda-btn { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.15s; }
   .prenda-btn:hover { border-color: var(--accent); background: #334155; }
@@ -91,7 +109,7 @@
 
   .btn-primary { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
   .btn-primary:hover { background: var(--primary-hover); }
-  .btn-success { background: var(--success); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; }
+  .btn-success { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
   .btn-danger { background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
 
   .data-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
@@ -105,7 +123,9 @@
 
   #ticket-termico-print { display: none; }
 
-  /* Impresión Térmica 80mm / 68mm útil */
+  /* =========================================================================
+     IMPRESIÓN TÉRMICA PROFESIONAL (XPRINTER 80MM / ÚTIL 68MM)
+     ========================================================================= */
   @media print {
     @page { size: 80mm auto; margin: 0; }
     html, body {
@@ -200,6 +220,7 @@
     .pos-layout { flex-direction: column; height: auto; }
     .pos-sidebar { width: 100%; }
     .catalog-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+    .quick-bar-inputs { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -220,7 +241,7 @@
 
 <div class="container">
 
-  <!-- VISTA 0: PORTAL DE BIENVENIDA / RECEPCIÓN ELEGANTE -->
+  <!-- ==================== VISTA 0: PORTAL DE BIENVENIDA ==================== -->
   <div class="view-section view-active" id="vista-home">
     <div class="home-hero">
       <svg class="home-logo-svg" viewBox="0 0 100 100">
@@ -248,21 +269,21 @@
       <div class="portal-card" onclick="mostrarVista('vista-portal-hoteles')">
         <div class="portal-icon">🏨</div>
         <div class="portal-title">Servicios para Hoteles</div>
-        <div class="portal-desc">Portal logístico para solicitud inmediata de ruta: lencería de habitaciones, prendas de huéspedes y dotaciones.</div>
+        <div class="portal-desc">Portal logístico privado para ama de llaves, lencería de habitaciones, prendas de huéspedes y dotaciones.</div>
         <button class="btn-primary" style="width: 100%; margin-top: 6px;">Solicitar Ruta Inmediata</button>
       </div>
 
-      <!-- Opción 3: Empleados (Lavaarte) -->
+      <!-- Opción 3: Lavaarte (PIN Empleados: 1510) -->
       <div class="portal-card" style="border-color: var(--primary);" onclick="solicitarAccesoEmpleados('vista-dashboard')">
         <div class="portal-icon">🔐</div>
         <div class="portal-title">Lavaarte</div>
-        <div class="portal-desc">Módulo operativo protegido para colaboradores: mostrador, recepción por voz, alistamiento, arqueo y panel maestro.</div>
+        <div class="portal-desc">Módulo operativo protegido: mostrador, recepción por voz, alistamiento, arqueo y panel maestro.</div>
         <button class="btn-success" style="width: 100%; margin-top: 6px;">Acceso Colaboradores (PIN)</button>
       </div>
     </div>
   </div>
 
-  <!-- VISTA 1: DASHBOARD EMPLEADOS (LAVAARTE) -->
+  <!-- ==================== VISTA 1: DASHBOARD EMPLEADOS (LAVAARTE) ==================== -->
   <div class="view-section" id="vista-dashboard">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
       <h2>Panel Operativo Lavaarte SAS</h2>
@@ -282,7 +303,7 @@
       <div class="dash-card" onclick="mostrarVista('vista-pos')">
         <span style="font-size: 32px;">📥</span>
         <h3>1. Ingreso de Prendas</h3>
-        <p>Recepción por voz inteligente, abonos, kilos y fidelización</p>
+        <p>Búsqueda rápida para PC, voz inteligente, kilos y fidelización</p>
       </div>
 
       <div class="dash-card" onclick="mostrarVista('vista-alistar')">
@@ -303,16 +324,16 @@
         <p>Gastos de caja menor (jabón, ganchos, insumos diarios)</p>
       </div>
 
-      <div class="dash-card" onclick="abrirArqueoCaja()">
+      <div class="dash-card" onclick="pedirClaveSegura('modal-arqueo')">
         <span style="font-size: 32px;">📊</span>
-        <h3>5. Arqueo Diario de Caja</h3>
-        <p>Cierre diario desglosado por recibo, entradas, salidas y Excel</p>
+        <h3>5. Arqueo Diario de Caja 🔒</h3>
+        <p>Cierre diario desglosado por recibo (Protegido Admin)</p>
       </div>
 
-      <div class="dash-card" onclick="pedirClaveAdmin('modal-admin-panel')">
+      <div class="dash-card" onclick="pedirClaveSegura('modal-admin-panel')">
         <span style="font-size: 32px;">🔒</span>
-        <h3>6. Anulación Rápida</h3>
-        <p>Control protegido para anular o cambiar estado de facturas</p>
+        <h3>6. Anulación Rápida 🔒</h3>
+        <p>Control administrativo para anular o corregir facturas</p>
       </div>
 
       <div class="dash-card" onclick="mostrarVista('vista-domicilios-admin')">
@@ -327,15 +348,15 @@
         <p>Exportar toda la base de datos de órdenes a Excel</p>
       </div>
 
-      <div class="dash-card" style="border-color: var(--warning);" onclick="pedirClaveAdmin('modal-admin-master')">
+      <div class="dash-card" style="border-color: var(--warning);" onclick="pedirClaveSegura('modal-admin-master')">
         <span style="font-size: 32px;">⚡</span>
-        <h3 style="color: var(--warning);">9. Panel Maestro Administrador</h3>
-        <p>Gestor de Base de Datos en vivo, Clientes, Precios y Borrado Físico</p>
+        <h3 style="color: var(--warning);">9. Panel Maestro Administrador 🔒</h3>
+        <p>Control de Base de Datos en vivo, Catálogo y Borrado Físico</p>
       </div>
     </div>
   </div>
 
-  <!-- VISTA 2: INGRESO DE PRENDAS (POS) -->
+  <!-- ==================== VISTA 2: INGRESO DE PRENDAS (POS) ==================== -->
   <div class="view-section" id="vista-pos">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>📥 Ingreso de Prendas al Mostrador</h3>
@@ -343,6 +364,7 @@
     </div>
 
     <div class="pos-layout">
+      <!-- SIDEBAR IZQUIERDO: CLIENTE Y TICKET -->
       <div class="pos-sidebar">
         <!-- Reconocimiento de Voz Inteligente -->
         <button id="btn-voz-pos" class="btn-voice" style="margin-bottom: 8px;" onclick="iniciarVozPOSInteligente()">
@@ -369,7 +391,7 @@
 
         <div class="ticket-list" id="ticket-items">
           <div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 30px;">
-            Selecciona prendas del catálogo o dicta la orden por voz.
+            Selecciona prendas del catálogo o utiliza la barra rápida de teclado.
           </div>
         </div>
 
@@ -398,12 +420,47 @@
           </div>
         </div>
 
-        <button class="btn-success" style="margin-top: 10px;" onclick="confirmarGenerarOrden()">💾 GUARDAR, IMPRIMIR Y ENVIAR WHATSAPP</button>
+        <button class="btn-success" style="margin-top: 10px; padding: 14px;" onclick="confirmarGenerarOrden()">💾 GUARDAR, IMPRIMIR Y ENVIAR WHATSAPP</button>
       </div>
 
+      <!-- PANEL DERECHO: BARRA RÁPIDA COMPUTADOR + CATÁLOGO -->
       <div class="pos-catalog">
+        
+        <!-- BARRA RÁPIDA DE TECLADO PARA COMPUTADOR -->
+        <div class="quick-bar-card">
+          <div style="font-size: 12px; font-weight: bold; color: var(--accent); display: flex; justify-content: space-between;">
+            <span>⌨️ ENTRADA RÁPIDA DE MOSTRADOR (PC)</span>
+            <span style="color: var(--text-muted); font-size: 11px;">[Cantidad] ➔ [Buscar Prenda] ➔ [Editar Precio] ➔ [Enter]</span>
+          </div>
+          <div class="quick-bar-inputs">
+            <!-- 1. Campo Cantidad / Kilos -->
+            <div class="input-group">
+              <label class="label-sm">Cantidad</label>
+              <input type="number" id="quick-bar-cant" class="input-text" style="text-align: center; font-weight: bold;" value="1" min="0.1" step="any">
+            </div>
+
+            <!-- 2. Barra de Búsqueda Predictiva de Prenda -->
+            <div class="input-group">
+              <label class="label-sm">Buscar Prenda / Ítem</label>
+              <input type="text" id="quick-bar-search" class="input-text" placeholder="Escribe prenda o código (ej: camisa, 1)..." oninput="quickBarFiltrarPrenda(this.value)">
+              <div id="drop-quick-prendas" class="autocomplete-box"></div>
+            </div>
+
+            <!-- 3. Campo de Precio Unitario Editable -->
+            <div class="input-group">
+              <label class="label-sm">Precio ($COP)</label>
+              <input type="number" id="quick-bar-price" class="input-text" style="text-align: right; font-weight: bold; color: var(--accent);" placeholder="0" onkeydown="if(event.key==='Enter') quickBarAgregarAlTicket()">
+            </div>
+          </div>
+
+          <!-- 4. Botón Verde de Inserción Rápida -->
+          <button class="btn-success" style="padding: 10px; font-size: 13px;" onclick="quickBarAgregarAlTicket()">
+            ➕ AGREGAR PRENDA AL TICKET
+          </button>
+        </div>
+
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px; gap: 8px;">
-          <input type="text" id="filtro-prenda" class="input-text" style="max-width: 280px;" placeholder="🔍 Buscar prenda o código..." oninput="renderCatalogo(this.value)">
+          <input type="text" id="filtro-prenda" class="input-text" style="max-width: 280px;" placeholder="🔍 Filtrar botones del catálogo..." oninput="renderCatalogo(this.value)">
           <button class="nav-btn" onclick="abrirModalOtroItem()">➕ Ítem "Otros"</button>
         </div>
         <div class="catalog-grid" id="grid-catalogo"></div>
@@ -411,7 +468,7 @@
     </div>
   </div>
 
-  <!-- VISTA 3: ALISTAR ROPA -->
+  <!-- ==================== VISTA 3: ALISTAR ROPA ==================== -->
   <div class="view-section" id="vista-alistar">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🧺 Alistar Ropa (Planta / Control de Calidad)</h3>
@@ -444,7 +501,7 @@
     </div>
   </div>
 
-  <!-- VISTA 4: ENTREGAR PRENDAS -->
+  <!-- ==================== VISTA 4: ENTREGAR PRENDAS ==================== -->
   <div class="view-section" id="vista-entrega">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🤝 Entregar Prendas y Liquidar Saldo</h3>
@@ -476,7 +533,7 @@
     </div>
   </div>
 
-  <!-- VISTA 5: SALIDAS DE EFECTIVO -->
+  <!-- ==================== VISTA 5: SALIDAS DE EFECTIVO ==================== -->
   <div class="view-section" id="vista-egresos">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>💸 Salidas de Efectivo (Caja Menor)</h3>
@@ -500,10 +557,10 @@
     </div>
   </div>
 
-  <!-- VISTA 6: GESTIÓN DE DOMICILIOS Y RUTAS (ADMIN) -->
+  <!-- ==================== VISTA 6: GESTIÓN DE DOMICILIOS Y RUTAS ==================== -->
   <div class="view-section" id="vista-domicilios-admin">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>🛵 Solicitudes de Domicilio y Rutas de Hoteles (En Vivo)</h3>
+      <h3>🛵 Solicitudes de Domicilio y Rutas (En Vivo)</h3>
       <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
     </div>
     <div style="overflow-x: auto; margin-top: 10px;">
@@ -528,7 +585,7 @@
     </div>
   </div>
 
-  <!-- VISTA 7: PORTAL CLIENTES -->
+  <!-- ==================== VISTA 7: PORTAL CLIENTES ==================== -->
   <div class="view-section" id="vista-portal-cliente">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🌐 Servicios para Clientes</h3>
@@ -583,21 +640,21 @@
     </div>
   </div>
 
-  <!-- VISTA 8: PORTAL HOTELES (SIN LISTA EXPUESTA - AUTOCOMPLETADO PRIVADO) -->
+  <!-- ==================== VISTA 8: PORTAL HOTELES ==================== -->
   <div class="view-section" id="vista-portal-hoteles">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3>🏨 Servicios para Hoteles (Portal Logístico)</h3>
+      <h3>🏨 Servicios para Hoteles (Portal Logístico Privado)</h3>
       <button class="nav-btn" onclick="mostrarVista('vista-home')">🏠 Volver al Inicio</button>
     </div>
 
-    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; max-width: 580px; margin: 20px auto; width: 100%;">
-      <h4 style="color: var(--accent); margin-bottom: 14px;">Solicitud Inmediata de Ruta y Recogida</h4>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; max-width: 580px; margin: 20px auto; width: 100%;">
+      <h4 style="color: var(--accent); margin-bottom: 6px;">Solicitud Inmediata de Ruta y Recogida</h4>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Ingresa el nombre de tu hotel para programar el servicio de lavandería.</p>
 
-        <!-- Nombre de Hotel con Autocompletado Privado -->
+      <div style="display: flex; flex-direction: column; gap: 12px;">
         <div class="input-group">
-          <label class="label-sm">Nombre del Hotel o Establecimiento *</label>
-          <input type="text" id="hotel-input-nom" class="input-text" placeholder="Escribe el nombre de tu hotel..." oninput="filtrarHotelPrivado(this.value)" autocomplete="off">
+          <label class="label-sm">Nombre del Hotel / Establecimiento *</label>
+          <input type="text" id="hotel-busc-input" class="input-text" placeholder="Escribe el nombre de tu hotel..." oninput="hotelFiltrarPrivado(this.value)">
           <div id="drop-hoteles" class="autocomplete-box"></div>
         </div>
 
@@ -617,15 +674,14 @@
             <input type="text" id="hotel-cant-bultos" class="input-text" placeholder="Ej: 4 bolsas grandes">
           </div>
           <div class="input-group">
-            <label class="label-sm">Persona de Contacto</label>
-            <input type="text" id="hotel-contacto" class="input-text" placeholder="Ama de llaves / Turno">
+            <label class="label-sm">Contacto (Celular o Cargo)</label>
+            <input type="text" id="hotel-contacto" class="input-text" placeholder="Ej: Ama de llaves / 315...">
           </div>
         </div>
 
-        <!-- Celular 100% Opcional -->
         <div class="input-group">
-          <label class="label-sm">Teléfono / Celular de Contacto (Opcional)</label>
-          <input type="text" id="hotel-tel-opcional" class="input-text" placeholder="Número de turno o recepción (opcional)">
+          <label class="label-sm">Dirección / Sede (Opcional si ya está registrada)</label>
+          <input type="text" id="hotel-direccion-input" class="input-text" placeholder="Dirección del hotel...">
         </div>
 
         <div class="input-group">
@@ -633,7 +689,7 @@
           <input type="text" id="hotel-notas" class="input-text" placeholder="Ej: Pasar antes de las 11:00 AM">
         </div>
 
-        <button class="btn-success" style="padding: 14px; font-size: 15px;" onclick="hotelEnviarSolicitud()">
+        <button class="btn-success" style="padding: 14px; font-size: 15px;" onclick="hotelEnviarSolicitudPrivada()">
           🚚 SOLICITAR RECOGIDA DE RUTA AHORA
         </button>
       </div>
@@ -741,13 +797,13 @@
   </div>
 </div>
 
-<!-- Modal: PIN Admin -->
+<!-- Modal: Autenticación con PIN -->
 <div class="modal" id="modal-admin-auth">
   <div class="modal-content" style="width: 380px; text-align: center;">
-    <h3 style="color: var(--warning);">🔒 Acceso Protegido Lavaarte</h3>
-    <p style="font-size: 13px; color: var(--text-muted);">Ingresa el PIN de seguridad para continuar:</p>
+    <h3 id="auth-modal-title" style="color: var(--warning);">🔒 Acceso Protegido</h3>
+    <p id="auth-modal-desc" style="font-size: 13px; color: var(--text-muted);">Ingresa tu PIN de seguridad:</p>
     <input type="password" id="admin-pin" class="input-text" style="font-size: 24px; text-align: center; letter-spacing: 6px;" maxlength="4" placeholder="••••">
-    <button class="btn-primary" onclick="validarPinAdmin()">Entrar</button>
+    <button class="btn-primary" onclick="validarPinSeguro()">Entrar</button>
     <button class="nav-btn" onclick="cerrarModal('modal-admin-auth')">Cancelar</button>
   </div>
 </div>
@@ -768,8 +824,8 @@
 <!-- Modal 9: PANEL MAESTRO ADMINISTRADOR -->
 <div class="modal" id="modal-admin-master">
   <div class="modal-content" style="width: 820px;">
-    <h3 style="color: var(--warning);">⚡ Panel Maestro Administrador</h3>
-    <p style="font-size: 12px; color: var(--text-muted);">Administración total del catálogo, la base de datos de órdenes y el padrón de clientes/hoteles.</p>
+    <h3 style="color: var(--warning);">⚡ Panel Maestro Administrador (Acceso 2415)</h3>
+    <p style="font-size: 12px; color: var(--text-muted);">Administración total del catálogo, la base de datos de órdenes y el padrón de clientes.</p>
 
     <!-- Sección 1: Catálogo y Precios -->
     <div style="background: var(--bg-input); padding: 14px; border-radius: 8px; border: 1px solid var(--border);">
@@ -1026,20 +1082,21 @@
 
   let ticket = [];
   let listaClientes = [];
-  let listaHotelesRegistrados = [];
+  let listaHotelesBD = [];
   let ordenesMasterCache = [];
   let ordenCobroActiva = null;
   let ordenAlistarActiva = null;
   let destinoPinAdmin = "";
   let modoImpresoraHP = false;
   let clienteVisitasHistorial = 0;
+  let itemSeleccionadoQuickBar = null;
 
   window.onload = () => {
     actualizarReloj();
     setInterval(actualizarReloj, 1000);
     renderCatalogo("");
     precargarClientes();
-    precargarHoteles();
+    precargarHotelesBD();
     chequearCentinela60h();
     activarSuscripcionesRealtime();
   };
@@ -1059,7 +1116,7 @@
   function cerrarModal(id) { document.getElementById(id).style.display = "none"; }
   function abrirModal(id) { document.getElementById(id).style.display = "flex"; }
 
-  // Tiempo Real
+  // Suscripciones en tiempo real
   function activarSuscripcionesRealtime() {
     db.channel('ordenes-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'ordenes' }, async (payload) => {
@@ -1133,7 +1190,7 @@
     } catch (e) { console.error("Error imprimiendo:", e); }
   }
 
-  // Despacho de WhatsApp con Fallback
+  // Despacho WhatsApp
   async function despacharWhatsApp(telefono, mensajeTexto) {
     let enviadoServidor = false;
     try {
@@ -1145,7 +1202,7 @@
       const resJson = await resp.json();
       if (resJson && resJson.ok) enviadoServidor = true;
     } catch (err) {
-      console.warn("Bot WhatsApp no disponible en Render, lanzando fallback web...");
+      console.warn("Bot WhatsApp en Render en reposo, activando fallback...");
     }
 
     if (!enviadoServidor) {
@@ -1154,7 +1211,81 @@
     }
   }
 
-  // Catálogo Mostrador
+  // ==================== BARRA RÁPIDA DE TECLADO PARA COMPUTADOR ====================
+  function quickBarFiltrarPrenda(val) {
+    const box = document.getElementById("drop-quick-prendas");
+    const q = val.toLowerCase().trim();
+    if (!q) { box.style.display = "none"; return; }
+
+    const matches = CATALOGO_LOCAL.filter(p => p.nom.toLowerCase().includes(q) || String(p.cod).includes(q));
+    if (matches.length === 0) {
+      box.innerHTML = `<div class="autocomplete-item" onclick="quickBarSeleccionarPrenda({cod: 99, nom: '${val}', pre: 0})">➕ Personalizado: "<strong>${val}</strong>"</div>`;
+    } else {
+      box.innerHTML = matches.slice(0, 10).map(p => `
+        <div class="autocomplete-item" onclick='quickBarSeleccionarPrenda(${JSON.stringify(p)})'>
+          [${p.cod}] <strong>${p.nom}</strong> - $${p.pre.toLocaleString("es-CO")}
+        </div>
+      `).join("");
+    }
+    box.style.display = "block";
+  }
+
+  function quickBarSeleccionarPrenda(p) {
+    itemSeleccionadoQuickBar = p;
+    document.getElementById("quick-bar-search").value = `[${p.cod}] ${p.nom}`;
+    document.getElementById("quick-bar-price").value = p.pre;
+    document.getElementById("drop-quick-prendas").style.display = "none";
+    document.getElementById("quick-bar-price").focus();
+    document.getElementById("quick-bar-price").select();
+  }
+
+  function quickBarAgregarAlTicket() {
+    const cantInput = document.getElementById("quick-bar-cant");
+    const priceInput = document.getElementById("quick-bar-price");
+    const searchInput = document.getElementById("quick-bar-search");
+
+    let cant = parseFloat(cantInput.value);
+    if (isNaN(cant) || cant <= 0) cant = 1;
+
+    let precio = Number(priceInput.value);
+    if (isNaN(precio) || precio < 0) precio = 0;
+
+    let nombrePrenda = "";
+    let codPrenda = 99;
+
+    if (itemSeleccionadoQuickBar) {
+      nombrePrenda = itemSeleccionadoQuickBar.nom;
+      codPrenda = itemSeleccionadoQuickBar.cod;
+    } else {
+      const txt = searchInput.value.trim();
+      if (!txt) return alert("Por favor busca o escribe una prenda.");
+      nombrePrenda = txt;
+    }
+
+    const ex = ticket.find(t => t.cod === codPrenda && t.nom === nombrePrenda);
+    if (ex) {
+      ex.cant += cant;
+      ex.pre = precio;
+    } else {
+      ticket.push({
+        cod: codPrenda,
+        nom: nombrePrenda,
+        pre: precio,
+        cant: cant
+      });
+    }
+
+    renderTicket();
+
+    // Resetear barra para el siguiente ítem
+    itemSeleccionadoQuickBar = null;
+    searchInput.value = "";
+    priceInput.value = "";
+    cantInput.value = "1";
+    searchInput.focus();
+  }
+
+  // Catálogo Mostrador (Botones)
   function renderCatalogo(filtro) {
     const grid = document.getElementById("grid-catalogo");
     grid.innerHTML = "";
@@ -1195,7 +1326,7 @@
   }
 
   function editarCantidadDirecta(idx) {
-    const val = prompt(`Ingresa la cantidad/peso para "${ticket[idx].nom}":`, ticket[idx].cant);
+    const val = prompt(`Ingresa la cantidad o peso para "${ticket[idx].nom}":`, ticket[idx].cant);
     if (val !== null && !isNaN(val) && Number(val) > 0) {
       ticket[idx].cant = parseFloat(val);
       renderTicket();
@@ -1232,7 +1363,7 @@
           <strong>${it.nom}</strong>
           <div style="font-size: 11px; color: var(--text-muted);">
             <span style="cursor: pointer; text-decoration: underline;" onclick="editarCantidadDirecta(${idx})">${it.cant} uds/kg</span> x 
-            <span style="cursor: pointer; text-decoration: underline;" onclick="editarPrecioTicket(${idx})">$${it.pre.toLocaleString("es-CO")} (✏️ cambiar)</span>
+            <span style="cursor: pointer; text-decoration: underline;" onclick="editarPrecioTicket(${idx})">$${it.pre.toLocaleString("es-CO")} (✏️ editar)</span>
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 4px;">
@@ -1271,7 +1402,7 @@
     renderTicket();
   }
 
-  // Clientes
+  // Clientes Mostrador
   async function precargarClientes() {
     try {
       const { data } = await db.from("clientes").select("id, nombre_o_razon, telefono, direccion").order("nombre_o_razon", { ascending: true });
@@ -1341,7 +1472,95 @@
     } catch (e) { console.error(e); }
   }
 
-  // Guardar Orden
+  // Base de Datos Privada de Hoteles
+  async function precargarHotelesBD() {
+    try {
+      const { data } = await db.from("hoteles").select("id, nombre, telefono_contacto, direccion").order("nombre", { ascending: true });
+      listaHotelesBD = data || [];
+    } catch (e) { console.error(e); }
+  }
+
+  function hotelFiltrarPrivado(val) {
+    const box = document.getElementById("drop-hoteles");
+    const q = val.toLowerCase().trim();
+    if (!q || q.length < 2) { box.style.display = "none"; return; }
+
+    const matches = listaHotelesBD.filter(h => h.nombre.toLowerCase().includes(q));
+
+    if (matches.length === 0) {
+      box.innerHTML = `<div class="autocomplete-item" onclick="hotelSeleccionarNuevo('${val}')">🏨 Registrar como nuevo establecimiento: "<strong>${val}</strong>"</div>`;
+    } else {
+      box.innerHTML = matches.map(h => `
+        <div class="autocomplete-item" onclick="hotelCargarSeleccion('${h.nombre.replace(/'/g,"")}', '${(h.telefono_contacto || "").replace(/'/g,"")}', '${(h.direccion || "").replace(/'/g,"")}')">
+          🏨 ${h.nombre} ${h.direccion ? '(' + h.direccion + ')' : ''}
+        </div>
+      `).join("");
+    }
+    box.style.display = "block";
+  }
+
+  function hotelCargarSeleccion(nom, tel, dir) {
+    document.getElementById("hotel-busc-input").value = nom;
+    if (dir) document.getElementById("hotel-direccion-input").value = dir;
+    if (tel && !document.getElementById("hotel-contacto").value) {
+      document.getElementById("hotel-contacto").value = tel;
+    }
+    document.getElementById("drop-hoteles").style.display = "none";
+  }
+
+  function hotelSeleccionarNuevo(val) {
+    document.getElementById("hotel-busc-input").value = val;
+    document.getElementById("drop-hoteles").style.display = "none";
+    document.getElementById("hotel-contacto").focus();
+  }
+
+  async function hotelEnviarSolicitudPrivada() {
+    const hNom = document.getElementById("hotel-busc-input").value.trim();
+    const hSrv = document.getElementById("hotel-sel-servicio").value;
+    const hBultos = document.getElementById("hotel-cant-bultos").value.trim();
+    const hCont = document.getElementById("hotel-contacto").value.trim();
+    const hDir = document.getElementById("hotel-direccion-input").value.trim();
+    const hNotas = document.getElementById("hotel-notas").value.trim();
+
+    if (!hNom) return alert("Por favor ingresa el nombre de tu hotel.");
+
+    try {
+      const exHotel = listaHotelesBD.find(h => h.nombre.toLowerCase() === hNom.toLowerCase());
+      if (!exHotel) {
+        await db.from("hoteles").insert({
+          nombre: hNom,
+          telefono_contacto: hCont || null,
+          direccion: hDir || null
+        });
+        await precargarHotelesBD();
+      }
+
+      const hoyBog = new Date().toISOString().split("T")[0];
+      await db.from("solicitudes_domicilio").insert({
+        origen_tipo: 'HOTEL_RUTA',
+        tipo_servicio: 'RECOGIDA_HOTEL',
+        nombre_entidad: hNom,
+        telefono: hCont || "Recepción / Ama de llaves",
+        direccion: hDir || (exHotel?.direccion || "Sede Hotel"),
+        fecha_programada: hoyBog,
+        franja_horaria: "Ruta Activa Hoy",
+        notas: `Servicio: ${hSrv} | Bultos: ${hBultos || 'N/A'} | Nota: ${hNotas || '-'}`
+      });
+
+      alert(`✅ ¡Solicitud registrada exitosamente para ${hNom}!\nEl conductor y despachador de ruta ya tienen la notificación activa.`);
+      
+      document.getElementById("hotel-busc-input").value = "";
+      document.getElementById("hotel-cant-bultos").value = "";
+      document.getElementById("hotel-contacto").value = "";
+      document.getElementById("hotel-direccion-input").value = "";
+      document.getElementById("hotel-notas").value = "";
+      mostrarVista("vista-home");
+    } catch (e) {
+      alert("Error procesando solicitud: " + e.message);
+    }
+  }
+
+  // Guardar Orden Mostrador
   async function confirmarGenerarOrden() {
     if (ticket.length === 0) return alert("El ticket está vacío.");
     const nom = document.getElementById("pos-cli-nom").value.trim();
@@ -1503,7 +1722,7 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Centinela 60 Horas (Excluye LISTO_ENTREGA)
+  // Centinela 60 Horas
   let ordenesRetrasadas60h = [];
 
   async function chequearCentinela60h() {
@@ -1749,32 +1968,49 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Facturas y PIN
+  // ==================== SISTEMA DE SEGURIDAD JERÁRQUICO (1510 vs 2415) ====================
+  // Nivel 1: Empleados (1510) para ingresar a Lavaarte
   function solicitarAccesoEmpleados(destino) {
     destinoPinAdmin = destino;
+    document.getElementById("auth-modal-title").textContent = "🔒 Acceso Colaboradores Lavaarte";
+    document.getElementById("auth-modal-desc").textContent = "Ingresa tu PIN de colaborador (1510):";
     document.getElementById("admin-pin").value = "";
     abrirModal("modal-admin-auth");
   }
 
-  function pedirClaveAdmin(destinoModal) {
+  // Nivel 2: Administrador Maestro (2415) para finanzas, anulaciones y BD
+  function pedirClaveSegura(destinoModal) {
     destinoPinAdmin = destinoModal;
+    document.getElementById("auth-modal-title").textContent = "🛡️ Control Administrativo Maestro";
+    document.getElementById("auth-modal-desc").textContent = "Acceso restringido. Ingresa el PIN Administrador (2415):";
     document.getElementById("admin-pin").value = "";
     abrirModal("modal-admin-auth");
   }
 
-  function validarPinAdmin() {
-    const pin = document.getElementById("admin-pin").value;
-    if (pin === "1510") {
-      cerrarModal("modal-admin-auth");
-      if (destinoPinAdmin === "modal-admin-master") {
-        abrirModalMasterAdmin();
-      } else if (destinoPinAdmin === "modal-admin-panel") {
-        abrirModal("modal-admin-panel");
-      } else if (destinoPinAdmin === "vista-dashboard") {
+  function validarPinSeguro() {
+    const pin = document.getElementById("admin-pin").value.trim();
+
+    // 1. Si el destino es el acceso regular a Lavaarte (Mostrador / Planta)
+    if (destinoPinAdmin === "vista-dashboard") {
+      if (pin === "1510" || pin === "2415") {
+        cerrarModal("modal-admin-auth");
         mostrarVista("vista-dashboard");
+      } else {
+        alert("PIN de colaborador incorrecto.");
       }
-    } else {
-      alert("PIN de seguridad incorrecto.");
+      return;
+    }
+
+    // 2. Si el destino son funciones críticas (Arqueo, Anulación, Panel Maestro)
+    if (destinoPinAdmin === "modal-admin-master" || destinoPinAdmin === "modal-admin-panel" || destinoPinAdmin === "modal-arqueo") {
+      if (pin === "2415") {
+        cerrarModal("modal-admin-auth");
+        if (destinoPinAdmin === "modal-admin-master") abrirModalMasterAdmin();
+        else if (destinoPinAdmin === "modal-admin-panel") abrirModal("modal-admin-panel");
+        else if (destinoPinAdmin === "modal-arqueo") abrirArqueoCaja();
+      } else {
+        alert("⚠️ PIN ADMINISTRADOR INCORRECTO. Función restringida.");
+      }
     }
   }
 
@@ -2032,81 +2268,6 @@
     reader.readAsArrayBuffer(file);
   }
 
-  // ==================== AUTOCOMPLETADO PRIVADO PARA HOTELES ====================
-  async function precargarHoteles() {
-    try {
-      // Cargar hoteles únicos que ya hayan pedido antes desde la BD
-      const { data } = await db.from("solicitudes_domicilio").select("nombre_entidad").eq("origen_tipo", "HOTEL_RUTA").limit(100);
-      const nombresUnicos = [...new Set((data || []).map(d => d.nombre_entidad))];
-      listaHotelesRegistrados = nombresUnicos;
-    } catch (e) { console.error(e); }
-  }
-
-  function filtrarHotelPrivado(val) {
-    const box = document.getElementById("drop-hoteles");
-    const q = val.toLowerCase().trim();
-    if (!q) { box.style.display = "none"; return; }
-
-    // Solo muestra coincidencias si el usuario ya escribió al menos 2 letras
-    const matches = listaHotelesRegistrados.filter(h => h.toLowerCase().includes(q));
-    if (matches.length > 0) {
-      box.innerHTML = matches.map(h => `
-        <div class="autocomplete-item" onclick="seleccionarHotelAuto('${h.replace(/'/g, "")}')">
-          🏨 ${h}
-        </div>
-      `).join("");
-      box.style.display = "block";
-    } else {
-      box.style.display = "none";
-    }
-  }
-
-  function seleccionarHotelAuto(nombreHotel) {
-    document.getElementById("hotel-input-nom").value = nombreHotel;
-    document.getElementById("drop-hoteles").style.display = "none";
-  }
-
-  async function hotelEnviarSolicitud() {
-    const hNom = document.getElementById("hotel-input-nom").value.trim();
-    const hSrv = document.getElementById("hotel-sel-servicio").value;
-    const hBultos = document.getElementById("hotel-cant-bultos").value.trim();
-    const hCont = document.getElementById("hotel-contacto").value.trim();
-    const hTel = document.getElementById("hotel-tel-opcional").value.trim();
-    const hNotas = document.getElementById("hotel-notas").value.trim();
-
-    if (!hNom) return alert("Por favor ingresa el nombre de tu hotel o establecimiento.");
-
-    try {
-      const hoyBog = new Date().toISOString().split("T")[0];
-      const contactoStr = hCont ? (hTel ? `${hCont} (Tel: ${hTel})` : hCont) : (hTel ? `Tel: ${hTel}` : "Recepción / Ama de llaves");
-
-      await db.from("solicitudes_domicilio").insert({
-        origen_tipo: 'HOTEL_RUTA',
-        tipo_servicio: 'RECOGIDA_HOTEL',
-        nombre_entidad: hNom,
-        telefono: contactoStr,
-        direccion: "Sede Hotel",
-        fecha_programada: hoyBog,
-        franja_horaria: "Ruta Activa Hoy",
-        notas: `Servicio: ${hSrv} | Bultos: ${hBultos || 'N/A'} | Notas: ${hNotas || '-'}`
-      });
-
-      alert(`✅ ¡Solicitud enviada para ${hNom}!\nEl despachador y el conductor de ruta ya tienen la notificación en tiempo real.`);
-      
-      // Guardar en cache de hoteles registrados
-      if (!listaHotelesRegistrados.includes(hNom)) {
-        listaHotelesRegistrados.push(hNom);
-      }
-
-      document.getElementById("hotel-input-nom").value = "";
-      document.getElementById("hotel-cant-bultos").value = "";
-      document.getElementById("hotel-contacto").value = "";
-      document.getElementById("hotel-tel-opcional").value = "";
-      document.getElementById("hotel-notas").value = "";
-      mostrarVista("vista-home");
-    } catch (e) { alert("Error enviando solicitud: " + e.message); }
-  }
-
   // Domicilios Particulares
   async function clienteCrearSolicitud(tipo) {
     let nom, tel, dir, fec, fra, notas, ticketRef = "";
@@ -2146,14 +2307,13 @@
         document.getElementById("dom-ent-tel").value = "";
         document.getElementById("dom-ent-dir").value = "";
       }
-      mostrarVista("vista-home");
     } catch (e) { alert(e.message); }
   }
 
   async function cargarDomiciliosAdmin() {
     const tbody = document.getElementById("tabla-domicilios-body");
     try {
-      const { data } = await db.from("solicitudes_domicilio").select("*").order("created_at", { ascending: false }).limit(30);
+      const { data } = await db.from("solicitudes_domicilio").select("*").order("created_at", { ascending: false }).limit(25);
       if (!data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-muted);">Sin solicitudes registradas.</td></tr>';
         return;
@@ -2251,7 +2411,7 @@
   async function procesarVozIntegral(textoCompleto) {
     let t = textoCompleto.toLowerCase().trim();
 
-    // 1. Detección de Cliente
+    // 1. Detección de Cliente Existente o Nombre
     let clienteDetectado = null;
     for (const c of listaClientes) {
       if (t.includes(c.nombre_o_razon.toLowerCase())) {
@@ -2279,7 +2439,7 @@
         t = t.replace(nombresProbables.join(" "), '').trim();
 
         setTimeout(() => {
-          const tel = prompt(`👤 Cliente nuevo detectado: "${nomTentativo}".\nPor favor ingresa su número de celular para enviarle su copia digital por WhatsApp:`, "");
+          const tel = prompt(`👤 Cliente nuevo detectado: "${nomTentativo}".\nPor favor ingresa su número de celular para enviarle su copia digital:`, "");
           if (tel) {
             document.getElementById("pos-cli-tel").value = tel.replace(/\D/g, '');
           }
