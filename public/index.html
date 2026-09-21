@@ -258,7 +258,6 @@
     </div>
 
     <div class="portal-grid">
-      <!-- Opción 1: Clientes -->
       <div class="portal-card" onclick="mostrarVista('vista-portal-cliente')">
         <div class="portal-icon">👕</div>
         <div class="portal-title">Servicios para Clientes</div>
@@ -266,7 +265,6 @@
         <button class="btn-primary" style="width: 100%; margin-top: 6px;">Consultar o Pedir Domicilio</button>
       </div>
 
-      <!-- Opción 2: Hoteles -->
       <div class="portal-card" onclick="mostrarVista('vista-portal-hoteles')">
         <div class="portal-icon">🏨</div>
         <div class="portal-title">Servicios para Hoteles</div>
@@ -274,7 +272,6 @@
         <button class="btn-primary" style="width: 100%; margin-top: 6px;">Solicitar Ruta Inmediata</button>
       </div>
 
-      <!-- Opción 3: Lavaarte -->
       <div class="portal-card" style="border-color: var(--primary);" onclick="solicitarAccesoEmpleados('vista-dashboard')">
         <div class="portal-icon">🔐</div>
         <div class="portal-title">Lavaarte</div>
@@ -294,7 +291,6 @@
       </div>
     </div>
 
-    <!-- Centinela 60h -->
     <div id="box-centinela-alerta" class="centinela-box" style="display: none;">
       <h4 style="color: var(--danger);">🚨 CENTINELA OPERATIVO: Órdenes con más de 60 Horas en Planta (Sin Alistar)</h4>
       <div id="centinela-resumen" style="font-size: 12px; margin-top: 6px; line-height: 1.5;"></div>
@@ -343,10 +339,11 @@
         <p>Pedidos en tiempo real de clientes y hoteles</p>
       </div>
 
-      <div class="dash-card" onclick="descargarHistoricoOrdenesExcel()">
-        <span style="font-size: 32px;">📑</span>
-        <h3>8. Descargar Recibos / BD</h3>
-        <p>Exportar toda la base de datos de órdenes a Excel</p>
+      <!-- BOTÓN 8 ACTUALIZADO A BÚSQUEDAS Y AUDITORÍA HISTÓRICA -->
+      <div class="dash-card" onclick="abrirVistaBusquedas()">
+        <span style="font-size: 32px;">🔍</span>
+        <h3>8. Búsquedas y Auditoría</h3>
+        <p>Consultar órdenes por ticket, teléfono o cliente e historial completo</p>
       </div>
 
       <div class="dash-card" style="border-color: var(--warning);" onclick="pedirClaveSegura('modal-admin-master')">
@@ -365,7 +362,6 @@
     </div>
 
     <div class="pos-layout">
-      <!-- SIDEBAR IZQUIERDO: CLIENTE Y TICKET -->
       <div class="pos-sidebar">
         <button id="btn-voz-pos" class="btn-voice" style="margin-bottom: 8px;" onclick="iniciarVozPOSInteligente()">
           🎙️ Dictar Orden Completa (Cliente + Prendas + Estado)
@@ -423,7 +419,6 @@
         <button class="btn-success" style="margin-top: 10px; padding: 14px;" onclick="confirmarGenerarOrden()">💾 GUARDAR, IMPRIMIR Y ENVIAR WHATSAPP</button>
       </div>
 
-      <!-- PANEL DERECHO: BARRA RÁPIDA COMPUTADOR + CATÁLOGO -->
       <div class="pos-catalog">
         <div class="quick-bar-card">
           <div style="font-size: 12px; font-weight: bold; color: var(--accent); display: flex; justify-content: space-between;">
@@ -638,7 +633,7 @@
     </div>
   </div>
 
-  <!-- ==================== VISTA 8: PORTAL HOTELES ==================== -->
+  <!-- ==================== VISTA 8: PORTAL HOTELES (DIRECCIÓN OPCIONAL) ==================== -->
   <div class="view-section" id="vista-portal-hoteles">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h3>🏨 Servicios para Hoteles (Portal Logístico Privado)</h3>
@@ -678,13 +673,8 @@
         </div>
 
         <div class="input-group">
-          <label class="label-sm">Dirección / Sede</label>
-          <input type="text" id="hotel-direccion-input" class="input-text" placeholder="Dirección del hotel...">
-        </div>
-
-        <div class="input-group">
-          <label class="label-sm">Detalles de Entrega / Acceso</label>
-          <input type="text" id="hotel-detalles-input" class="input-text" placeholder="Ej: Entrada por bahía de proveedores, sótano 1">
+          <label class="label-sm">Dirección / Sede (Opcional)</label>
+          <input type="text" id="hotel-direccion-input" class="input-text" placeholder="Solo si requiere especificar sede...">
         </div>
 
         <div class="input-group">
@@ -694,6 +684,50 @@
 
         <button class="btn-success" style="padding: 14px; font-size: 15px;" onclick="hotelEnviarSolicitudPrivada()">
           🚚 SOLICITAR RECOGIDA DE RUTA AHORA
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VISTA 9: BÚSQUEDAS Y AUDITORÍA HISTÓRICA ==================== -->
+  <div class="view-section" id="vista-busquedas">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>🔍 Búsquedas y Auditoría Histórica de Órdenes</h3>
+      <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
+    </div>
+
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="text" id="busc-auditoria-input" class="input-text" style="flex: 1; min-width: 260px;" placeholder="🔍 Buscar por # Ticket (ej: 45), Nombre de cliente o Celular..." oninput="ejecutarBusquedaAuditoria(this.value)">
+      </div>
+
+      <div style="overflow-x: auto; max-height: 520px; border: 1px solid var(--border); border-radius: 8px;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Ticket</th>
+              <th>Fecha Ingreso</th>
+              <th>Cliente</th>
+              <th>Celular</th>
+              <th>Prendas Registradas</th>
+              <th>Observación / Estado</th>
+              <th>Estado</th>
+              <th>Total</th>
+              <th>Saldo</th>
+              <th>Medio Pago Saldo</th>
+              <th>Fecha Entrega</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-auditoria-body">
+            <tr><td colspan="11" style="text-align: center; color: var(--text-muted); padding: 25px;">Escribe un ticket, teléfono o nombre para consultar órdenes.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Botón Exportar Excel situado en la esquina inferior derecha -->
+      <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+        <button class="btn-primary" style="padding: 10px 18px; font-size: 13px;" onclick="descargarHistoricoOrdenesExcel()">
+          📥 Exportar Base de Datos Completa a Excel (.xlsx)
         </button>
       </div>
     </div>
@@ -800,7 +834,7 @@
   </div>
 </div>
 
-<!-- Modal: Autenticación con PIN -->
+<!-- Modal: Autenticación con PIN (Sin revelar códigos) -->
 <div class="modal" id="modal-admin-auth">
   <div class="modal-content" style="width: 380px; text-align: center;">
     <h3 id="auth-modal-title" style="color: var(--warning);">🔒 Acceso Protegido</h3>
@@ -1512,13 +1546,13 @@
     document.getElementById("hotel-contacto").focus();
   }
 
+  // Envío Solicitud Hotel (Dirección Opcional y Compatible 100%)
   async function hotelEnviarSolicitudPrivada() {
     const hNom = document.getElementById("hotel-busc-input").value.trim();
     const hSrv = document.getElementById("hotel-sel-servicio").value;
     const hBultos = document.getElementById("hotel-cant-bultos").value.trim();
     const hCont = document.getElementById("hotel-contacto").value.trim();
     const hDir = document.getElementById("hotel-direccion-input").value.trim();
-    const hDetalles = document.getElementById("hotel-detalles-input").value.trim();
     const hNotas = document.getElementById("hotel-notas").value.trim();
 
     if (!hNom) return alert("Por favor ingresa el nombre de tu hotel.");
@@ -1535,13 +1569,14 @@
       }
 
       const hoyBog = new Date().toISOString().split("T")[0];
+      const direccionFinal = hDir || (exHotel?.direccion || "Sede Hotel");
+
       const { error: insErr } = await db.from("solicitudes_domicilio").insert({
         origen_tipo: 'HOTEL_RUTA',
         tipo_servicio: 'RECOGIDA_HOTEL',
         nombre_entidad: hNom,
         telefono: hCont || "Recepción / Ama de llaves",
-        direccion: hDir || (exHotel?.direccion || "Sede Hotel"),
-        detalles_direccion: hDetalles || "",
+        direccion: direccionFinal,
         fecha_programada: hoyBog,
         franja_horaria: "Ruta Activa Hoy",
         notas: `Servicio: ${hSrv} | Bultos: ${hBultos || 'N/A'} | Nota: ${hNotas || '-'}`
@@ -1555,7 +1590,6 @@
       document.getElementById("hotel-cant-bultos").value = "";
       document.getElementById("hotel-contacto").value = "";
       document.getElementById("hotel-direccion-input").value = "";
-      document.getElementById("hotel-detalles-input").value = "";
       document.getElementById("hotel-notas").value = "";
       mostrarVista("vista-home");
     } catch (e) {
@@ -1951,6 +1985,69 @@
     XLSX.writeFile(wb, `Lavaarte_CierreCaja_${reporteArqueoActual.fecha.replace(/\//g,'-')}.xlsx`);
   }
 
+  // ==================== BÚSQUEDAS Y AUDITORÍA HISTÓRICA ====================
+  function abrirVistaBusquedas() {
+    mostrarVista('vista-busquedas');
+    ejecutarBusquedaAuditoria("");
+  }
+
+  async function ejecutarBusquedaAuditoria(q) {
+    const tbody = document.getElementById("tabla-auditoria-body");
+    try {
+      let qBuilder = db.from("ordenes")
+        .select(`id, consecutivo_ticket, codigo_rastreo, estado, total_neto, abono_inicial, saldo_pendiente, metodo_pago_saldo, created_at, entregado_at, observaciones_estado_prendas, clientes(nombre_o_razon, telefono), orden_items(cantidad, descripcion_prenda)`)
+        .order("consecutivo_ticket", { ascending: false })
+        .limit(40);
+
+      if (q && /^\d+$/.test(q)) {
+        qBuilder = qBuilder.eq("consecutivo_ticket", parseInt(q, 10));
+      }
+
+      const { data, error } = await qBuilder;
+      if (error) throw error;
+
+      let res = data || [];
+      if (q && !/^\d+$/.test(q)) {
+        const qLow = q.toLowerCase().trim();
+        res = res.filter(o => (o.clientes?.nombre_o_razon || "").toLowerCase().includes(qLow) || (o.clientes?.telefono || "").includes(q));
+      }
+
+      if (res.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; color: var(--text-muted); padding: 25px;">No se encontraron órdenes con ese criterio.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = res.map(o => {
+        const prendasTexto = o.orden_items?.map(i => `${i.cantidad}x ${i.descripcion_prenda}`).join("<br>") || "-";
+        const fIngreso = new Date(o.created_at).toLocaleString("es-CO");
+        const fEntrega = o.entregado_at ? new Date(o.entregado_at).toLocaleString("es-CO") : "-";
+
+        let badgeColor = "var(--warning)";
+        if (o.estado === "ENTREGADO") badgeColor = "var(--success)";
+        if (o.estado === "ANULADO") badgeColor = "var(--danger)";
+
+        return `
+          <tr>
+            <td><strong>#${o.consecutivo_ticket}</strong></td>
+            <td style="font-size: 11px;">${fIngreso}</td>
+            <td><strong>${o.clientes?.nombre_o_razon || 'Particular'}</strong></td>
+            <td>${o.clientes?.telefono || '-'}</td>
+            <td style="font-size: 11.5px; color: var(--text);">${prendasTexto}</td>
+            <td style="font-size: 11px; color: var(--warning);">${o.observaciones_estado_prendas || '-'}</td>
+            <td><span style="color: ${badgeColor}; font-weight: bold;">[${o.estado}]</span></td>
+            <td>$${Number(o.total_neto).toLocaleString("es-CO")}</td>
+            <td style="color: var(--danger); font-weight: bold;">$${Number(o.saldo_pendiente).toLocaleString("es-CO")}</td>
+            <td>${o.metodo_pago_saldo || '-'}</td>
+            <td style="font-size: 11px;">${fEntrega}</td>
+          </tr>
+        `;
+      }).join("");
+    } catch (e) {
+      console.error(e);
+      tbody.innerHTML = `<tr><td colspan="11" style="color: var(--danger); text-align: center;">Error consultando auditoría: ${e.message}</td></tr>`;
+    }
+  }
+
   async function descargarHistoricoOrdenesExcel() {
     try {
       const { data, error } = await db.from("ordenes").select(`consecutivo_ticket, codigo_rastreo, estado, total_neto, abono_inicial, saldo_pendiente, metodo_pago_saldo, created_at, entregado_at, observaciones_estado_prendas, clientes(nombre_o_razon, telefono), orden_items(cantidad, descripcion_prenda, precio_unitario, subtotal)`).order("consecutivo_ticket", { ascending: false });
@@ -1966,7 +2063,7 @@
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(filasExcel), "Historico_Recibos");
       XLSX.writeFile(wb, `Lavaarte_BaseDatos_Recibos_${new Date().toISOString().split("T")[0]}.xlsx`);
-      alert("✅ Base de datos descargada.");
+      alert("✅ Base de datos descargada con éxito.");
     } catch (e) { alert("Error: " + e.message); }
   }
 
@@ -2264,7 +2361,7 @@
     reader.readAsArrayBuffer(file);
   }
 
-  // Domicilios Particulares
+  // Domicilios Particulares (Unifica dirección y detalles en columna 'direccion')
   async function clienteCrearSolicitud(tipo) {
     let nom, tel, dir, detDir, fec, fra, notas, ticketRef = "";
     if (tipo === "RECOGIDA_DOMICILIO") {
@@ -2289,13 +2386,13 @@
     }
 
     try {
+      const direccionCompleta = `${dir} | Ref: ${detDir}`;
       const { error: errDom } = await db.from("solicitudes_domicilio").insert({
         origen_tipo: 'CLIENTE_PARTICULAR',
         tipo_servicio: tipo,
         nombre_entidad: nom,
         telefono: tel,
-        direccion: dir,
-        detalles_direccion: detDir,
+        direccion: direccionCompleta,
         ticket_referencia: ticketRef,
         fecha_programada: fec,
         franja_horaria: fra,
@@ -2321,7 +2418,7 @@
     } catch (e) { alert("Error registrando solicitud: " + e.message); }
   }
 
-  // Domicilios Admin (Regla 24h)
+  // Domicilios Admin (Regla 24h para completados)
   async function cargarDomiciliosAdmin() {
     const tbody = document.getElementById("tabla-domicilios-body");
     try {
@@ -2329,20 +2426,25 @@
       
       const { data, error } = await db.from("solicitudes_domicilio")
         .select("*")
-        .or(`estado.neq.COMPLETADO,completado_at.gte.${limite24h}`)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
 
-      if (!data || data.length === 0) {
+      let registros = data || [];
+      // Ocultar completados que tengan más de 24h
+      registros = registros.filter(d => {
+        if (d.estado !== "COMPLETADO") return true;
+        if (!d.completado_at) return true;
+        return new Date(d.completado_at) >= new Date(limite24h);
+      });
+
+      if (registros.length === 0) {
         tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-muted);">Sin solicitudes pendientes en ruta.</td></tr>';
         return;
       }
 
-      tbody.innerHTML = data.map(d => {
-        const dirCompleta = `${d.direccion || '-'} <br><small style="color: var(--accent);">${d.detalles_direccion ? '📍 ' + d.detalles_direccion : ''}</small>`;
+      tbody.innerHTML = registros.map(d => {
         const esCompletado = d.estado === "COMPLETADO";
-
         const botonAccion = esCompletado
           ? `<span style="color: var(--success); font-weight: bold;">✓ Completado</span>`
           : `<button class="btn-success" style="padding: 4px 8px; font-size: 11px;" onclick="chulearDomicilio('${d.id}')">✓ Completar</button>`;
@@ -2354,7 +2456,7 @@
             <td>${d.tipo_servicio}</td>
             <td><strong>${d.nombre_entidad}</strong></td>
             <td>${d.telefono}</td>
-            <td>${dirCompleta}</td>
+            <td>${d.direccion || '-'}</td>
             <td>${d.ticket_referencia ? '#' + d.ticket_referencia : '-'}</td>
             <td style="font-size: 11px; color: var(--text-muted);">${d.notas || '-'}</td>
             <td>${botonAccion}</td>
