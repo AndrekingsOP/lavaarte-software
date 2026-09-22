@@ -1705,6 +1705,7 @@
     document.getElementById("drop-hoteles").style.display = "none";
   }
 
+  // Envío Solicitud Hotel Blindado
   async function hotelEnviarSolicitudPrivada() {
     const hNom = document.getElementById("hotel-busc-input").value.trim();
     const hSrv = document.getElementById("hotel-sel-servicio").value;
@@ -1737,6 +1738,7 @@
         telefono: hCont || "Recepción / Ama de llaves",
         direccion: direccionFinal,
         fecha_programada: hoyBog,
+        fecha_recogida: hoyBog,
         franja_horaria: "Ruta Activa Hoy",
         notas: `Servicio: ${hSrv} | Bultos: ${hBultos || 'N/A'} | Nota: ${hNotas || '-'}`
       });
@@ -2226,7 +2228,7 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Seguridad Jerárquica (PINs 100% ocultos)
+  // Seguridad Jerárquica
   function solicitarAccesoEmpleados(destino) {
     destinoPinAdmin = destino;
     document.getElementById("auth-modal-title").textContent = "🔒 Acceso Colaboradores Lavaarte";
@@ -2306,7 +2308,7 @@
     buscarOrdenesEntrega("");
   }
 
-  // Panel Maestro (Botón 9)
+  // Panel Maestro (Botón 9) - Sincronizado a Supabase
   async function abrirModalMasterAdmin() {
     poblarSelectPrendasMaster();
     await adminCargarOrdenesBD();
@@ -2527,7 +2529,7 @@
     reader.readAsArrayBuffer(file);
   }
 
-  // Domicilios Particulares
+  // Domicilios Particulares Blindados
   async function clienteCrearSolicitud(tipo) {
     let nom, tel, dir, detDir, fec, fra, notas, ticketRef = "";
     if (tipo === "RECOGIDA_DOMICILIO") {
@@ -2562,6 +2564,7 @@
         direccion: direccionCompleta,
         ticket_referencia: ticketRef,
         fecha_programada: fec,
+        fecha_recogida: fec,
         franja_horaria: fra,
         notas
       });
