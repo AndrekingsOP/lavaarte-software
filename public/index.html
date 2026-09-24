@@ -7,7 +7,6 @@
 <meta name="theme-color" content="#0284c7">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <style>
   :root {
     --bg-main: #0b0f19;
@@ -38,7 +37,7 @@
 
   /* Home */
   .home-hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 16px 20px 16px; gap: 12px; }
-  .home-logo-svg { width: 130px; height: 130px; }
+  .home-logo-svg { width: 120px; height: 120px; filter: drop-shadow(0 4px 15px rgba(2, 132, 199, 0.4)); }
   .home-title { font-size: 34px; font-weight: 900; letter-spacing: 1.5px; color: #fff; }
   .home-title span { color: var(--accent); }
   .home-slogan { font-style: italic; color: #f87171; font-size: 19px; font-weight: 600; margin-top: -6px; }
@@ -51,7 +50,7 @@
   .portal-title { font-size: 20px; font-weight: 800; color: #fff; }
   .portal-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
 
-  /* Dash */
+  /* Dashboard */
   .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 15px; }
   .dash-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; text-align: center; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; }
   .dash-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.15); }
@@ -96,7 +95,6 @@
   .btn-success { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
   .btn-danger { background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
 
-  /* Botones de Métodos de Pago Interactivos */
   .payment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin: 10px 0; }
   .btn-payment { background: var(--bg-input); border: 2px solid var(--border); color: white; padding: 12px 8px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; text-align: center; transition: all 0.2s; }
   .btn-payment.selected { border-color: var(--accent); background: rgba(2, 132, 199, 0.25); color: var(--accent); }
@@ -115,8 +113,17 @@
      IMPRESIÓN TÉRMICA 80MM (DISEÑO SEGÚN FOTO REAL LAVAARTE)
      ========================================================================= */
   @media print {
-    @page { size: 80mm auto; margin: 0; }
-    html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; color: #000 !important; height: auto !important; }
+    @page {
+      size: 80mm auto;
+      margin: 0;
+    }
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #fff !important;
+      color: #000 !important;
+      height: auto !important;
+    }
     body * { visibility: hidden; }
     #ticket-termico-print, #ticket-termico-print * { visibility: visible; }
     #ticket-termico-print {
@@ -128,42 +135,129 @@
       margin-left: 2mm;
       font-family: Arial, Helvetica, sans-serif;
       font-size: 11.5px;
-      color: #000;
-      background: #fff;
+      color: #000 !important;
+      background: #fff !important;
       line-height: 1.3;
     }
-    .ticket-copia { page-break-after: always; break-after: page; padding-bottom: 5mm; margin-bottom: 0; }
-    .ticket-copia:last-child { page-break-after: avoid; break-after: avoid; padding-bottom: 2mm; }
+    .ticket-copia {
+      page-break-after: always;
+      break-after: page;
+      padding-bottom: 8mm;
+      margin-bottom: 0;
+    }
+    .ticket-copia:last-child {
+      page-break-after: avoid;
+      break-after: avoid;
+      padding-bottom: 3mm;
+    }
 
-    /* Encabezado Logo según foto */
-    .p-header-box { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 4px; }
-    .p-icon-svg { width: 44px; height: 44px; }
-    .p-brand-text { font-size: 20px; font-weight: 900; letter-spacing: 0.8px; font-family: Impact, Arial, sans-serif; }
-    .p-brand-slogan { font-size: 13px; font-style: italic; font-weight: bold; font-family: "Brush Script MT", cursive, sans-serif; }
+    /* Encabezado Logo Fiel a la Foto Real */
+    .p-header-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .p-icon-svg {
+      width: 48px;
+      height: 48px;
+    }
+    .p-brand-text {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      font-family: Impact, "Arial Black", sans-serif;
+      color: #000 !important;
+      text-transform: uppercase;
+    }
+    .p-brand-slogan {
+      font-size: 14px;
+      font-style: italic;
+      font-weight: bold;
+      font-family: "Brush Script MT", "Segoe Script", cursive, sans-serif;
+      color: #000 !important;
+      margin-top: -2px;
+    }
 
-    /* Rectángulo grande ticket (como foto) */
+    .p-subtext {
+      font-size: 10px;
+      text-align: center;
+      line-height: 1.3;
+      color: #000 !important;
+      margin: 4px 0;
+    }
+
+    /* Rectángulo Grande de Número (Como en la foto) */
     .p-box-ticket-hero {
-      border: 2px solid #000;
+      border: 2.5px solid #000 !important;
       border-radius: 8px;
       padding: 6px 4px;
       margin: 6px 0;
       text-align: center;
-      font-size: 32px;
+      font-size: 36px;
       font-weight: 900;
       letter-spacing: 2px;
+      color: #000 !important;
     }
 
-    /* Código de Barras */
-    .p-barcode-wrap { text-align: center; margin: 4px 0; }
-    .p-barcode-svg { max-width: 62mm; height: 38px; }
+    .p-meta-cliente {
+      text-align: center;
+      margin: 4px 0 6px 0;
+    }
+    .p-lbl-cliente {
+      font-size: 10.5px;
+      font-weight: 900;
+      color: #000 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .p-val-cliente {
+      font-size: 14.5px;
+      font-weight: 900;
+      color: #000 !important;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+    .p-val-telefono {
+      font-size: 11.5px;
+      font-weight: bold;
+      color: #000 !important;
+    }
 
-    .p-meta-grid { font-size: 11px; line-height: 1.35; margin-bottom: 5px; }
-    .p-table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 5px 0; }
-    .p-table th { border-top: 1.5px solid #000; border-bottom: 1.5px solid #000; padding: 3px 0; text-align: left; font-size: 10px; font-weight: 800; }
-    .p-table td { padding: 3px 0; vertical-align: top; border-bottom: 1px dotted #ccc; }
-    .p-totals-box { border-top: 1.5px solid #000; padding-top: 4px; margin-top: 4px; }
-    .p-saldo-destacado { border: 1.5px solid #000; padding: 4px 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; font-weight: 900; margin-top: 4px; }
-    .p-footer { text-align: center; font-size: 10px; margin-top: 6px; line-height: 1.3; border-top: 1px dashed #000; padding-top: 5px; }
+    .p-table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 6px 0; }
+    .p-table th {
+      border-top: 1.5px solid #000 !important;
+      border-bottom: 1.5px solid #000 !important;
+      padding: 3px 0;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 900;
+      color: #000 !important;
+    }
+    .p-table td { padding: 3px 0; vertical-align: top; border-bottom: 1px dotted #888; color: #000 !important; }
+    
+    .p-totals-box { border-top: 1.5px solid #000 !important; padding-top: 4px; margin-top: 4px; }
+    .p-saldo-destacado {
+      border: 1.5px solid #000 !important;
+      padding: 4px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 900;
+      margin-top: 4px;
+      color: #000 !important;
+    }
+    .p-footer {
+      text-align: center;
+      font-size: 10px;
+      margin-top: 8px;
+      line-height: 1.35;
+      border-top: 1px dashed #000;
+      padding-top: 6px;
+      color: #000 !important;
+    }
   }
 
   @media (max-width: 900px) {
@@ -176,7 +270,6 @@
 </head>
 <body>
 
-<!-- BARRA DE NAVEGACIÓN -->
 <div class="topbar">
   <div class="brand" onclick="mostrarVista('vista-home')">
     🧺 Lavaarte <span>| Sistema Integral</span>
@@ -195,11 +288,12 @@
   <div class="view-section view-active" id="vista-home">
     <div class="home-hero">
       <svg class="home-logo-svg" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="46" fill="#0284c7" />
-        <path d="M50 12 A38 38 0 0 1 88 50 A38 38 0 0 1 50 88 C30 88 20 70 35 55 C45 45 55 35 50 12 Z" fill="#38bdf8" />
-        <circle cx="65" cy="45" r="7" fill="#ffffff" />
-        <circle cx="58" cy="33" r="4" fill="#ffffff" />
-        <circle cx="70" cy="30" r="3" fill="#ffffff" />
+        <path d="M15 50 C15 28 35 15 55 15 C78 15 88 32 88 50 C88 72 70 85 50 85 C30 85 15 72 15 50 Z" fill="#0284c7" />
+        <path d="M25 50 C25 36 38 25 55 25 C70 25 78 35 78 50 C78 65 65 75 50 75 C38 75 25 64 25 50 Z" fill="#38bdf8" />
+        <path d="M35 50 C35 42 42 35 55 35 C64 35 70 42 70 50 C70 58 60 65 50 65 C40 65 35 58 35 50 Z" fill="#0b0f19" />
+        <circle cx="58" cy="46" r="4.5" fill="#fff" />
+        <circle cx="64" cy="38" r="3" fill="#fff" />
+        <circle cx="52" cy="38" r="2.5" fill="#fff" />
       </svg>
       <h1 class="home-title">LAVA <span>ARTE</span></h1>
       <div class="home-slogan">El Arte de Lavar</div>
@@ -545,6 +639,7 @@
         <div id="cliente-ticket-result" style="margin-top: 14px; font-size: 13px;"></div>
       </div>
 
+      <!-- Recogida a Domicilio -->
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
         <h4 style="color: var(--success); margin-bottom: 8px;">📦 Pedir Recogida a Domicilio</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -564,6 +659,7 @@
         </div>
       </div>
 
+      <!-- Entrega a Domicilio -->
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
         <h4 style="color: var(--warning); margin-bottom: 8px;">🚚 Solicitar Entrega de mi Ropa</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -809,7 +905,6 @@
       <div class="btn-payment" onclick="seleccionarMetodoPago('TRANSFERENCIA', this)">🏦 Transferencia</div>
     </div>
 
-    <!-- Indicador de cuenta Nequi/Daviplata -->
     <div id="box-alerta-nequi" style="display: none; background: rgba(56, 189, 248, 0.15); border: 1.5px solid var(--accent); padding: 12px; border-radius: 8px; text-align: center;">
       <div style="font-size: 12px; color: var(--text-muted);">Pagar a la cuenta Nequi / Daviplata Lavaarte:</div>
       <div style="font-size: 20px; font-weight: 900; color: #fff; letter-spacing: 1px; margin-top: 2px;">317 534 2828</div>
@@ -888,7 +983,7 @@
   </div>
 </div>
 
-<!-- Modal: Autenticación con PIN (Sin revelar números en pantalla) -->
+<!-- Modal: Autenticación con PIN -->
 <div class="modal" id="modal-admin-auth">
   <div class="modal-content" style="width: 380px; text-align: center;">
     <h3 id="auth-modal-title" style="color: var(--warning);">🔒 Acceso Protegido</h3>
@@ -1000,10 +1095,14 @@
   <!-- COPIA 1: ORIGINAL CLIENTE -->
   <div class="ticket-copia">
     <div class="p-header-box">
+      <!-- Logo vectorizado según la foto real de Lavaarte -->
       <svg class="p-icon-svg" viewBox="0 0 100 100">
-        <path d="M20 50 A30 30 0 0 1 80 50 A30 18 0 0 1 50 68 C35 68 20 60 20 50 Z" fill="#000" />
-        <circle cx="50" cy="50" r="4" fill="#fff" />
-        <circle cx="62" cy="42" r="3" fill="#fff" />
+        <path d="M15 50 C15 28 35 15 55 15 C78 15 88 32 88 50 C88 72 70 85 50 85 C30 85 15 72 15 50 Z" fill="#000" />
+        <path d="M25 50 C25 36 38 25 55 25 C70 25 78 35 78 50 C78 65 65 75 50 75 C38 75 25 64 25 50 Z" fill="#fff" />
+        <path d="M35 50 C35 42 42 35 55 35 C64 35 70 42 70 50 C70 58 60 65 50 65 C40 65 35 58 35 50 Z" fill="#000" />
+        <circle cx="58" cy="46" r="4.5" fill="#fff" />
+        <circle cx="64" cy="38" r="3" fill="#fff" />
+        <circle cx="52" cy="38" r="2.5" fill="#fff" />
       </svg>
       <div>
         <div class="p-brand-text">LAVA ARTE</div>
@@ -1011,20 +1110,22 @@
       </div>
     </div>
 
-    <!-- Rectángulo con número de ticket -->
+    <div class="p-subtext">
+      NIT: 901.344.335<br>
+      Diagonal 47 No.77C-80 Bogotá<br>
+      Tels: 314-263-6787 / 315-333-0502<br>
+      <strong>lavaarte.onrender.com</strong>
+    </div>
+
+    <!-- Rectángulo con número de ticket exacto a la foto -->
     <div class="p-box-ticket-hero pr-ticket-num">
       100
     </div>
 
-    <!-- Código de Barras Dinámico -->
-    <div class="p-barcode-wrap">
-      <svg id="barcode-svg-cliente" class="p-barcode-svg"></svg>
-    </div>
-
-    <div class="p-meta-grid" style="text-align: center; margin-top: 4px;">
-      <div><span style="font-size: 10px; color: #555;">Cliente</span></div>
-      <div style="font-size: 13px; font-weight: bold;"><span class="pr-cliente">---</span></div>
-      <div style="font-size: 11px;">Teléfono: <span class="pr-telefono">---</span></div>
+    <div class="p-meta-cliente">
+      <div class="p-lbl-cliente">CLIENTE</div>
+      <div class="p-val-cliente"><span class="pr-cliente">---</span></div>
+      <div class="p-val-telefono">Teléfono: <span class="pr-telefono">---</span></div>
       <div style="font-size: 10px; margin-top: 2px;">FECHA: <span class="pr-fecha">--/--/----</span></div>
       <div class="pr-loyalty-text" style="font-size: 10px; font-weight: bold; margin-top: 2px;"></div>
     </div>
@@ -1063,16 +1164,16 @@
 
     <div class="p-footer">
       🔍 Rastree el avance de su ropa con su <strong>número de ticket</strong> en:<br>
-      <strong>lavaarte-software.onrender.com</strong><br>
+      <strong>lavaarte.onrender.com</strong><br>
       ¡Gracias por escogernos!
     </div>
   </div>
 
-  <!-- COPIA 2: PLANTA / ACOPLE -->
+  <!-- COPIA 2: PLANTA / ACOPLE (Con salto de página para corte automático parcial) -->
   <div class="ticket-copia">
     <div class="p-header-box">
       <svg class="p-icon-svg" viewBox="0 0 100 100">
-        <path d="M20 50 A30 30 0 0 1 80 50 A30 18 0 0 1 50 68 C35 68 20 60 20 50 Z" fill="#000" />
+        <path d="M15 50 C15 28 35 15 55 15 C78 15 88 32 88 50 C88 72 70 85 50 85 C30 85 15 72 15 50 Z" fill="#000" />
       </svg>
       <div>
         <div class="p-brand-text">LAVA ARTE</div>
@@ -1080,17 +1181,15 @@
       </div>
     </div>
 
-    <div class="p-box-ticket-hero pr-ticket-num" style="border-style: dashed;">
+    <div class="p-box-ticket-hero pr-ticket-num" style="border-style: dashed !important;">
       100
     </div>
 
-    <div class="p-barcode-wrap">
-      <svg id="barcode-svg-acople" class="p-barcode-svg"></svg>
-    </div>
-
-    <div class="p-meta-grid" style="text-align: center; margin-top: 4px;">
-      <div><strong>CLIENTE:</strong> <span class="pr-cliente">---</span> (<span class="pr-telefono">---</span>)</div>
-      <div style="font-size: 10px;">FECHA: <span class="pr-fecha">--/--/----</span></div>
+    <div class="p-meta-cliente">
+      <div class="p-lbl-cliente">CLIENTE (ACOPLE)</div>
+      <div class="p-val-cliente"><span class="pr-cliente">---</span></div>
+      <div class="p-val-telefono">Teléfono: <span class="pr-telefono">---</span></div>
+      <div style="font-size: 10px; margin-top: 2px;">FECHA: <span class="pr-fecha">--/--/----</span></div>
     </div>
 
     <table class="p-table">
@@ -1130,7 +1229,7 @@
 
 <script>
   const BOT_WHATSAPP_URL = "https://bot-lavaarte-whatsapp.onrender.com";
-  const APP_WEB_URL = "https://lavaarte-software.onrender.com";
+  const APP_WEB_URL = "https://lavaarte.onrender.com";
 
   const SUPABASE_URL = "https://biumkyjjavpfgfishvzp.supabase.co";
   const SUPABASE_KEY = "sb_publishable_vUntLk7lDbQ3DXROxTDCLg_NjgC6IIT";
@@ -1204,7 +1303,6 @@
   function cerrarModal(id) { document.getElementById(id).style.display = "none"; }
   function abrirModal(id) { document.getElementById(id).style.display = "flex"; }
 
-  // Sincronización de Catálogo en Supabase
   async function sincronizarCatalogoSupabase() {
     try {
       const { data, error } = await db.from("catalogo_prendas").select("*").order("codigo", { ascending: true });
@@ -1215,7 +1313,7 @@
         await db.from("catalogo_prendas").upsert(CATALOGO_DEFAULT);
       }
     } catch (e) {
-      console.warn("Fallback catálogo local:", e);
+      console.warn("Fallback catálogo:", e);
       CATALOGO_CENTRAL = CATALOGO_DEFAULT;
     }
     renderCatalogo("");
@@ -1276,7 +1374,7 @@
     if (modoImpresoraHP) {
       btn.style.background = "var(--success)";
       btn.textContent = "🖨️ Modo Impresora HP: ACTIVO (24/7)";
-      alert("✅ Este equipo imprimirá de forma automática cualquier orden recibida.");
+      alert("✅ Impresora lista para imprimir órdenes remotas automáticamente.");
     } else {
       btn.style.background = "var(--bg-input)";
       btn.textContent = "🖨️ Modo Impresora HP: OFF";
@@ -1289,12 +1387,6 @@
     document.querySelectorAll(".pr-cliente").forEach(el => el.textContent = clienteNom);
     document.querySelectorAll(".pr-telefono").forEach(el => el.textContent = clienteTel);
     document.querySelectorAll(".pr-loyalty-text").forEach(el => el.textContent = textoLoyalty || "");
-
-    // Generar código de barras físico Code128 en el SVG
-    try {
-      JsBarcode("#barcode-svg-cliente", String(ticketNum), { format: "CODE128", width: 2, height: 40, displayValue: false, margin: 0 });
-      JsBarcode("#barcode-svg-acople", String(ticketNum), { format: "CODE128", width: 2, height: 40, displayValue: false, margin: 0 });
-    } catch (e) { console.error("Error Barcode:", e); }
 
     const itemsHTML = itemsArray.map(i => `
       <tr>
@@ -1341,7 +1433,7 @@
       const resJson = await resp.json();
       if (resJson && resJson.ok) enviadoServidor = true;
     } catch (err) {
-      console.warn("Bot WhatsApp no respondió, utilizando fallback web...");
+      console.warn("Bot WhatsApp offline temporalmente...");
     }
 
     if (!enviadoServidor) {
@@ -1848,6 +1940,7 @@
 
       despacharWhatsApp(tel, mensajeTexto);
 
+      // Impresión Doble con corte
       poblarPlantillaImpresion(ord.consecutivo_ticket, new Date().toLocaleString("es-CO"), nom, tel, codigoRastreo, items, obs, total, abono, saldo, textoLoyalty);
       window.print();
       await db.from("ordenes").update({ impresa: true }).eq("id", ord.id);
@@ -2004,7 +2097,6 @@
     `;
     document.getElementById("entrega-saldo-modificable").value = Number(orden.saldo_pendiente);
     
-    // Resetear botones de pago
     document.querySelectorAll(".btn-payment").forEach(b => b.classList.remove("selected"));
     document.querySelector(".btn-payment").classList.add("selected");
     document.getElementById("box-alerta-nequi").style.display = "none";
@@ -2017,7 +2109,6 @@
     document.querySelectorAll(".btn-payment").forEach(b => b.classList.remove("selected"));
     btnElem.classList.add("selected");
     
-    // Si selecciona Nequi o Daviplata o Llave, desplegar aviso con el número
     const boxNequi = document.getElementById("box-alerta-nequi");
     if (metodo === "NEQUI_DAVIPLATA" || metodo === "LLAVE") {
       boxNequi.style.display = "block";
@@ -2054,7 +2145,7 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Egresos (Responsable obligatorio y vacío)
+  // Egresos
   async function guardarEgresoCaja() {
     const monto = Number(document.getElementById("egreso-monto").value);
     const conc = document.getElementById("egreso-concepto").value.trim();
@@ -2253,7 +2344,7 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // ==================== MÓDULO 10: CONTROL DE INVENTARIO ====================
+  // ==================== MÓDULO 10: INVENTARIO ====================
   async function guardarEntradaInventario() {
     const prod = document.getElementById("inv-producto").value.trim();
     const cant = Number(document.getElementById("inv-cantidad").value) || 1;
@@ -2786,7 +2877,7 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Consulta Cliente Privada (Con desglose sin nombres ni teléfonos)
+  // Consulta Cliente Privada
   async function clienteConsultarTicket() {
     const t = document.getElementById("cliente-ticket-query").value.trim();
     const resBox = document.getElementById("cliente-ticket-result");
