@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#0284c7">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <style>
   :root {
     --bg-main: #0b0f19;
@@ -26,7 +27,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   body { background: var(--bg-main); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
 
-  /* Topbar */
   .topbar { background: var(--bg-card); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
   .brand { font-size: 18px; font-weight: 800; color: var(--accent); display: flex; align-items: center; gap: 8px; cursor: pointer; }
   .nav-btn { background: var(--bg-input); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
@@ -36,12 +36,12 @@
   .view-section { display: none; flex-direction: column; gap: 16px; flex: 1; }
   .view-active { display: flex; }
 
-  /* VISTA HOME DE RECEPCIÓN */
+  /* Home */
   .home-hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 16px 20px 16px; gap: 12px; }
-  .home-logo-svg { width: 120px; height: 120px; filter: drop-shadow(0 4px 15px rgba(2, 132, 199, 0.4)); }
-  .home-title { font-size: 32px; font-weight: 900; letter-spacing: 1px; color: #fff; }
+  .home-logo-svg { width: 130px; height: 130px; }
+  .home-title { font-size: 34px; font-weight: 900; letter-spacing: 1.5px; color: #fff; }
   .home-title span { color: var(--accent); }
-  .home-slogan { font-style: italic; color: #f87171; font-size: 18px; font-weight: 600; margin-top: -6px; }
+  .home-slogan { font-style: italic; color: #f87171; font-size: 19px; font-weight: 600; margin-top: -6px; }
   .home-sub { font-size: 14px; color: var(--text-muted); max-width: 500px; margin-top: 4px; }
   
   .portal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 25px; width: 100%; max-width: 1000px; margin-left: auto; margin-right: auto; }
@@ -51,14 +51,13 @@
   .portal-title { font-size: 20px; font-weight: 800; color: #fff; }
   .portal-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
 
-  /* Dashboard Interno */
+  /* Dash */
   .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 15px; }
   .dash-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; text-align: center; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; }
   .dash-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.15); }
   .dash-card h3 { font-size: 16px; font-weight: 700; color: var(--text); }
   .dash-card p { font-size: 12px; color: var(--text-muted); }
 
-  /* Formularios */
   .input-group { display: flex; flex-direction: column; gap: 4px; position: relative; }
   .label-sm { font-size: 12px; font-weight: bold; color: var(--text-muted); }
   .input-text { width: 100%; background: var(--bg-input); border: 1px solid var(--border); color: white; padding: 12px 14px; border-radius: 8px; font-size: 15px; outline: none; }
@@ -72,23 +71,8 @@
   .pos-sidebar { width: 420px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; }
   .pos-catalog { flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; padding: 14px; }
 
-  /* Barra de Teclado Rápido para PC */
-  .quick-bar-card {
-    background: #0f172a;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .quick-bar-inputs {
-    display: grid;
-    grid-template-columns: 85px 1fr 130px;
-    gap: 8px;
-    align-items: flex-end;
-  }
+  .quick-bar-card { background: #0f172a; border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .quick-bar-inputs { display: grid; grid-template-columns: 85px 1fr 130px; gap: 8px; align-items: flex-end; }
 
   .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 10px; overflow-y: auto; flex: 1; align-content: start; }
   .prenda-btn { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.15s; }
@@ -112,29 +96,27 @@
   .btn-success { background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
   .btn-danger { background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
 
+  /* Botones de Métodos de Pago Interactivos */
+  .payment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin: 10px 0; }
+  .btn-payment { background: var(--bg-input); border: 2px solid var(--border); color: white; padding: 12px 8px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; text-align: center; transition: all 0.2s; }
+  .btn-payment.selected { border-color: var(--accent); background: rgba(2, 132, 199, 0.25); color: var(--accent); }
+
   .data-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
   .data-table th { background: var(--bg-input); padding: 10px; color: var(--accent); border-bottom: 1px solid var(--border); }
   .data-table td { padding: 10px; border-bottom: 1px solid var(--border); }
 
   .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 100; }
   .modal-content { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; width: 650px; max-width: 92vw; padding: 20px; display: flex; flex-direction: column; gap: 14px; max-height: 85vh; overflow-y: auto; }
-
   .centinela-box { background: rgba(239, 68, 68, 0.12); border: 1px solid var(--danger); border-radius: 8px; padding: 12px; }
 
   #ticket-termico-print { display: none; }
 
   /* =========================================================================
-     IMPRESIÓN TÉRMICA PROFESIONAL (XPRINTER 80MM / ÚTIL 68MM)
+     IMPRESIÓN TÉRMICA 80MM (DISEÑO SEGÚN FOTO REAL LAVAARTE)
      ========================================================================= */
   @media print {
     @page { size: 80mm auto; margin: 0; }
-    html, body {
-      margin: 0 !important;
-      padding: 0 !important;
-      background: #fff !important;
-      color: #000 !important;
-      height: auto !important;
-    }
+    html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; color: #000 !important; height: auto !important; }
     body * { visibility: hidden; }
     #ticket-termico-print, #ticket-termico-print * { visibility: visible; }
     #ticket-termico-print {
@@ -144,77 +126,44 @@
       top: 0;
       width: 68mm;
       margin-left: 2mm;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       font-size: 11.5px;
       color: #000;
       background: #fff;
       line-height: 1.3;
     }
-    .ticket-copia {
-      page-break-after: always;
-      break-after: page;
-      padding-bottom: 5mm;
-      margin-bottom: 0;
-    }
-    .ticket-copia:last-child {
-      page-break-after: avoid;
-      break-after: avoid;
-      padding-bottom: 2mm;
-    }
-    .p-logo-wrap { text-align: center; margin-bottom: 4px; }
-    .p-logo-svg { width: 34mm; height: 34mm; margin: 0 auto; display: block; }
-    .p-header-title {
-      font-size: 15px;
+    .ticket-copia { page-break-after: always; break-after: page; padding-bottom: 5mm; margin-bottom: 0; }
+    .ticket-copia:last-child { page-break-after: avoid; break-after: avoid; padding-bottom: 2mm; }
+
+    /* Encabezado Logo según foto */
+    .p-header-box { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 4px; }
+    .p-icon-svg { width: 44px; height: 44px; }
+    .p-brand-text { font-size: 20px; font-weight: 900; letter-spacing: 0.8px; font-family: Impact, Arial, sans-serif; }
+    .p-brand-slogan { font-size: 13px; font-style: italic; font-weight: bold; font-family: "Brush Script MT", cursive, sans-serif; }
+
+    /* Rectángulo grande ticket (como foto) */
+    .p-box-ticket-hero {
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 6px 4px;
+      margin: 6px 0;
+      text-align: center;
+      font-size: 32px;
       font-weight: 900;
-      text-align: center;
-      letter-spacing: 0.5px;
-      margin-top: 2px;
+      letter-spacing: 2px;
     }
-    .p-subtext {
-      font-size: 10px;
-      text-align: center;
-      line-height: 1.25;
-    }
-    .p-box-ticket {
-      border: 1.5px solid #000;
-      padding: 4px 6px;
-      margin: 5px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: bold;
-      font-size: 13px;
-    }
+
+    /* Código de Barras */
+    .p-barcode-wrap { text-align: center; margin: 4px 0; }
+    .p-barcode-svg { max-width: 62mm; height: 38px; }
+
     .p-meta-grid { font-size: 11px; line-height: 1.35; margin-bottom: 5px; }
     .p-table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 5px 0; }
-    .p-table th {
-      border-top: 1.5px solid #000;
-      border-bottom: 1.5px solid #000;
-      padding: 3px 0;
-      text-align: left;
-      font-size: 10px;
-      font-weight: 800;
-    }
+    .p-table th { border-top: 1.5px solid #000; border-bottom: 1.5px solid #000; padding: 3px 0; text-align: left; font-size: 10px; font-weight: 800; }
     .p-table td { padding: 3px 0; vertical-align: top; border-bottom: 1px dotted #ccc; }
     .p-totals-box { border-top: 1.5px solid #000; padding-top: 4px; margin-top: 4px; }
-    .p-saldo-destacado {
-      border: 1.5px solid #000;
-      padding: 4px 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13.5px;
-      font-weight: 900;
-      margin-top: 4px;
-    }
-    .p-footer {
-      text-align: center;
-      font-size: 10px;
-      margin-top: 6px;
-      line-height: 1.3;
-      border-top: 1px dashed #000;
-      padding-top: 5px;
-    }
+    .p-saldo-destacado { border: 1.5px solid #000; padding: 4px 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; font-weight: 900; margin-top: 4px; }
+    .p-footer { text-align: center; font-size: 10px; margin-top: 6px; line-height: 1.3; border-top: 1px dashed #000; padding-top: 5px; }
   }
 
   @media (max-width: 900px) {
@@ -252,7 +201,7 @@
         <circle cx="58" cy="33" r="4" fill="#ffffff" />
         <circle cx="70" cy="30" r="3" fill="#ffffff" />
       </svg>
-      <h1 class="home-title">LAVAARTE <span>LAVANDERÍA</span></h1>
+      <h1 class="home-title">LAVA <span>ARTE</span></h1>
       <div class="home-slogan">El Arte de Lavar</div>
       <p class="home-sub">Servicio textil profesional para hogares, huéspedes y grandes cadenas hoteleras en Bogotá.</p>
     </div>
@@ -275,13 +224,13 @@
       <div class="portal-card" style="border-color: var(--primary);" onclick="solicitarAccesoEmpleados('vista-dashboard')">
         <div class="portal-icon">🔐</div>
         <div class="portal-title">Lavaarte</div>
-        <div class="portal-desc">Módulo operativo protegido: mostrador, recepción por voz, alistamiento, arqueo y panel maestro.</div>
+        <div class="portal-desc">Módulo operativo protegido: mostrador, recepción por voz, alistamiento, arqueo e inventario.</div>
         <button class="btn-success" style="width: 100%; margin-top: 6px;">Acceso Colaboradores</button>
       </div>
     </div>
   </div>
 
-  <!-- ==================== VISTA 1: DASHBOARD EMPLEADOS (LAVAARTE) ==================== -->
+  <!-- ==================== VISTA 1: DASHBOARD EMPLEADOS ==================== -->
   <div class="view-section" id="vista-dashboard">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
       <h2>Panel Operativo Lavaarte SAS</h2>
@@ -312,25 +261,25 @@
       <div class="dash-card" onclick="mostrarVista('vista-entrega')">
         <span style="font-size: 32px;">🤝</span>
         <h3>3. Entregar Prendas</h3>
-        <p>Liquidación de saldo, medios de pago y entrega conforme</p>
+        <p>Liquidación interactiva (Efectivo, Nequi, Daviplata, Datáfono)</p>
       </div>
 
       <div class="dash-card" onclick="mostrarVista('vista-egresos')">
         <span style="font-size: 32px;">💸</span>
         <h3>4. Salidas de Efectivo</h3>
-        <p>Gastos de caja menor (jabón, ganchos, insumos diarios)</p>
+        <p>Gastos de caja menor (Responsable obligatorio)</p>
       </div>
 
       <div class="dash-card" onclick="pedirClaveSegura('modal-arqueo')">
         <span style="font-size: 32px;">📊</span>
         <h3>5. Arqueo Diario de Caja 🔒</h3>
-        <p>Cierre diario desglosado por recibo (Protegido Admin)</p>
+        <p>Cierre diario desglosado con diseño profesional</p>
       </div>
 
       <div class="dash-card" onclick="pedirClaveSegura('modal-admin-panel')">
         <span style="font-size: 32px;">🔒</span>
         <h3>6. Anulación Rápida 🔒</h3>
-        <p>Control administrativo para anular o corregir facturas</p>
+        <p>Control administrativo para anular en tiempo real</p>
       </div>
 
       <div class="dash-card" onclick="mostrarVista('vista-domicilios-admin')">
@@ -348,7 +297,13 @@
       <div class="dash-card" style="border-color: var(--warning);" onclick="pedirClaveSegura('modal-admin-master')">
         <span style="font-size: 32px;">⚡</span>
         <h3 style="color: var(--warning);">9. Panel Maestro Administrador 🔒</h3>
-        <p>Control de Base de Datos en vivo, Catálogo y Borrado Físico</p>
+        <p>Precios globales en Supabase, Base de Datos y Borrado Físico</p>
+      </div>
+
+      <div class="dash-card" style="border-color: var(--success);" onclick="pedirClaveSegura('vista-inventario')">
+        <span style="font-size: 32px;">📦</span>
+        <h3 style="color: var(--success);">10. Control de Inventario 🔒</h3>
+        <p>Registro de insumos, compras de jabón/ganchos y exportación</p>
       </div>
     </div>
   </div>
@@ -497,7 +452,7 @@
     </div>
 
     <div style="display: flex; gap: 10px; max-width: 600px;">
-      <input type="text" id="busc-entrega" class="input-text" placeholder="Buscar por # Recibo (ej: 45), Nombre o Celular..." oninput="buscarOrdenesEntrega(this.value)">
+      <input type="text" id="busc-entrega" class="input-text" placeholder="Buscar por # Recibo (ej: 100), Nombre o Celular..." oninput="buscarOrdenesEntrega(this.value)">
     </div>
 
     <div style="overflow-x: auto; margin-top: 12px;">
@@ -530,16 +485,16 @@
 
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; max-width: 500px; display: flex; flex-direction: column; gap: 12px;">
       <div class="input-group">
-        <label class="label-sm">Valor Retirado ($COP)</label>
+        <label class="label-sm">Valor Retirado ($COP) *</label>
         <input type="number" id="egreso-monto" class="input-text" placeholder="Ej: 25000">
       </div>
       <div class="input-group">
-        <label class="label-sm">Concepto / Motivo de Salida</label>
+        <label class="label-sm">Concepto / Motivo de Salida *</label>
         <input type="text" id="egreso-concepto" class="input-text" placeholder="Ej: Jabón líquido, bolsas, ganchos...">
       </div>
       <div class="input-group">
-        <label class="label-sm">Responsable del Gasto</label>
-        <input type="text" id="egreso-resp" class="input-text" value="Cajero de Turno">
+        <label class="label-sm">Responsable del Gasto (Obligatorio tu Nombre) *</label>
+        <input type="text" id="egreso-resp" class="input-text" placeholder="Escribe tu nombre completo...">
       </div>
       <button class="btn-danger" onclick="guardarEgresoCaja()">🔴 REGISTRAR SALIDA DE CAJA</button>
     </div>
@@ -584,20 +539,19 @@
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
         <h4 style="color: var(--accent); margin-bottom: 8px;">🔍 Rastrear Estado de mi Ropa</h4>
         <div style="display: flex; gap: 8px;">
-          <input type="number" id="cliente-ticket-query" class="input-text" placeholder="Ingresa tu N° de Ticket (Ej: 45)">
+          <input type="number" id="cliente-ticket-query" class="input-text" placeholder="Ingresa tu N° de Ticket (Ej: 100)">
           <button class="btn-primary" onclick="clienteConsultarTicket()">Consultar</button>
         </div>
         <div id="cliente-ticket-result" style="margin-top: 14px; font-size: 13px;"></div>
       </div>
 
-      <!-- Recogida a Domicilio -->
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
         <h4 style="color: var(--success); margin-bottom: 8px;">📦 Pedir Recogida a Domicilio</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <input type="text" id="dom-rec-nom" class="input-text" placeholder="Nombre Completo *">
           <input type="text" id="dom-rec-tel" class="input-text" placeholder="Celular / WhatsApp *">
           <input type="text" id="dom-rec-dir" class="input-text" placeholder="Dirección exacta (Ej: Cra 50 # 34-25) *">
-          <input type="text" id="dom-rec-detalles" class="input-text" placeholder="Detalles de dirección (Ej: Casa azul, Torre 5 Apto 302 Balcones) *">
+          <input type="text" id="dom-rec-detalles" class="input-text" placeholder="Detalles de dirección (Ej: Casa azul, Torre 5 Apto 302) *">
           <div style="display: flex; gap: 8px;">
             <input type="date" id="dom-rec-fec" class="input-text">
             <select id="dom-rec-franja" class="input-text">
@@ -610,7 +564,6 @@
         </div>
       </div>
 
-      <!-- Entrega a Domicilio -->
       <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
         <h4 style="color: var(--warning); margin-bottom: 8px;">🚚 Solicitar Entrega de mi Ropa</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -697,7 +650,7 @@
 
     <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <input type="text" id="busc-auditoria-input" class="input-text" style="flex: 1; min-width: 260px;" placeholder="🔍 Buscar por # Ticket (ej: 45), Nombre de cliente o Celular..." oninput="ejecutarBusquedaAuditoria(this.value)">
+        <input type="text" id="busc-auditoria-input" class="input-text" style="flex: 1; min-width: 260px;" placeholder="🔍 Buscar por # Ticket (ej: 100), Nombre de cliente o Celular..." oninput="ejecutarBusquedaAuditoria(this.value)">
       </div>
 
       <div style="overflow-x: auto; max-height: 520px; border: 1px solid var(--border); border-radius: 8px;">
@@ -731,6 +684,55 @@
     </div>
   </div>
 
+  <!-- ==================== VISTA 10: CONTROL DE INVENTARIO ==================== -->
+  <div class="view-section" id="vista-inventario">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>📦 Control de Inventario y Compras de Insumos</h3>
+      <button class="nav-btn" onclick="mostrarVista('vista-dashboard')">⬅️ Volver al Menú</button>
+    </div>
+
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+      <h4 style="color: var(--accent);">➕ Registrar Entrada de Insumo / Producto</h4>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+        <input type="text" id="inv-producto" class="input-text" placeholder="Producto (Ej: Jabón Líquido Caneca)">
+        <input type="number" id="inv-cantidad" class="input-text" placeholder="Cantidad" value="1">
+        <input type="text" id="inv-unidad" class="input-text" placeholder="Unidad (Caneca, Galón, Bolsas, Kg)">
+        <input type="number" id="inv-costo" class="input-text" placeholder="Costo Total Pagado ($COP)">
+        <input type="text" id="inv-proveedor" class="input-text" placeholder="Proveedor (Opcional)">
+        <input type="text" id="inv-responsable" class="input-text" placeholder="Responsable de Compra *">
+      </div>
+      <button class="btn-success" onclick="guardarEntradaInventario()">💾 REGISTRAR ENTRADA A INVENTARIO</button>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+        <h4>Historial de Compras de Insumos</h4>
+        <strong id="inv-total-gastado" style="color: var(--warning); font-size: 16px;">Total Invertido: $0</strong>
+      </div>
+
+      <div style="overflow-x: auto; max-height: 380px; border: 1px solid var(--border); border-radius: 8px;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Unidad</th>
+              <th>Costo Total</th>
+              <th>Proveedor</th>
+              <th>Responsable</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-inventario-body">
+            <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Sin registros aún.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button class="btn-primary" onclick="exportarExcelInventario()">📥 Exportar Inventario a Excel (.xlsx)</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ==================== MODALES ==================== -->
@@ -739,7 +741,7 @@
 <div class="modal" id="modal-nuevo-cliente">
   <div class="modal-content" style="width: 480px;">
     <h3 style="color: var(--accent);">👤 Registrar Nuevo Cliente</h3>
-    <p style="font-size: 12px; color: var(--text-muted);">Los datos se guardarán de forma permanente en la base de datos de Supabase.</p>
+    <p style="font-size: 12px; color: var(--text-muted);">Se guardará en la nube de Supabase inmediatamente.</p>
     
     <div class="input-group">
       <label class="label-sm">Nombre Completo *</label>
@@ -765,7 +767,7 @@
 <div class="modal" id="modal-nuevo-hotel">
   <div class="modal-content" style="width: 480px;">
     <h3 style="color: var(--accent);">🏨 Registrar Nuevo Hotel</h3>
-    <p style="font-size: 12px; color: var(--text-muted);">Inscribe el establecimiento en el padrón privado de hoteles.</p>
+    <p style="font-size: 12px; color: var(--text-muted);">Inscribe el establecimiento en la base de datos.</p>
     
     <div class="input-group">
       <label class="label-sm">Nombre del Hotel / Establecimiento *</label>
@@ -787,7 +789,7 @@
   </div>
 </div>
 
-<!-- Modal: Cobro Entrega -->
+<!-- Modal: Cobro Entrega con Botones Interactivos -->
 <div class="modal" id="modal-cobro-entrega">
   <div class="modal-content">
     <h3 style="color: var(--success);">Finalizar Entrega y Cobro</h3>
@@ -798,41 +800,43 @@
       <input type="number" id="entrega-saldo-modificable" class="input-text">
     </div>
 
-    <div class="input-group">
-      <label class="label-sm">Método de Pago del Saldo</label>
-      <select id="entrega-metodo" class="input-text" onchange="toggleComprobanteTransferencia(this.value)">
-        <option value="EFECTIVO">Efectivo (Caja Mostrador)</option>
-        <option value="TRANSFERENCIA_NEQUI">Transferencia Nequi</option>
-        <option value="TRANSFERENCIA_BANCOLOMBIA">Transferencia Bancolombia / Daviplata</option>
-        <option value="DATAFONO">Datáfono / Tarjeta</option>
-      </select>
+    <label class="label-sm" style="margin-top: 8px;">Selecciona la Forma de Pago:</label>
+    <div class="payment-grid">
+      <div class="btn-payment selected" onclick="seleccionarMetodoPago('EFECTIVO', this)">💵 Efectivo</div>
+      <div class="btn-payment" onclick="seleccionarMetodoPago('NEQUI_DAVIPLATA', this)">📱 Nequi / Daviplata</div>
+      <div class="btn-payment" onclick="seleccionarMetodoPago('LLAVE', this)">🔑 Con mi Llave</div>
+      <div class="btn-payment" onclick="seleccionarMetodoPago('DATAFONO', this)">💳 Datáfono</div>
+      <div class="btn-payment" onclick="seleccionarMetodoPago('TRANSFERENCIA', this)">🏦 Transferencia</div>
     </div>
 
-    <div class="input-group" id="group-comprobante" style="display: none;">
-      <label class="label-sm">Adjuntar Comprobante de Transferencia (Foto)</label>
-      <input type="file" id="entrega-file-comprobante" class="input-text" accept="image/*">
+    <!-- Indicador de cuenta Nequi/Daviplata -->
+    <div id="box-alerta-nequi" style="display: none; background: rgba(56, 189, 248, 0.15); border: 1.5px solid var(--accent); padding: 12px; border-radius: 8px; text-align: center;">
+      <div style="font-size: 12px; color: var(--text-muted);">Pagar a la cuenta Nequi / Daviplata Lavaarte:</div>
+      <div style="font-size: 20px; font-weight: 900; color: #fff; letter-spacing: 1px; margin-top: 2px;">317 534 2828</div>
     </div>
 
-    <button class="btn-success" onclick="ejecutarEntregaFinal()">✅ CONFIRMAR ENTREGA Y REGISTRAR INGRESO</button>
+    <button class="btn-success" style="padding: 14px; font-size: 15px; margin-top: 6px;" onclick="ejecutarEntregaFinal()">
+      ✅ CONFIRMAR PAGO Y FINALIZAR ENTREGA
+    </button>
     <button class="nav-btn" onclick="cerrarModal('modal-cobro-entrega')">Cancelar</button>
   </div>
 </div>
 
-<!-- Modal: Arqueo Diario Desglosado -->
+<!-- Modal: Arqueo Diario Desglosado con Colores Corporativos -->
 <div class="modal" id="modal-arqueo">
-  <div class="modal-content" style="width: 800px;">
+  <div class="modal-content" style="width: 820px;">
     <h3 style="color: var(--accent);">📊 Arqueo y Cierre Diario Desglosado</h3>
     <div id="caja-resumen" style="font-size: 13px; line-height: 1.8; background: var(--bg-input); padding: 14px; border-radius: 8px;"></div>
 
-    <h4 style="font-size: 14px; color: var(--accent); margin-top: 10px;">📋 Desglose de Recibos e Ingresos del Día</h4>
-    <div style="max-height: 160px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+    <h4 style="font-size: 14px; color: var(--accent); margin-top: 10px;">📋 Detalle de Órdenes y Entradas por Forma de Pago</h4>
+    <div style="max-height: 180px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
       <table class="data-table">
         <thead>
           <tr>
             <th>Ticket #</th>
             <th>Cliente</th>
             <th>Concepto</th>
-            <th>Medio</th>
+            <th>Medio de Pago</th>
             <th>Monto</th>
           </tr>
         </thead>
@@ -861,7 +865,7 @@
     </div>
     
     <div style="display: flex; gap: 10px;">
-      <button class="btn-primary" style="flex: 1;" onclick="exportarExcelArqueo()">📥 EXPORTAR INFORME Y AUDITORÍA A EXCEL (.XLSX)</button>
+      <button class="btn-primary" style="flex: 1;" onclick="exportarExcelArqueo()">📥 EXPORTAR INFORME CORPORATIVO A EXCEL (.XLSX)</button>
       <button class="nav-btn" onclick="cerrarModal('modal-arqueo')">Cerrar</button>
     </div>
   </div>
@@ -884,7 +888,7 @@
   </div>
 </div>
 
-<!-- Modal: Autenticación con PIN -->
+<!-- Modal: Autenticación con PIN (Sin revelar números en pantalla) -->
 <div class="modal" id="modal-admin-auth">
   <div class="modal-content" style="width: 380px; text-align: center;">
     <h3 id="auth-modal-title" style="color: var(--warning);">🔒 Acceso Protegido</h3>
@@ -981,7 +985,7 @@
       <h4 style="color: var(--danger); margin-bottom: 4px;">🗑️ Borrado Físico de Orden</h4>
       <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Elimina permanentemente de Supabase el ticket y sus prendas asociadas (no se renumera la secuencia).</p>
       <div style="display: flex; gap: 8px;">
-        <input type="number" id="adm-delete-ticket-input" class="input-text" placeholder="Ticket # a eliminar (Ej: 14)">
+        <input type="number" id="adm-delete-ticket-input" class="input-text" placeholder="Ticket # a eliminar (Ej: 100)">
         <button class="btn-danger" style="white-space: nowrap;" onclick="adminBorrarOrdenFisica()">ELIMINAR DE RAÍZ</button>
       </div>
     </div>
@@ -990,41 +994,39 @@
   </div>
 </div>
 
-<!-- ==================== PLANTILLA IMPRESIÓN PROFESIONAL (DOBLE COPIA 68MM) ==================== -->
+<!-- ==================== PLANTILLA IMPRESIÓN 80MM (COPIA SEGÚN FOTO) ==================== -->
 <div id="ticket-termico-print">
 
   <!-- COPIA 1: ORIGINAL CLIENTE -->
   <div class="ticket-copia">
-    <div class="p-logo-wrap">
-      <svg class="p-logo-svg" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="46" fill="#000" />
-        <circle cx="50" cy="50" r="38" fill="#fff" />
-        <path d="M50 12 A38 38 0 0 1 88 50 A38 38 0 0 1 50 88 C30 88 20 70 35 55 C45 45 55 35 50 12 Z" fill="#000" />
-        <circle cx="65" cy="45" r="7" fill="#fff" />
-        <circle cx="58" cy="33" r="4" fill="#fff" />
-        <circle cx="70" cy="30" r="3" fill="#fff" />
+    <div class="p-header-box">
+      <svg class="p-icon-svg" viewBox="0 0 100 100">
+        <path d="M20 50 A30 30 0 0 1 80 50 A30 18 0 0 1 50 68 C35 68 20 60 20 50 Z" fill="#000" />
+        <circle cx="50" cy="50" r="4" fill="#fff" />
+        <circle cx="62" cy="42" r="3" fill="#fff" />
       </svg>
-    </div>
-    <div class="p-header-title">LAVAARTE LAVANDERÍA</div>
-    <div class="p-subtext">
-      NIT: 901.344.335<br>
-      Diagonal 47 No.77C-80 Bogotá<br>
-      Tels: 314-263-6787 / 315-333-0502<br>
-      <strong>lavaarte-software.onrender.com</strong>
+      <div>
+        <div class="p-brand-text">LAVA ARTE</div>
+        <div class="p-brand-slogan">El Arte de Lavar</div>
+      </div>
     </div>
 
-    <div class="p-box-ticket">
-      <span>FACTURA / TICKET</span>
-      <span class="pr-ticket">#000</span>
+    <!-- Rectángulo con número de ticket -->
+    <div class="p-box-ticket-hero pr-ticket-num">
+      100
     </div>
 
-    <div class="p-meta-grid">
-      <div><strong>FECHA:</strong> <span class="pr-fecha">--/--/----</span></div>
-      <div><strong>CLIENTE:</strong> <span class="pr-cliente">---</span></div>
-      <div><strong>TELÉFONO:</strong> <span class="pr-telefono">---</span></div>
-      <div><strong>RASTREO WEB:</strong> <span class="pr-rastreo">LAV-XXXXXX</span></div>
-      <div class="pr-loyalty-text" style="font-size: 10px; font-weight: bold; color: #000; margin-top: 2px;"></div>
-      <div style="text-align: right; font-size: 9.5px; font-weight: bold; margin-top: 2px;">[ORIGINAL: CLIENTE]</div>
+    <!-- Código de Barras Dinámico -->
+    <div class="p-barcode-wrap">
+      <svg id="barcode-svg-cliente" class="p-barcode-svg"></svg>
+    </div>
+
+    <div class="p-meta-grid" style="text-align: center; margin-top: 4px;">
+      <div><span style="font-size: 10px; color: #555;">Cliente</span></div>
+      <div style="font-size: 13px; font-weight: bold;"><span class="pr-cliente">---</span></div>
+      <div style="font-size: 11px;">Teléfono: <span class="pr-telefono">---</span></div>
+      <div style="font-size: 10px; margin-top: 2px;">FECHA: <span class="pr-fecha">--/--/----</span></div>
+      <div class="pr-loyalty-text" style="font-size: 10px; font-weight: bold; margin-top: 2px;"></div>
     </div>
 
     <table class="p-table">
@@ -1068,27 +1070,27 @@
 
   <!-- COPIA 2: PLANTA / ACOPLE -->
   <div class="ticket-copia">
-    <div class="p-logo-wrap">
-      <svg class="p-logo-svg" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="46" fill="#000" />
-        <circle cx="50" cy="50" r="38" fill="#fff" />
-        <path d="M50 12 A38 38 0 0 1 88 50 A38 38 0 0 1 50 88 C30 88 20 70 35 55 C45 45 55 35 50 12 Z" fill="#000" />
+    <div class="p-header-box">
+      <svg class="p-icon-svg" viewBox="0 0 100 100">
+        <path d="M20 50 A30 30 0 0 1 80 50 A30 18 0 0 1 50 68 C35 68 20 60 20 50 Z" fill="#000" />
       </svg>
-    </div>
-    <div class="p-header-title">LAVAARTE LAVANDERÍA</div>
-    <div class="p-subtext">
-      NIT: 901.344.335 | Diagonal 47 No.77C-80 Bogotá
-    </div>
-
-    <div class="p-box-ticket" style="border-style: dashed;">
-      <span>ORDEN INTERNA</span>
-      <span class="pr-ticket">#000</span>
+      <div>
+        <div class="p-brand-text">LAVA ARTE</div>
+        <div class="p-brand-slogan">El Arte de Lavar [ACOPLE]</div>
+      </div>
     </div>
 
-    <div class="p-meta-grid">
-      <div><strong>FECHA:</strong> <span class="pr-fecha">--/--/----</span></div>
+    <div class="p-box-ticket-hero pr-ticket-num" style="border-style: dashed;">
+      100
+    </div>
+
+    <div class="p-barcode-wrap">
+      <svg id="barcode-svg-acople" class="p-barcode-svg"></svg>
+    </div>
+
+    <div class="p-meta-grid" style="text-align: center; margin-top: 4px;">
       <div><strong>CLIENTE:</strong> <span class="pr-cliente">---</span> (<span class="pr-telefono">---</span>)</div>
-      <div style="text-align: right; font-size: 9.5px; font-weight: bold; margin-top: 2px;">[COPIA: PLANTA / ACOPLE]</div>
+      <div style="font-size: 10px;">FECHA: <span class="pr-fecha">--/--/----</span></div>
     </div>
 
     <table class="p-table">
@@ -1120,23 +1122,20 @@
     </div>
 
     <div class="p-footer" style="border-top: 1px dotted #000;">
-      * Control de calidad y acople interno de prendas *
+      * Control interno de calidad y empaque Lavaarte *
     </div>
   </div>
 
 </div>
 
 <script>
-  // ENDPOINT BOT DE WHATSAPP EN RENDER
   const BOT_WHATSAPP_URL = "https://bot-lavaarte-whatsapp.onrender.com";
   const APP_WEB_URL = "https://lavaarte-software.onrender.com";
 
-  // Conexión Supabase Lavaarte
   const SUPABASE_URL = "https://biumkyjjavpfgfishvzp.supabase.co";
   const SUPABASE_KEY = "sb_publishable_vUntLk7lDbQ3DXROxTDCLg_NjgC6IIT";
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Catálogo inicial de referencia
   const CATALOGO_DEFAULT = [
     {codigo: 1, nombre: "Camisa", precio: 5500}, {codigo: 2, nombre: "Camiseta", precio: 6800}, {codigo: 3, nombre: "Pantalón", precio: 7500},
     {codigo: 4, nombre: "Jeans", precio: 7500}, {codigo: 5, nombre: "Vestido Hombre 2 Pzs.", precio: 14000}, {codigo: 6, nombre: "Corbata", precio: 7000},
@@ -1172,6 +1171,7 @@
   let listaHotelesBD = [];
   let ordenesMasterCache = [];
   let ordenCobroActiva = null;
+  let metodoPagoSeleccionado = "EFECTIVO";
   let ordenAlistarActiva = null;
   let destinoPinAdmin = "";
   let modoImpresoraHP = false;
@@ -1198,6 +1198,7 @@
     document.getElementById(vistaId).classList.add("view-active");
     if (vistaId === "vista-entrega") buscarOrdenesEntrega("");
     if (vistaId === "vista-domicilios-admin") cargarDomiciliosAdmin();
+    if (vistaId === "vista-inventario") cargarHistorialInventario();
   }
 
   function cerrarModal(id) { document.getElementById(id).style.display = "none"; }
@@ -1214,15 +1215,14 @@
         await db.from("catalogo_prendas").upsert(CATALOGO_DEFAULT);
       }
     } catch (e) {
-      console.warn("Usando catálogo local de fallback:", e);
+      console.warn("Fallback catálogo local:", e);
       CATALOGO_CENTRAL = CATALOGO_DEFAULT;
     }
     renderCatalogo("");
   }
 
-  // ==================== SUSCRIPCIONES REALTIME TOTALES ====================
+  // Realtime Total
   function activarSuscripcionesRealtime() {
-    // 1. Órdenes en tiempo real (impresión HP desatendida 24/7)
     db.channel('ordenes-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'ordenes' }, async (payload) => {
         chequearCentinela60h();
@@ -1235,7 +1235,6 @@
       })
       .subscribe();
 
-    // 2. Clientes en tiempo real
     db.channel('clientes-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'clientes' }, async () => {
         await precargarClientes();
@@ -1245,21 +1244,18 @@
       })
       .subscribe();
 
-    // 3. Hoteles en tiempo real
     db.channel('hoteles-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'hoteles' }, async () => {
         await precargarHotelesBD();
       })
       .subscribe();
 
-    // 4. Domicilios y Rutas en tiempo real
     db.channel('domicilios-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'solicitudes_domicilio' }, () => {
         cargarDomiciliosAdmin();
       })
       .subscribe();
 
-    // 5. Precios de Catálogo en tiempo real
     db.channel('catalogo-live')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'catalogo_prendas' }, async () => {
         const { data } = await db.from("catalogo_prendas").select("*").order("codigo", { ascending: true });
@@ -1288,12 +1284,17 @@
   }
 
   function poblarPlantillaImpresion(ticketNum, fechaStr, clienteNom, clienteTel, codigoRastreo, itemsArray, obsTexto, totalNum, abonoNum, saldoNum, textoLoyalty) {
-    document.querySelectorAll(".pr-ticket").forEach(el => el.textContent = `#${ticketNum}`);
+    document.querySelectorAll(".pr-ticket-num").forEach(el => el.textContent = ticketNum);
     document.querySelectorAll(".pr-fecha").forEach(el => el.textContent = fechaStr);
     document.querySelectorAll(".pr-cliente").forEach(el => el.textContent = clienteNom);
     document.querySelectorAll(".pr-telefono").forEach(el => el.textContent = clienteTel);
-    document.querySelectorAll(".pr-rastreo").forEach(el => el.textContent = codigoRastreo);
     document.querySelectorAll(".pr-loyalty-text").forEach(el => el.textContent = textoLoyalty || "");
+
+    // Generar código de barras físico Code128 en el SVG
+    try {
+      JsBarcode("#barcode-svg-cliente", String(ticketNum), { format: "CODE128", width: 2, height: 40, displayValue: false, margin: 0 });
+      JsBarcode("#barcode-svg-acople", String(ticketNum), { format: "CODE128", width: 2, height: 40, displayValue: false, margin: 0 });
+    } catch (e) { console.error("Error Barcode:", e); }
 
     const itemsHTML = itemsArray.map(i => `
       <tr>
@@ -1405,16 +1406,10 @@
       ex.cant += cant;
       ex.pre = precio;
     } else {
-      ticket.push({
-        cod: codPrenda,
-        nom: nombrePrenda,
-        pre: precio,
-        cant: cant
-      });
+      ticket.push({ cod: codPrenda, nom: nombrePrenda, pre: precio, cant: cant });
     }
 
     renderTicket();
-
     itemSeleccionadoQuickBar = null;
     searchInput.value = "";
     priceInput.value = "";
@@ -1594,7 +1589,12 @@
         const { data: upd } = await db.from("clientes").update({ nombre_o_razon: nom, direccion: dir }).eq("id", ex.id).select().single();
         clienteGuardado = upd;
       } else {
-        const { data: ins, error: errIns } = await db.from("clientes").insert({ nombre_o_razon: nom, telefono: tel, direccion: dir }).select().single();
+        const { data: ins, error: errIns } = await db.from("clientes").insert({
+          empresa_id: 'a0000000-0000-0000-0000-000000000001',
+          nombre_o_razon: nom,
+          telefono: tel,
+          direccion: dir
+        }).select().single();
         if (errIns) throw errIns;
         clienteGuardado = ins;
       }
@@ -1639,7 +1639,7 @@
     } catch (e) { console.error(e); }
   }
 
-  // Base de Datos y Modal de Hoteles
+  // Hoteles
   async function precargarHotelesBD() {
     try {
       const { data } = await db.from("hoteles").select("id, nombre, telefono_contacto, direccion").order("nombre", { ascending: true });
@@ -1705,7 +1705,6 @@
     document.getElementById("drop-hoteles").style.display = "none";
   }
 
-  // Envío Solicitud Hotel Blindado
   async function hotelEnviarSolicitudPrivada() {
     const hNom = document.getElementById("hotel-busc-input").value.trim();
     const hSrv = document.getElementById("hotel-sel-servicio").value;
@@ -1785,7 +1784,11 @@
       const { data: exCli } = await db.from("clientes").select("id").eq("telefono", tel).maybeSingle();
       if (exCli) cliId = exCli.id;
       else {
-        const { data: nCli, error: nErr } = await db.from("clientes").insert({ nombre_o_razon: nom, telefono: tel }).select("id").single();
+        const { data: nCli, error: nErr } = await db.from("clientes").insert({
+          empresa_id: 'a0000000-0000-0000-0000-000000000001',
+          nombre_o_razon: nom,
+          telefono: tel
+        }).select("id").single();
         if (nErr) throw nErr;
         cliId = nCli.id;
       }
@@ -1824,7 +1827,6 @@
         ? "⭐ Beneficio Lavaarte Loyalty: ¡Prenda Gratis Aplicada!" 
         : `🎖️ Lavaarte Loyalty: Visita ${cicloVisita} de 5 para premio`;
 
-      // Despachar WhatsApp por red antes de print
       const detallePrendasWA = items.map(i => `• ${i.cantidad}x ${i.descripcion_prenda} ($${(i.subtotal).toLocaleString("es-CO")})`).join("\n");
       const notaObsWA = obs ? `\n⚠️ *Detalle / Estado de recepción:* _${obs}_\n` : "";
 
@@ -1846,12 +1848,10 @@
 
       despacharWhatsApp(tel, mensajeTexto);
 
-      // Doble impresión térmica 68mm
       poblarPlantillaImpresion(ord.consecutivo_ticket, new Date().toLocaleString("es-CO"), nom, tel, codigoRastreo, items, obs, total, abono, saldo, textoLoyalty);
       window.print();
       await db.from("ordenes").update({ impresa: true }).eq("id", ord.id);
 
-      // Limpiar formulario
       ticket = [];
       document.getElementById("pos-cli-nom").value = "";
       document.getElementById("pos-cli-tel").value = "";
@@ -1994,6 +1994,7 @@
 
   function prepararCobroEntrega(orden) {
     ordenCobroActiva = orden;
+    metodoPagoSeleccionado = "EFECTIVO";
     const det = document.getElementById("info-orden-cobro");
     det.innerHTML = `
       <strong>Ticket #${orden.consecutivo_ticket}</strong> | Cliente: ${orden.clientes?.nombre_o_razon}<br>
@@ -2002,16 +2003,31 @@
       Saldo sugerido: <strong>$${Number(orden.saldo_pendiente).toLocaleString("es-CO")}</strong>
     `;
     document.getElementById("entrega-saldo-modificable").value = Number(orden.saldo_pendiente);
+    
+    // Resetear botones de pago
+    document.querySelectorAll(".btn-payment").forEach(b => b.classList.remove("selected"));
+    document.querySelector(".btn-payment").classList.add("selected");
+    document.getElementById("box-alerta-nequi").style.display = "none";
+
     abrirModal("modal-cobro-entrega");
   }
 
-  function toggleComprobanteTransferencia(metodo) {
-    document.getElementById("group-comprobante").style.display = metodo.includes("TRANSFERENCIA") ? "flex" : "none";
+  function seleccionarMetodoPago(metodo, btnElem) {
+    metodoPagoSeleccionado = metodo;
+    document.querySelectorAll(".btn-payment").forEach(b => b.classList.remove("selected"));
+    btnElem.classList.add("selected");
+    
+    // Si selecciona Nequi o Daviplata o Llave, desplegar aviso con el número
+    const boxNequi = document.getElementById("box-alerta-nequi");
+    if (metodo === "NEQUI_DAVIPLATA" || metodo === "LLAVE") {
+      boxNequi.style.display = "block";
+    } else {
+      boxNequi.style.display = "none";
+    }
   }
 
   async function ejecutarEntregaFinal() {
     if (!ordenCobroActiva) return;
-    const metodo = document.getElementById("entrega-metodo").value;
     const saldoACobrar = Number(document.getElementById("entrega-saldo-modificable").value);
     const ord = ordenCobroActiva;
 
@@ -2019,14 +2035,14 @@
       await db.from("ordenes").update({
         estado: 'ENTREGADO',
         saldo_pendiente: 0.00,
-        metodo_pago_saldo: metodo,
+        metodo_pago_saldo: metodoPagoSeleccionado,
         entregado_at: new Date().toISOString()
       }).eq("id", ord.id);
 
       const mensajeWA = 
         `*LAVAARTE LAVANDERÍA SAS*\n` +
         `Hola *${ord.clientes?.nombre_o_razon}*, tu orden *#${ord.consecutivo_ticket}* ha sido entregada a conformidad.\n` +
-        `Saldo cancelado: *$${saldoACobrar.toLocaleString("es-CO")}* mediante *${metodo}*.\n` +
+        `Saldo cancelado: *$${saldoACobrar.toLocaleString("es-CO")}* mediante *${metodoPagoSeleccionado}*.\n` +
         `¡Gracias por escogernos!`;
 
       despacharWhatsApp(ord.clientes?.telefono, mensajeWA);
@@ -2038,18 +2054,21 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Egresos
+  // Egresos (Responsable obligatorio y vacío)
   async function guardarEgresoCaja() {
     const monto = Number(document.getElementById("egreso-monto").value);
     const conc = document.getElementById("egreso-concepto").value.trim();
     const resp = document.getElementById("egreso-resp").value.trim();
+    
     if (!monto || monto <= 0 || !conc) return alert("Ingresa monto y concepto válidos.");
+    if (!resp) return alert("⚠️ Obligatorio: Debes escribir tu nombre como responsable del gasto.");
 
     try {
       await db.from("egresos_caja").insert({ monto, concepto: conc, responsable: resp });
-      alert(`🔴 Salida de $${monto.toLocaleString("es-CO")} registrada.`);
+      alert(`🔴 Salida de $${monto.toLocaleString("es-CO")} registrada por ${resp}.`);
       document.getElementById("egreso-monto").value = "";
       document.getElementById("egreso-concepto").value = "";
+      document.getElementById("egreso-resp").value = "";
       mostrarVista("vista-dashboard");
     } catch (e) { alert(e.message); }
   }
@@ -2090,14 +2109,14 @@
 
       document.getElementById("caja-resumen").innerHTML = `
         <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>💵 Entradas en Efectivo:</span><strong style="color: var(--success);">$${efectivoTotal.toLocaleString("es-CO")}</strong></div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>📱 Entradas por Transferencias / Datáfono:</span><strong style="color: var(--accent);">$${transferenciasTotal.toLocaleString("es-CO")}</strong></div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>📱 Pagos Electrónicos (Nequi/Daviplata/Datáfono):</span><strong style="color: var(--accent);">$${transferenciasTotal.toLocaleString("es-CO")}</strong></div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed var(--border); padding-bottom: 6px;"><span>🔴 Salidas Caja Menor:</span><strong style="color: var(--danger);">$${totalEgresos.toLocaleString("es-CO")}</strong></div>
-        <div style="display: flex; justify-content: space-between; font-size: 18px; margin-top: 6px;"><span>TOTAL DINERO EN CAJÓN:</span><strong style="color: var(--accent);">$${dineroNetoEnCaja.toLocaleString("es-CO")}</strong></div>
+        <div style="display: flex; justify-content: space-between; font-size: 18px; margin-top: 6px;"><span>TOTAL DINERO FÍSICO EN CAJÓN:</span><strong style="color: var(--accent);">$${dineroNetoEnCaja.toLocaleString("es-CO")}</strong></div>
       `;
 
       document.getElementById("tabla-desglose-arqueo-body").innerHTML = desgloseRecibos.length === 0 
         ? '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No hay cobros hoy.</td></tr>'
-        : desgloseRecibos.map(r => `<tr><td><strong>#${r.ticket}</strong></td><td>${r.cliente}</td><td>${r.concepto}</td><td>${r.medio}</td><td style="color: var(--success); font-weight: bold;">$${r.monto.toLocaleString("es-CO")}</td></tr>`).join("");
+        : desgloseRecibos.map(r => `<tr><td><strong>#${r.ticket}</strong></td><td>${r.cliente}</td><td>${r.concepto}</td><td><strong>${r.medio}</strong></td><td style="color: var(--success); font-weight: bold;">$${r.monto.toLocaleString("es-CO")}</td></tr>`).join("");
 
       document.getElementById("tabla-desglose-egresos-body").innerHTML = (!egrs || egrs.length === 0)
         ? '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Sin egresos hoy.</td></tr>'
@@ -2117,36 +2136,42 @@
   function exportarExcelArqueo() {
     if (!reporteArqueoActual) return;
     const wb = XLSX.utils.book_new();
-    const ws1Data = [
-      ["LAVAARTE LAVANDERÍA SAS - INFORME DIARIO DE CAJA Y ARQUEO"],
-      ["Fecha de Cierre:", reporteArqueoActual.fecha], [""],
-      ["Concepto", "Total ($COP)"],
-      ["Entradas en Efectivo", reporteArqueoActual.efectivoTotal],
-      ["Entradas por Transferencias / Datáfono", reporteArqueoActual.transferenciasTotal],
-      ["Salidas de Caja Menor", reporteArqueoActual.totalEgresos],
-      ["TOTAL DINERO FÍSICO EN CAJA", reporteArqueoActual.dineroNetoEnCaja]
-    ];
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws1Data), "Cierre_Caja");
 
-    const wsRecibosData = [["Ticket #", "Cliente", "Concepto", "Medio", "Monto ($COP)"]];
+    const ws1Data = [
+      ["=============================================================="],
+      ["               LAVAARTE LAVANDERÍA SAS                        "],
+      ["           INFORME CORPORATIVO DE ARQUEO DIARIO               "],
+      ["=============================================================="],
+      ["Fecha de Cierre:", reporteArqueoActual.fecha],
+      ["Generado por:", "Sistema Central Lavaarte OS"],
+      [""],
+      ["RESUMEN FINANCIERO DEL DÍA", "VALOR ($COP)"],
+      ["(+) Total Entradas en Efectivo (Cajón)", reporteArqueoActual.efectivoTotal],
+      ["(+) Total Pagos Electrónicos (Nequi / Bancos)", reporteArqueoActual.transferenciasTotal],
+      ["(-) Total Salidas de Caja Menor (Gastos)", reporteArqueoActual.totalEgresos],
+      ["--------------------------------------------------------------", "-------------------"],
+      ["(=) TOTAL DINERO FÍSICO A ENTREGAR EN CAJA", reporteArqueoActual.dineroNetoEnCaja]
+    ];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws1Data), "Resumen_Caja");
+
+    const wsRecibosData = [
+      ["LAVAARTE - DETALLE DE MOVIMIENTOS E INGRESOS DEL DÍA"],
+      ["Ticket #", "Cliente", "Concepto de Cobro", "Forma de Pago", "Monto ($COP)"]
+    ];
     reporteArqueoActual.desgloseRecibos.forEach(r => wsRecibosData.push([r.ticket, r.cliente, r.concepto, r.medio, r.monto]));
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(wsRecibosData), "Ingresos_Desglosados");
 
-    const ws2Data = [["Hora", "Monto ($COP)", "Concepto", "Responsable"]];
+    const ws2Data = [
+      ["LAVAARTE - SALIDAS DE CAJA MENOR"],
+      ["Hora", "Monto ($COP)", "Concepto del Gasto", "Responsable"]
+    ];
     reporteArqueoActual.egresos.forEach(e => ws2Data.push([new Date(e.created_at).toLocaleTimeString("es-CO"), e.monto, e.concepto, e.responsable]));
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2Data), "Egresos_Caja");
 
-    const ws3Data = [["Ticket #", "Cliente", "Teléfono", "Estado", "Horas en Planta"]];
-    reporteArqueoActual.centinela.forEach(c => {
-      const h = Math.round((Date.now() - new Date(c.created_at).getTime()) / 3600000);
-      ws3Data.push([c.consecutivo_ticket, c.clientes?.nombre_o_razon || 'Particular', c.clientes?.telefono || '-', c.estado, h]);
-    });
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3Data), "Auditoria_Centinela_60h");
-
-    XLSX.writeFile(wb, `Lavaarte_CierreCaja_${reporteArqueoActual.fecha.replace(/\//g,'-')}.xlsx`);
+    XLSX.writeFile(wb, `Lavaarte_Cierre_Corporativo_${reporteArqueoActual.fecha.replace(/\//g,'-')}.xlsx`);
   }
 
-  // ==================== BÚSQUEDAS Y AUDITORÍA HISTÓRICA ====================
+  // ==================== BÚSQUEDAS Y AUDITORÍA ====================
   function abrirVistaBusquedas() {
     mostrarVista('vista-busquedas');
     ejecutarBusquedaAuditoria("");
@@ -2228,7 +2253,99 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
-  // Seguridad Jerárquica
+  // ==================== MÓDULO 10: CONTROL DE INVENTARIO ====================
+  async function guardarEntradaInventario() {
+    const prod = document.getElementById("inv-producto").value.trim();
+    const cant = Number(document.getElementById("inv-cantidad").value) || 1;
+    const unid = document.getElementById("inv-unidad").value.trim() || 'Unidades';
+    const costo = Number(document.getElementById("inv-costo").value) || 0;
+    const prov = document.getElementById("inv-proveedor").value.trim();
+    const resp = document.getElementById("inv-responsable").value.trim();
+
+    if (!prod || !resp) return alert("Debes escribir el producto y el responsable.");
+
+    try {
+      const { error } = await db.from("inventario_insumos").insert({
+        producto: prod,
+        cantidad: cant,
+        unidad: unid,
+        costo_total: costo,
+        proveedor: prov,
+        responsable: resp
+      });
+
+      if (error) throw error;
+
+      alert(`✅ Insumo "${prod}" registrado con éxito.`);
+      document.getElementById("inv-producto").value = "";
+      document.getElementById("inv-costo").value = "";
+      document.getElementById("inv-proveedor").value = "";
+      document.getElementById("inv-responsable").value = "";
+      cargarHistorialInventario();
+    } catch (e) {
+      alert("Error guardando inventario: " + e.message);
+    }
+  }
+
+  let cacheInventario = [];
+  async function cargarHistorialInventario() {
+    const tbody = document.getElementById("tabla-inventario-body");
+    try {
+      const { data, error } = await db.from("inventario_insumos").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+
+      cacheInventario = data || [];
+      if (cacheInventario.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Sin compras de insumos registradas.</td></tr>';
+        document.getElementById("inv-total-gastado").textContent = "Total Invertido: $0";
+        return;
+      }
+
+      let totalGasto = 0;
+      tbody.innerHTML = cacheInventario.map(i => {
+        totalGasto += Number(i.costo_total);
+        return `
+          <tr>
+            <td>${new Date(i.created_at).toLocaleDateString("es-CO")}</td>
+            <td><strong>${i.producto}</strong></td>
+            <td>${i.cantidad}</td>
+            <td>${i.unidad}</td>
+            <td style="color: var(--warning); font-weight: bold;">$${Number(i.costo_total).toLocaleString("es-CO")}</td>
+            <td>${i.proveedor || '-'}</td>
+            <td>${i.responsable}</td>
+          </tr>
+        `;
+      }).join("");
+
+      document.getElementById("inv-total-gastado").textContent = `Total Invertido: $${totalGasto.toLocaleString("es-CO")}`;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function exportarExcelInventario() {
+    if (cacheInventario.length === 0) return alert("No hay datos de inventario para exportar.");
+    const wb = XLSX.utils.book_new();
+    const rows = [
+      ["LAVAARTE LAVANDERÍA SAS - CONTROL DE INVENTARIO E INSUMOS"],
+      ["Fecha", "Producto", "Cantidad", "Unidad", "Costo Total ($COP)", "Proveedor", "Responsable"]
+    ];
+    cacheInventario.forEach(i => {
+      rows.push([
+        new Date(i.created_at).toLocaleDateString("es-CO"),
+        i.producto,
+        i.cantidad,
+        i.unidad,
+        Number(i.costo_total),
+        i.proveedor || '',
+        i.responsable
+      ]);
+    });
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), "Inventario");
+    XLSX.writeFile(wb, `Lavaarte_Inventario_${new Date().toISOString().split("T")[0]}.xlsx`);
+  }
+
+  // ==================== SEGURIDAD JERÁRQUICA ====================
   function solicitarAccesoEmpleados(destino) {
     destinoPinAdmin = destino;
     document.getElementById("auth-modal-title").textContent = "🔒 Acceso Colaboradores Lavaarte";
@@ -2258,18 +2375,20 @@
       return;
     }
 
-    if (destinoPinAdmin === "modal-admin-master" || destinoPinAdmin === "modal-admin-panel" || destinoPinAdmin === "modal-arqueo") {
+    if (destinoPinAdmin === "modal-admin-master" || destinoPinAdmin === "modal-admin-panel" || destinoPinAdmin === "modal-arqueo" || destinoPinAdmin === "vista-inventario") {
       if (pin === "2415") {
         cerrarModal("modal-admin-auth");
         if (destinoPinAdmin === "modal-admin-master") abrirModalMasterAdmin();
         else if (destinoPinAdmin === "modal-admin-panel") abrirModal("modal-admin-panel");
         else if (destinoPinAdmin === "modal-arqueo") abrirArqueoCaja();
+        else if (destinoPinAdmin === "vista-inventario") mostrarVista("vista-inventario");
       } else {
         alert("⚠️ PIN ADMINISTRADOR INCORRECTO. Acceso denegado.");
       }
     }
   }
 
+  // Anulación en Tiempo Real
   async function adminCargarTicket() {
     const tNum = document.getElementById("admin-ticket-input").value.trim();
     if (!tNum) return;
@@ -2280,7 +2399,7 @@
 
       det.innerHTML = `
         <div style="background: var(--bg-input); padding: 12px; border-radius: 8px; margin-top: 10px;">
-          <strong>Ticket #${o.consecutivo_ticket}</strong> | Estado: <strong>${o.estado}</strong><br>
+          <strong>Ticket #${o.consecutivo_ticket}</strong> | Estado actual: <strong>${o.estado}</strong><br>
           Cliente: ${o.clientes?.nombre_o_razon} (${o.clientes?.telefono})<br>
           Total: $${Number(o.total_neto).toLocaleString("es-CO")} | Saldo: $${Number(o.saldo_pendiente).toLocaleString("es-CO")}<br><br>
           <div style="display: flex; gap: 8px;">
@@ -2295,10 +2414,25 @@
   async function adminAnularOrden(id) {
     const motivo = prompt("Motivo de anulación:");
     if (!motivo) return;
-    await db.from("ordenes").update({ estado: 'ANULADO', motivo_anulacion: motivo, saldo_pendiente: 0 }).eq("id", id);
-    alert("Factura anulada.");
-    cerrarModal("modal-admin-panel");
-    buscarOrdenesEntrega("");
+    try {
+      const { error } = await db.from("ordenes").update({
+        estado: 'ANULADO',
+        motivo_anulacion: motivo,
+        saldo_pendiente: 0
+      }).eq("id", id);
+
+      if (error) throw error;
+
+      alert("✅ Factura anulada exitosamente en la base de datos.");
+      cerrarModal("modal-admin-panel");
+      buscarOrdenesEntrega("");
+      chequearCentinela60h();
+      if (document.getElementById("vista-busquedas").classList.contains("view-active")) {
+        ejecutarBusquedaAuditoria("");
+      }
+    } catch (e) {
+      alert("Error anulando: " + e.message);
+    }
   }
 
   async function adminCambiarEstado(id, est) {
@@ -2308,7 +2442,7 @@
     buscarOrdenesEntrega("");
   }
 
-  // Panel Maestro (Botón 9) - Sincronizado a Supabase
+  // Panel Maestro (Botón 9)
   async function abrirModalMasterAdmin() {
     poblarSelectPrendasMaster();
     await adminCargarOrdenesBD();
@@ -2513,7 +2647,12 @@
           if (nom && tel) {
             const { data: ex } = await db.from("clientes").select("id").eq("telefono", tel).maybeSingle();
             if (!ex) {
-              await db.from("clientes").insert({ nombre_o_razon: nom, telefono: tel, direccion: dir });
+              await db.from("clientes").insert({
+                empresa_id: 'a0000000-0000-0000-0000-000000000001',
+                nombre_o_razon: nom,
+                telefono: tel,
+                direccion: dir
+              });
               importados++;
             }
           }
@@ -2529,7 +2668,7 @@
     reader.readAsArrayBuffer(file);
   }
 
-  // Domicilios Particulares Blindados
+  // Domicilios Particulares
   async function clienteCrearSolicitud(tipo) {
     let nom, tel, dir, detDir, fec, fra, notas, ticketRef = "";
     if (tipo === "RECOGIDA_DOMICILIO") {
@@ -2647,33 +2786,53 @@
     } catch (e) { alert("Error: " + e.message); }
   }
 
+  // Consulta Cliente Privada (Con desglose sin nombres ni teléfonos)
   async function clienteConsultarTicket() {
     const t = document.getElementById("cliente-ticket-query").value.trim();
     const resBox = document.getElementById("cliente-ticket-result");
     if (!t) return;
 
     try {
-      const { data: o } = await db.from("ordenes").select("consecutivo_ticket, estado, total_neto, saldo_pendiente, orden_items(cantidad, descripcion_prenda)").eq("consecutivo_ticket", parseInt(t, 10)).maybeSingle();
+      const { data: o } = await db.from("ordenes")
+        .select("consecutivo_ticket, estado, saldo_pendiente, orden_items(cantidad, descripcion_prenda)")
+        .eq("consecutivo_ticket", parseInt(t, 10))
+        .maybeSingle();
+
       if (!o) {
         resBox.innerHTML = '<span style="color: var(--danger);">No se encontró ninguna orden con ese ticket.</span>';
         return;
       }
 
       let color = "var(--warning)";
-      if (o.estado === "LISTO_ENTREGA") color = "var(--success)";
-      if (o.estado === "ENTREGADO") color = "var(--text-muted)";
+      let textoEstado = "EN PROCESO / EN PLANTA";
+      if (o.estado === "INGRESADO") { color = "var(--accent)"; textoEstado = "INGRESADO EN RECEPCIÓN"; }
+      if (o.estado === "LISTO_ENTREGA") { color = "var(--success)"; textoEstado = "✅ 100% LISTO PARA ENTREGAR"; }
+      if (o.estado === "ENTREGADO") { color = "var(--text-muted)"; textoEstado = "ENTREGADO A CONFORMIDAD"; }
+      if (o.estado === "ANULADO") { color = "var(--danger)"; textoEstado = "ANULADO"; }
+
+      const prendasItemsHTML = o.orden_items && o.orden_items.length > 0
+        ? o.orden_items.map(i => `• <strong>${i.cantidad}x</strong> ${i.descripcion_prenda}`).join("<br>")
+        : "Sin desglose registrado";
 
       resBox.innerHTML = `
-        <div style="background: var(--bg-input); padding: 12px; border-radius: 8px;">
-          <div style="display: flex; justify-content: space-between;">
-            <strong>Ticket #${o.consecutivo_ticket}</strong>
-            <span style="color: ${color}; font-weight: bold;">[${o.estado}]</span>
+        <div style="background: var(--bg-input); padding: 14px; border-radius: 8px; border: 1px solid var(--border); line-height: 1.6;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+            <strong style="font-size: 16px; color: #fff;">Orden #${o.consecutivo_ticket}</strong>
+            <span style="color: ${color}; font-weight: 900; font-size: 13px;">${textoEstado}</span>
           </div>
-          <div style="margin-top: 6px; color: var(--text-muted);">
-            Prendas: ${o.orden_items?.map(i => `${i.cantidad}x${i.descripcion_prenda}`).join(", ")}
+          
+          <div style="margin-top: 10px;">
+            <div style="font-size: 11px; color: var(--accent); font-weight: bold; text-transform: uppercase;">Prendas en esta orden:</div>
+            <div style="font-size: 13px; color: #fff; margin-top: 4px; padding-left: 4px;">
+              ${prendasItemsHTML}
+            </div>
           </div>
-          <div style="margin-top: 6px; font-weight: bold; color: var(--accent);">
-            Saldo por cancelar: $${Number(o.saldo_pendiente).toLocaleString("es-CO")}
+
+          <div style="margin-top: 12px; font-size: 13px; border-top: 1px dashed var(--border); padding-top: 8px; display: flex; justify-content: space-between;">
+            <span>Saldo pendiente:</span>
+            <strong style="color: ${Number(o.saldo_pendiente) > 0 ? 'var(--danger)' : 'var(--success)'}; font-size: 15px;">
+              $${Number(o.saldo_pendiente).toLocaleString("es-CO")}
+            </strong>
           </div>
         </div>
       `;
